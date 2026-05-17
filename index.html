@@ -22,7 +22,7 @@
                 <a class="nav-link active" href="#"><i class="bi bi-house-door-fill me-2"></i> Home</a>
                 <a class="nav-link" href="#"><i class="bi bi-megaphone-fill me-2"></i> Campaigns</a>
                 <a class="nav-link" href="#"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
-                <a class="nav-link" href="#"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
+                <a class="nav-link" href="#scheduleModal" data-bs-toggle="modal"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
                 <a class="nav-link" href="#"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports</a>
                 
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1" style="font-size: 11px; letter-spacing: 0.5px;">Quick Access</span>
@@ -52,33 +52,25 @@
                     <input type="text" class="form-control ps-5 rounded-pill bg-light border-0" placeholder="Search anything...">
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    
                     <button class="btn btn-light rounded-circle text-muted position-relative">
                         <i class="bi bi-bell"></i>
-                        <span id="bell-badge-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
-                            0
-                        </span>
+                        <span id="bell-badge-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
                     </button>
                     
                     <button class="btn btn-light rounded-circle text-muted position-relative me-2">
                         <i class="bi bi-envelope"></i>
-                        <span id="envelope-badge-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
-                            0
-                        </span>
+                        <span id="envelope-badge-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
                     </button>
                     
                     <a href="user-dashboard.html" class="user-profile-link text-decoration-none">
                         <div class="user-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill">
-                            
                             <div id="user-avatar-initial" class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold">U</div>
-                            
                             <div>
                                 <div id="user-display-name" class="fw-bold lh-1 small text-dark"></div>
                                 <small id="user-display-role" class="text-muted text-uppercase" style="font-size: 9px; letter-spacing: 0.5px;">User</small>
                             </div>
                         </div>
                     </a>
-
                 </div>
             </header>
 
@@ -152,7 +144,6 @@
                 <div class="col-lg-4">
                     <div class="card data-card border-0 p-3 rounded-4 h-100">
                         <h6 class="card-section-title fw-bold text-center mb-4">ACTIVE CAMPAIGNS</h6>
-                        
                         <div class="mb-3">
                             <div class="d-flex justify-content-between small fw-bold mb-1">
                                 <span class="text-secondary">Event Name</span>
@@ -169,7 +160,6 @@
                 <div class="col-lg-4">
                     <div class="card data-card border-0 p-3 rounded-4 h-100">
                         <h6 class="card-section-title fw-bold text-center mb-4">SCHEDULE</h6>
-                        
                         <div class="d-flex gap-3 mb-3 align-items-center">
                             <div class="placeholder-box rounded" style="width: 40px; height: 40px; background-color: #e9ecef;"></div>
                             <div>
@@ -177,19 +167,20 @@
                                 <small class="text-muted d-block"></small>
                             </div>
                         </div>
-                        <button class="btn btn-brand mt-auto w-100 rounded-pill py-2">View Schedule &rarr;</button>
+                        <button type="button" class="btn btn-brand mt-auto w-100 rounded-pill py-2" data-bs-toggle="modal" data-bs-target="#scheduleModal">
+                            View Schedule &rarr;
+                        </button>
                     </div>
                 </div>
 
                 <div class="col-lg-4">
                     <div class="card data-card border-0 p-3 rounded-4 h-100">
                         <h6 class="card-section-title fw-bold text-center mb-4">ANNOUNCEMENTS</h6>
-                        
                         <div class="d-flex gap-3 mb-3 align-items-center">
                             <div class="placeholder-box rounded" style="width: 40px; height: 40px; background-color: #e9ecef;"></div>
                             <div>
                                 <div class="fw-bold small text-dark">New Solicitation Post</div>
-                                <p class="text-muted mb-0 small">Help us build a better future...</p>
+                                <p class="text-muted mb-0 small"></p>
                             </div>
                         </div>
                         <button class="btn btn-brand mt-auto w-100 rounded-pill py-2">View Announcements &rarr;</button>
@@ -200,7 +191,29 @@
         </main>
     </div>
 
+    <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 p-3 shadow bg-white">
+                
+                <div class="modal-header border-0 justify-content-center pt-2 pb-0">
+                    <h5 class="modal-title fw-bold text-success text-center" id="scheduleModalLabel" style="letter-spacing: 1px; color: #43a047 !important;">SCHEDULE</h5>
+                </div>
+                
+                <div class="modal-body py-4" id="scheduleItemsContainer" style="max-height: 400px; overflow-y: auto;">
+                    </div>
+                
+                <div class="modal-footer border-0 p-0">
+                    <button type="button" class="btn text-white w-100 py-2 rounded-3 fw-bold" style="background-color: #43a047; font-size: 13px;" data-bs-dismiss="modal">CLOSE SCHEDULE</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
+        // Only keeping the isolated dark mode switcher logic
         const darkModeToggle = document.getElementById('darkModeToggle');
 
         function setTheme(theme) {
@@ -222,11 +235,7 @@
         }
 
         darkModeToggle.addEventListener('change', () => {
-            if (darkModeToggle.checked) {
-                setTheme('dark');
-            } else {
-                setTheme('light');
-            }
+            darkModeToggle.checked ? setTheme('dark') : setTheme('light');
         });
     </script>
 </body>
