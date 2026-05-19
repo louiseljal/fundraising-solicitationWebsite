@@ -1,0 +1,289 @@
+/* ==========================================================================
+   1. Theme Variables (Light Mode Defaults)
+   ========================================================================== */
+:root, [data-bs-theme="light"] {
+    --bg-main: #f4f6f9;
+    --text-color: #212529;
+    --text-muted-custom: #6c757d;
+    --sidebar-green: #14532d;       
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --stat-icon-bg: #f0fdf4;
+    --stat-icon-color: #16a34a;
+    --placeholder-bg: #e2e8f0;
+    --user-profile-bg: #ffffff;
+}
+
+/* ==========================================================================
+   2. Dark Mode Overrides (Triggered by your JS switch)
+   ========================================================================== */
+[data-bs-theme="dark"] {
+    --bg-main: #121214;            
+    --text-color: #f8fafc;
+    --text-muted-custom: #94a3b8;
+    --sidebar-green: #064e3b;       
+    --card-bg: #1e1e24;            
+    --border-color: #2d2d34;
+    --stat-icon-bg: #064e3b;
+    --stat-icon-color: #4ade80;
+    --placeholder-bg: #2d2d34;
+    --user-profile-bg: #1e1e24;
+}
+
+/* ==========================================================================
+   3. Global Layout Rules
+   ========================================================================== */
+body {
+    background-color: var(--bg-main) !important;
+    color: var(--text-color) !important;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.text-dark, .text-secondary {
+    color: var(--text-color) !important;
+}
+.text-muted, .text-white-50 {
+    color: var(--text-muted-custom) !important;
+}
+
+/* ==========================================================================
+   4. Sidebar Component Styles
+   ========================================================================== */
+.sidebar {
+    width: 260px;
+    min-width: 260px;
+    min-height: 100vh;
+    background-color: var(--sidebar-green) !important;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-section-header {
+    font-size: 11px; 
+    letter-spacing: 0.5px;
+    color: var(--text-color);
+    opacity: 0.4;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    border-radius: 8px;
+    padding: 10px 12px;
+    transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover, 
+.sidebar .nav-link.active {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.sidebar .nav-submenu .nav-link {
+    font-size: 0.85rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    opacity: 0.85;
+}
+
+.sidebar .nav-submenu .nav-link:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sub-menu-dot {
+    font-size: 6px;
+    color: #86efac !important;
+}
+
+.submenu-chevron {
+    transition: transform 0.2s ease;
+}
+
+.nav-link[aria-expanded="true"] .submenu-chevron {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   5. Workspace, Cards, and Elements Layout
+   ========================================================================== */
+.main-content {
+    background-color: var(--bg-main);
+    min-height: 100vh;
+    width: 100%;
+}
+
+.user-profile {
+    background-color: var(--user-profile-bg) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background-color: #16a34a;
+}
+
+.user-role-text {
+    font-size: 9px; 
+    letter-spacing: 0.5px;
+}
+
+.hero-banner {
+    background: linear-gradient(135deg, #22c55e, #15803d) !important;
+    border: none;
+    box-shadow: 0 4px 20px rgba(21, 128, 61, 0.15);
+}
+
+.hero-heading {
+    font-size: 1.8rem;
+    line-height: 1.3;
+    color: #ffffff !important;
+}
+
+.btn-action-light {
+    background-color: #ffffff !important;
+    color: #15803d !important;
+    border: none;
+}
+
+.btn-action-light:hover {
+    background-color: #f0fdf4 !important;
+}
+
+/* Info Cards Data Panels */
+.stat-card, .data-card {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.stat-label {
+    font-size: 11px;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--stat-icon-bg) !important;
+    color: var(--stat-icon-color) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+
+.card-section-title {
+    color: var(--stat-icon-color) !important;
+    font-size: 0.8rem;
+    letter-spacing: 0.75px;
+}
+
+.placeholder-box {
+    width: 40px; 
+    height: 40px; 
+    background-color: var(--placeholder-bg);
+}
+
+.btn-brand {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+    border: none;
+}
+
+.btn-brand:hover {
+    background-color: #15803d !important;
+}
+
+.progress {
+    background-color: var(--placeholder-bg) !important;
+}
+
+.progress-bar {
+    background-color: #22c55e !important;
+}
+
+/* ==========================================================================
+   6. Modals UI Element
+   ========================================================================== */
+.modal-content {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.modal-custom-title {
+    letter-spacing: 1px; 
+    color: #43a047 !important;
+}
+
+.modal-custom-body {
+    max-height: 400px; 
+    overflow-y: auto;
+}
+
+.modal-close-btn {
+    background-color: #43a047; 
+    font-size: 13px;
+    border: none;
+}
+
+/* ==========================================================================
+   Membership Page Components
+   ========================================================================== */
+.membership-banner {
+    background: linear-gradient(135deg, #bbf7d0, #f0fdf4) !important;
+    border: 1px solid #d1fae5;
+}
+
+[data-bs-theme="dark"] .membership-banner {
+    background: linear-gradient(135deg, #064e3b, #022c22) !important;
+    border: 1px solid #065f46;
+}
+
+.membership-banner .banner-title {
+    color: #14532d !important;
+}
+
+.membership-banner .banner-sub {
+    color: #166534 !important;
+}
+
+[data-bs-theme="dark"] .membership-banner .banner-title,
+[data-bs-theme="dark"] .membership-banner .banner-sub {
+    color: #f8fafc !important;
+}
+
+.nav-tabs-custom .nav-link {
+    color: var(--text-color) !important;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    opacity: 0.7;
+}
+
+.nav-tabs-custom .nav-link.active {
+    background: none !important;
+    border-bottom: 2px solid #16a34a !important;
+    opacity: 1 !important;
+}
+
+
+.chart-container {
+    min-height: 220px;
+    position: relative;
+}
+
+
+.member-avatar-badge {
+    width: 36px;
+    height: 36px;
+    background-color: #22c55e;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
