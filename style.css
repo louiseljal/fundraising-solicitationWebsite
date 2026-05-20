@@ -341,3 +341,177 @@ body {
     color: var(--text-muted-custom);
     text-uppercase;
 }
+
+/* ==========================================================================
+   Donations Page Specific Components
+   ========================================================================== */
+.table-donations {
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.table-donations th {
+    background-color: var(--placeholder-bg) !important;
+    color: var(--text-color) !important;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-uppercase: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.badge-status-confirmed {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+}
+
+.badge-status-pending {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+}
+
+
+[data-bs-theme="dark"] .badge-status-confirmed {
+    background-color: #064e3b !important;
+    color: #a7f3d0 !important;
+}
+
+[data-bs-theme="dark"] .badge-status-pending {
+    background-color: #78350f !important;
+    color: #fde68a !important;
+}
+
+
+.top-donor-item {
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 8px;
+}
+
+.top-donor-item:last-child {
+    border-bottom: none;
+}
+
+.donor-rank-number {
+    font-weight: bold;
+    color: var(--stat-icon-color);
+    min-width: 20px;
+}
+
+/* ==========================================================================
+   Collections Page Specific Components
+   ========================================================================== */
+.collection-item-card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.collection-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.collection-media-thumbnail {
+    width: 80px;
+    height: 80px;
+    background-color: #e2e8f0;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+[data-bs-theme="dark"] .collection-media-thumbnail {
+    background-color: #334155;
+}
+
+.status-pill {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+.status-pill-active {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+}
+
+.status-pill-ending {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+}
+
+.status-pill-completed {
+    background-color: #e2e8f0 !important;
+    color: #334155 !important;
+}
+
+[data-bs-theme="dark"] .status-pill-active {
+    background-color: #064e3b !important;
+    color: #a7f3d0 !important;
+}
+
+[data-bs-theme="dark"] .status-pill-ending {
+    background-color: #78350f !important;
+    color: #fde68a !important;
+}
+
+[data-bs-theme="dark"] .status-pill-completed {
+    background-color: #1e293b !important;
+    color: #cbd5e1 !important;
+}
+
+/* ==========================================================================
+   Announcement Page Specific Components
+   ========================================================================== */
+.announcement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1-fraction));
+    gap: 1.5rem;
+}
+
+@media (min-width: 992px) {
+    .announcement-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.announcement-card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.announcement-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.announcement-media-box {
+    width: 100%;
+    height: 180px;
+    background-color: #e2e8f0;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+[data-bs-theme="dark"] .announcement-media-box {
+    background-color: #334155;
+}
+
+.announcement-body-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-color);
+    opacity: 0.85;
+}

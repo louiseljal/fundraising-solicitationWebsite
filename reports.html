@@ -39,9 +39,9 @@
                 <a class="nav-link active" href="reports.html"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports</a>
                 
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
-                <a class="nav-link" href="#"><i class="bi bi-heart-fill me-2"></i> Donations</a>
-                <a class="nav-link" href="#"><i class="bi bi-collection-fill me-2"></i> Collection</a>
-                <a class="nav-link" href="#"><i class="bi bi-bell-fill me-2"></i> Announcement</a>
+                <a class="nav-link" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
+                <a class="nav-link" href="collections.html"><i class="bi bi-collection-fill me-2"></i> Collection</a>
+                <a class="nav-link" href="announcement.html"><i class="bi bi-bell-fill me-2"></i> Announcement</a>
             </nav>
             
             <div class="sidebar-footer pt-3 mt-auto border-top border-secondary-subtle">
@@ -99,8 +99,8 @@
                         <div class="col-md-6 col-12">
                             <div class="card data-card border-0 p-4 rounded-4 h-100">
                                 <h6 class="fw-bold text-dark mb-3">Donation Trends</h6>
-                                <div id="chart-donation-trends-wrapper" class="chart-box-large rounded-3 d-flex align-items-center justify-content-center text-muted small font-monospace">
-                                    [Donation Trends Bar Chart Hook - ID: chart-donation-trends-wrapper]
+                                <div id="donation_trends" class="chart-box-large rounded-3 d-flex align-items-center justify-content-center text-muted small font-monospace">
+                                    [Donation Trends Bar Chart Hook - ID: donation_trends]
                                 </div>
                             </div>
                         </div>
@@ -108,8 +108,8 @@
                         <div class="col-md-6 col-12">
                             <div class="card data-card border-0 p-4 rounded-4 h-100">
                                 <h6 class="fw-bold text-dark mb-3">Campaign Performance</h6>
-                                <div id="chart-campaign-performance-wrapper" class="chart-box-large rounded-3 d-flex align-items-center justify-content-center text-muted small font-monospace">
-                                    [Campaign Doughnut Chart Hook - ID: chart-campaign-performance-wrapper]
+                                <div id="campaign_performance" class="chart-box-large rounded-3 d-flex align-items-center justify-content-center text-muted small font-monospace">
+                                    [Campaign Doughnut Chart Hook - ID: campaign_performance]
                                 </div>
                             </div>
                         </div>
@@ -120,8 +120,8 @@
                                     <h6 class="fw-bold text-dark mb-0">Member Growth Rate</h6>
                                     <button id="btn-view-all-growth-data" class="btn btn-brand btn-sm rounded-pill px-3">View All Data &rarr;</button>
                                 </div>
-                                <div id="chart-member-growth-rate-wrapper" class="chart-box-large rounded-3 d-flex align-items-center justify-content-center text-muted small font-monospace">
-                                    [Member Growth Line Chart Hook - ID: chart-member-growth-rate-wrapper]
+                                <div id="member_growth_rate" class="chart-box-large rounded-3 d-flex align-items-center justify-content-center text-muted small font-monospace">
+                                    [Member Growth Line Chart Hook - ID: member_growth_rate]
                                 </div>
                             </div>
                         </div>
@@ -181,10 +181,10 @@
                                                 <th scope="col" class="text-end">Total Funds</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="table-top-solicitors-body">
+                                        <tbody id="top_solicitors_body">
                                             <tr>
                                                 <td colspan="4" class="text-center py-4 text-muted small font-monospace">
-                                                    [SQL Leaderboard Row Injection Loop - ID: table-top-solicitors-body]
+                                                    [SQL Leaderboard Row Injection Loop - ID: top_solicitors_body]
                                                 </td>
                                             </tr>
                                         </tbody>

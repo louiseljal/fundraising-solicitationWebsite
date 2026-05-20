@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Management - Membership</title>
+    <title>Community Management - Collections</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -34,13 +34,13 @@
                     </a>
                 </div>
 
-                <a class="nav-link active" href="membership.html"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
+                <a class="nav-link" href="membership.html"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
                 <a class="nav-link" href="#scheduleModal" data-bs-toggle="modal"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
                 <a class="nav-link" href="reports.html"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports</a>
                 
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
                 <a class="nav-link" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
-                <a class="nav-link" href="collections.html"><i class="bi bi-collection-fill me-2"></i> Collection</a>
+                <a class="nav-link active" href="collection.html"><i class="bi bi-collection-fill me-2"></i> Collection</a>
                 <a class="nav-link" href="announcement.html"><i class="bi bi-bell-fill me-2"></i> Announcement</a>
             </nav>
             
@@ -82,131 +82,73 @@
                 </div>
             </header>
 
-            <section class="membership-banner p-4 rounded-4 mb-4 d-flex justify-content-between align-items-center">
+            <section class="hero-banner p-4 rounded-4 mb-4 text-white d-flex justify-content-between align-items-center">
                 <div>
-                    <h4 class="fw-bold mb-1 banner-title">Membership</h4>
-                    <p class="mb-0 small text-muted banner-sub">See how you're making an impact</p>
-                    <small class="text-muted d-block mt-2 font-monospace">Dashboard > Membership</small>
-                </div>
-                <div class="d-none d-md-block px-4">
-                    <i class="bi bi-card-checklist text-success fs-1 opacity-75"></i>
-                </div>
-            </section>
-
-            <ul class="nav nav-tabs-custom gap-3 mb-4 border-bottom">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#tab-overview">Overview</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab-members">Members</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab-plans">Plans</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab-donations">Donations</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab-settings">Settings</a>
-                </li>
-            </ul>
-
-            <section class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
-                <div class="col">
-                    <div class="card stat-card p-3 border-0 rounded-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="stat-icon rounded-circle"><i class="bi bi-people-fill"></i></div>
-                            <div>
-                                <small class="text-muted d-block stat-label">Total Members</small>
-                                <h4 id="total-members-count" class="fw-bold mb-0">--</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card stat-card p-3 border-0 rounded-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="stat-icon rounded-circle"><i class="bi bi-person-check-fill"></i></div>
-                            <div>
-                                <small class="text-muted d-block stat-label">Total Active Members</small>
-                                <h4 id="active-members-count" class="fw-bold mb-0">--</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card stat-card p-3 border-0 rounded-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="stat-icon rounded-circle"><i class="bi bi-collection-fill"></i></div>
-                            <div>
-                                <small class="text-muted d-block stat-label">Active Collection</small>
-                                <h4 id="active-collections-count" class="fw-bold mb-0">--</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card stat-card p-3 border-0 rounded-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="stat-icon rounded-circle"><i class="bi bi-cash-stack"></i></div>
-                            <div>
-                                <small class="text-muted d-block stat-label">Total Funds Raised</small>
-                                <h4 id="total-funds-raised" class="fw-bold mb-0">--</h4>
-                            </div>
-                        </div>
+                    <h3 class="fw-bold mb-2 hero-heading">Together, we build<br>a better community.</h3>
+                    <div class="d-flex gap-2 mt-3">
+                        <button id="btn-collections-create-solicitation" class="btn btn-action-light fw-bold btn-sm rounded-pill px-3 py-2">
+                            <i class="bi bi-plus-lg"></i> Create Solicitation
+                        </button>
+                        <button id="btn-collections-view-history" class="btn btn-outline-light fw-bold btn-sm rounded-pill px-3 py-2">
+                            <i class="bi bi-clock-history"></i> View History
+                        </button>
                     </div>
                 </div>
             </section>
 
-            <section class="row g-4">
-                <div class="col-xl-6 col-lg-12">
-                    <div class="card data-card border-0 p-4 rounded-4 h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h6 class="fw-bold text-dark mb-0">Member Overview</h6>
-                            <button id="btn-view-all-chart-data" class="btn btn-brand btn-sm rounded-pill px-3">View All Data &rarr;</button>
-                        </div>
-                        
-                        <div class="chart-container d-flex align-items-center justify-content-center bg-light rounded-3" id="member-growth-chart-wrapper">
-                            <span class="text-muted small font-monospace"></span>
-                        </div>
+            <section class="card data-card border-0 p-4 rounded-4">
+    <div class="text-center mb-4 border-bottom pb-3">
+        <h5 class="fw-bold text-success tracking-wide text-uppercase mb-0" style="letter-spacing: 1px;">Collections Overview</h5>
+    </div>
+
+    <div class="d-flex flex-column gap-3" id="collections-overview-loop-container">
+        
+        <div class="p-4 rounded-3 collection-item-card d-flex gap-4 align-items-start dynamic-collection-row" data-collection-id="">
+            
+            <div class="collection-media-thumbnail d-flex align-items-center justify-content-center text-muted position-relative overflow-hidden">
+                <img src="" class="position-absolute w-100 h-100 object-fit-cover d-none collection-live-image" alt="Campaign Banner">
+                <i class="bi bi-image fs-3 collection-image-fallback"></i>
+            </div>
+            
+            <div class="flex-grow-1 row g-3">
+                <div class="col-md-5">
+                    <h6 class="fw-bold text-dark mb-3 collection-event-title"></h6>
+                    
+                    <div class="small mb-1 text-muted">
+                        <span class="fw-semibold text-secondary">Goal Amount:</span> 
+                        <span class="collection-goal-value"></span>
+                    </div>
+                    <div class="small text-muted">
+                        <span class="fw-semibold text-secondary">Amount Raised:</span> 
+                        <span class="collection-raised-value"></span>
                     </div>
                 </div>
-
-                <div class="col-xl-3 col-md-6">
-                    <div class="card data-card border-0 p-4 rounded-4 h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold text-dark mb-0">Recent Members</h6>
-                            <a href="#" id="link-view-all-members" class="text-success small fw-bold text-decoration-none">View All</a>
-                        </div>
-                        
-                        <div class="d-flex flex-column gap-3" id="recent-members-list-container">
-                            <div class="placeholder-box w-100 rounded p-2 text-center text-muted small font-monospace">
-                            
-                            </div>
-                        </div>
-                        
-                        <button id="btn-view-all-members-footer" class="btn btn-brand mt-auto w-100 rounded-pill py-2">View All Members &rarr;</button>
+                
+                <div class="col-md-5">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small fw-semibold text-muted text-uppercase">Progress Bar</span>
+                        <span class="small fw-bold text-success collection-progress-percentage"></span>
+                    </div>
+                    
+                    <div class="progress rounded-pill" style="height: 10px;">
+                        <div class="progress-bar bg-success collection-live-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    
+                    <div class="mt-2">
+                        <span class="small fw-semibold text-muted text-uppercase me-2">Status:</span>
+                        <span class="status-pill text-uppercase collection-status-indicator"></span>
                     </div>
                 </div>
+            </div>
+        </div>
+        </div>
 
-                <div class="col-xl-3 col-md-6">
-                    <div class="card data-card border-0 p-4 rounded-4 h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold text-dark mb-0">Administrators</h6>
-                            <a href="#" id="link-view-all-admins" class="text-success small fw-bold text-decoration-none">View All</a>
-                        </div>
-                        
-                        <div class="d-flex flex-column gap-3" id="administrators-list-container">
-                            <div class="placeholder-box w-100 rounded p-2 text-center text-muted small font-monospace">
-                            
-                            </div>
-                        </div>
-                        
-                        <button id="btn-view-all-admins-footer" class="btn btn-brand mt-auto w-100 rounded-pill py-2">View All Members &rarr;</button>
-                    </div>
-                </div>
-            </section>
-
+    <div class="text-center mt-4 pt-2 border-top">
+        <button id="btn-collections-view-all-campaigns" class="btn btn-brand rounded-pill px-4 py-2 fw-semibold">
+            View All Campaigns &rarr;
+        </button>
+    </div>
+</section>
         </main>
     </div>
 

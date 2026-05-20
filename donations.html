@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Management - Membership</title>
+    <title>Community Management - All Donations</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -34,12 +34,12 @@
                     </a>
                 </div>
 
-                <a class="nav-link active" href="membership.html"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
+                <a class="nav-link" href="membership.html"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
                 <a class="nav-link" href="#scheduleModal" data-bs-toggle="modal"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
                 <a class="nav-link" href="reports.html"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports</a>
                 
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
-                <a class="nav-link" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
+                <a class="nav-link active" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
                 <a class="nav-link" href="collections.html"><i class="bi bi-collection-fill me-2"></i> Collection</a>
                 <a class="nav-link" href="announcement.html"><i class="bi bi-bell-fill me-2"></i> Announcement</a>
             </nav>
@@ -73,7 +73,7 @@
                     </button>
                     
                     <div class="user-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill">
-                        <div id="user-avatar-initial" class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold"></div>
+                        <div id="user-avatar-initial" class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold">U</div>
                         <div>
                             <div id="user-display-name" class="fw-bold lh-1 small text-dark"></div>
                             <small id="user-display-role" class="text-muted text-uppercase user-role-text">User</small>
@@ -82,130 +82,99 @@
                 </div>
             </header>
 
-            <section class="membership-banner p-4 rounded-4 mb-4 d-flex justify-content-between align-items-center">
+            <section class="hero-banner p-4 rounded-4 mb-4 text-white d-flex justify-content-between align-items-center">
                 <div>
-                    <h4 class="fw-bold mb-1 banner-title">Membership</h4>
-                    <p class="mb-0 small text-muted banner-sub">See how you're making an impact</p>
-                    <small class="text-muted d-block mt-2 font-monospace">Dashboard > Membership</small>
-                </div>
-                <div class="d-none d-md-block px-4">
-                    <i class="bi bi-card-checklist text-success fs-1 opacity-75"></i>
-                </div>
-            </section>
-
-            <ul class="nav nav-tabs-custom gap-3 mb-4 border-bottom">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#tab-overview">Overview</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab-members">Members</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab-plans">Plans</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab-donations">Donations</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab-settings">Settings</a>
-                </li>
-            </ul>
-
-            <section class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
-                <div class="col">
-                    <div class="card stat-card p-3 border-0 rounded-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="stat-icon rounded-circle"><i class="bi bi-people-fill"></i></div>
-                            <div>
-                                <small class="text-muted d-block stat-label">Total Members</small>
-                                <h4 id="total-members-count" class="fw-bold mb-0">--</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card stat-card p-3 border-0 rounded-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="stat-icon rounded-circle"><i class="bi bi-person-check-fill"></i></div>
-                            <div>
-                                <small class="text-muted d-block stat-label">Total Active Members</small>
-                                <h4 id="active-members-count" class="fw-bold mb-0">--</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card stat-card p-3 border-0 rounded-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="stat-icon rounded-circle"><i class="bi bi-collection-fill"></i></div>
-                            <div>
-                                <small class="text-muted d-block stat-label">Active Collection</small>
-                                <h4 id="active-collections-count" class="fw-bold mb-0">--</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card stat-card p-3 border-0 rounded-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="stat-icon rounded-circle"><i class="bi bi-cash-stack"></i></div>
-                            <div>
-                                <small class="text-muted d-block stat-label">Total Funds Raised</small>
-                                <h4 id="total-funds-raised" class="fw-bold mb-0">--</h4>
-                            </div>
-                        </div>
+                    <h3 class="fw-bold mb-2 hero-heading">Together, we build<br>a better community.</h3>
+                    <div class="d-flex gap-2 mt-3">
+                        <button id="btn-donations-create-solicitation" class="btn btn-action-light fw-bold btn-sm rounded-pill px-3 py-2">
+                            <i class="bi bi-plus-lg"></i> Create Solicitation
+                        </button>
+                        <button id="btn-donations-view-collections" class="btn btn-outline-light fw-bold btn-sm rounded-pill px-3 py-2">
+                            <i class="bi bi-collection-fill"></i> View Collections
+                        </button>
                     </div>
                 </div>
             </section>
 
-            <section class="row g-4">
-                <div class="col-xl-6 col-lg-12">
+            <div class="row g-4">
+                
+                <div class="col-xl-8 col-lg-12">
                     <div class="card data-card border-0 p-4 rounded-4 h-100">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h6 class="fw-bold text-dark mb-0">Member Overview</h6>
-                            <button id="btn-view-all-chart-data" class="btn btn-brand btn-sm rounded-pill px-3">View All Data &rarr;</button>
+                            <h5 class="fw-bold text-dark mb-0">All Donations (Detailed View)</h5>
+                            <button id="btn-filter-donations-table" class="btn btn-brand btn-sm rounded-pill px-3 py-1.5">
+                                <i class="bi bi-filter"></i> Filter
+                            </button>
                         </div>
-                        
-                        <div class="chart-container d-flex align-items-center justify-content-center bg-light rounded-3" id="member-growth-chart-wrapper">
-                            <span class="text-muted small font-monospace"></span>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-donations mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Donor Name</th>
+                                        <th scope="col">Campaign</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="donations_body">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted small font-monospace">
+                                            [SQL Transactions Table Row Loop - ID: donations_body]
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-md-6">
-                    <div class="card data-card border-0 p-4 rounded-4 h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold text-dark mb-0">Recent Members</h6>
-                            <a href="#" id="link-view-all-members" class="text-success small fw-bold text-decoration-none">View All</a>
-                        </div>
+                <div class="col-xl-4 col-lg-12">
+                    <div class="row g-4">
                         
-                        <div class="d-flex flex-column gap-3" id="recent-members-list-container">
-                            <div class="placeholder-box w-100 rounded p-2 text-center text-muted small font-monospace">
-                            
+                        <div class="col-12">
+                            <div class="card data-card border-0 p-4 rounded-4" style="border: 2px solid #3b82f6 !important;">
+                                <h6 class="fw-bold text-primary mb-3">Top Donors (This Month)</h6>
+                                
+                                <div class="d-flex flex-column gap-2" id="top_donorsr">
+                                    <div class="p-3 text-center text-muted small font-monospace bg-light rounded-3">
+                                        [Monthly Donor Ranking Loop - ID: top_donors]
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <button id="btn-view-all-members-footer" class="btn btn-brand mt-auto w-100 rounded-pill py-2">View All Members &rarr;</button>
+
+                        <div class="col-12">
+                            <div class="card data-card border-0 p-4 rounded-4 shadow-sm">
+                                <h6 class="fw-bold text-dark mb-3">Donation Insights</h6>
+                                
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted small">Average Donation</span>
+                                        <span id="insight-average-donation" class="fw-bold text-dark">--</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted small">No. of Solicitors</span>
+                                        <span id="insight-solicitors-count" class="fw-bold text-dark">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="card data-card border-0 p-4 rounded-4 shadow-sm">
+                                <h6 class="fw-bold text-dark mb-3">Export Data</h6>
+                                <button id="btn-export-donations-pdf" class="btn btn-brand w-100 py-2.5 rounded-3 fw-bold">
+                                    Export as PDF
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-md-6">
-                    <div class="card data-card border-0 p-4 rounded-4 h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold text-dark mb-0">Administrators</h6>
-                            <a href="#" id="link-view-all-admins" class="text-success small fw-bold text-decoration-none">View All</a>
-                        </div>
-                        
-                        <div class="d-flex flex-column gap-3" id="administrators-list-container">
-                            <div class="placeholder-box w-100 rounded p-2 text-center text-muted small font-monospace">
-                            
-                            </div>
-                        </div>
-                        
-                        <button id="btn-view-all-admins-footer" class="btn btn-brand mt-auto w-100 rounded-pill py-2">View All Members &rarr;</button>
-                    </div>
-                </div>
-            </section>
+            </div>
 
         </main>
     </div>
