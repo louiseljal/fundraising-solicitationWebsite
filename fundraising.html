@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Management - Fundraising</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="d-flex">
+        <aside class="sidebar p-3 text-white">
+            <div class="sidebar-logo d-flex align-items-center mb-4 px-2">
+                <i class="bi bi-people-fill me-2 fs-4"></i>
+                <span class="fw-bold lh-sm">Community <br><small class="fw-normal text-white-50">Management</small></span>
+            </div>
+            
+            <nav class="nav flex-column gap-1 flex-grow-1">
+                <span class="text-uppercase text-white-50 small px-2 mb-1 sidebar-section-header">Main</span>
+                <a class="nav-link" href="index.html"><i class="bi bi-house-door-fill me-2"></i> Home</a>
+                
+                <a class="nav-link d-flex justify-content-between align-items-center" href="#campaignsSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="campaignsSubmenu">
+                    <span><i class="bi bi-megaphone-fill me-2"></i> Campaigns</span>
+                    <i class="bi bi-chevron-down submenu-chevron"></i>
+                </a>
+                <div class="collapse show nav-submenu flex-column ps-4 gap-1" id="campaignsSubmenu">
+                    <a class="nav-link active d-flex align-items-center text-white" href="fundraising.html">
+                        <i class="bi bi-circle-fill me-2 sub-menu-dot"></i> Fundraising
+                    </a>
+                    <a class="nav-link d-flex align-items-center text-white" href="solicitations.html">
+                        <i class="bi bi-circle-fill me-2 sub-menu-dot"></i> Solicitation
+                    </a>
+                </div>
+
+                <a class="nav-link" href="membership.html"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
+                <a class="nav-link" href="#scheduleModal" data-bs-toggle="modal"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
+                <a class="nav-link" href="reports.html"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports</a>
+                
+                <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
+                <a class="nav-link" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
+                <a class="nav-link" href="collections.html"><i class="bi bi-collection-fill me-2"></i> Collection</a>
+                <a class="nav-link" href="announcement.html"><i class="bi bi-bell-fill me-2"></i> Announcement</a>
+            </nav>
+
+            <div class="sidebar-footer mt-auto pt-3 border-top border-secondary border-opacity-25">
+                <a class="nav-link mb-2 text-white-50" href="settings.html"><i class="bi bi-gear-fill me-2"></i> Settings</a>
+                <div class="form-check form-switch d-flex align-items-center justify-content-between ps-2 py-1 bg-dark bg-opacity-50 rounded-3 border border-secondary border-opacity-25 px-2">
+                    <label class="form-check-label small text-white-50 cursor-pointer" for="darkModeSwitch"><i class="bi bi-moon-stars-fill me-2 text-warning"></i>Dark Mode</label>
+                    <input class="form-check-input ms-0 cursor-pointer" type="checkbox" role="switch" id="darkModeSwitch">
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content flex-grow-1 p-4 main-workspace-bg">
+            <div class="container-fluid">
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="card border-0 p-3 rounded-3 shadow-sm dynamic-card-bg">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="p-2 bg-success-subtle text-success rounded-circle px-3 fs-4"><i class="bi bi-wallet2"></i></div>
+                                <div>
+                                    <small class="dynamic-text-muted d-block small">Total Raised</small>
+                                    <h5 class="fw-bold mb-0 dynamic-text-main" id="display-total-raised-kpi">₱0.00</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="card border-0 p-3 rounded-3 shadow-sm dynamic-card-bg">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="p-2 bg-primary-subtle text-primary rounded-circle px-3 fs-4"><i class="bi bi-activity"></i></div>
+                                <div>
+                                    <small class="dynamic-text-muted d-block small">Active Campaigns</small>
+                                    <h5 class="fw-bold mb-0 dynamic-text-main" id="display-active-campaigns-count">0</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="card border-0 p-3 rounded-3 shadow-sm dynamic-card-bg">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="p-2 bg-purple-subtle text-purple rounded-circle px-3 fs-4"><i class="bi bi-people-fill"></i></div>
+                                <div>
+                                    <small class="dynamic-text-muted d-block small">Total Donors</small>
+                                    <h5 class="fw-bold mb-0 dynamic-text-main" id="display-total-donors-count">0</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="card border-0 p-3 rounded-3 shadow-sm dynamic-card-bg">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="p-2 bg-info-subtle text-info rounded-circle px-3 fs-4"><i class="bi bi-check-circle-fill"></i></div>
+                                <div>
+                                    <small class="dynamic-text-muted d-block small">Completed Campaigns</small>
+                                    <h5 class="fw-bold mb-0 dynamic-text-main" id="display-completed-campaigns-count">0</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 p-4 rounded-4 shadow-sm mb-4 dynamic-card-bg">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <h6 class="fw-bold mb-0 dynamic-text-main">Overall Fundraising Progress</h6>
+                        </div>
+                        <span class="fw-bold text-success fs-5 font-monospace" id="display-overall-progress-percentage">0.0%</span>
+                    </div>
+                    <div class="progress rounded-pill mb-2" style="height: 12px;">
+                        <div class="progress-bar bg-success rounded-pill" role="progressbar" id="display-overall-progress-bar" style="width: 0%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small dynamic-text-muted font-monospace">
+                        <span id="display-overall-raised-cash">₱0 raised</span>
+                        <span id="display-overall-target-cash">Goal: ₱0</span>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                    <div class="d-flex flex-wrap align-items-center gap-2" id="filter-controls-group-container">
+                        <div class="btn-group btn-group-sm" role="group" id="campaign-status-filter-buttons">
+                            <button type="button" class="btn btn-success rounded-start-pill px-3 active" data-filter="all">All Campaigns</button>
+                            <button type="button" class="btn btn-outline-secondary px-3 dynamic-outline-btn" data-filter="active">Active</button>
+                            <button type="button" class="btn btn-outline-secondary rounded-end-pill px-3 dynamic-outline-btn" data-filter="completed">Completed</button>
+                        </div>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle rounded-pill px-3 dynamic-outline-btn" type="button" id="filterDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-filter me-1"></i> Filter
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-3 dynamic-dropdown-menu-bg" aria-labelledby="filterDropdownMenu">
+                                <li class="mb-2">
+                                    <label for="filter-dropdown-month" class="form-label small text-muted text-uppercase fw-semibold mb-1">Month</label>
+                                    <select class="form-select form-select-sm dynamic-input-bg" id="filter-dropdown-month">
+                                        <option value="" selected>All Months</option>
+                                        <option value="01">January</option>
+                                        <option value="02">February</option>
+                                        <option value="03">March</option>
+                                        <option value="04">April</option>
+                                        <option value="05">May</option>
+                                        <option value="06">June</option>
+                                        <option value="07">July</option>
+                                        <option value="08">August</option>
+                                        <option value="09">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </li>
+                                <li class="mb-2">
+                                    <label for="filter-dropdown-category" class="form-label small text-muted text-uppercase fw-semibold mb-1">Category</label>
+                                    <select class="form-select form-select-sm dynamic-input-bg" id="filter-dropdown-category">
+                                        <option value="" selected>All Categories</option>
+                                        <option value="Medical">Medical Assistance</option>
+                                        <option value="Disaster">Disaster Relief</option>
+                                        <option value="Educational">Educational Aid</option>
+                                        <option value="Livelihood">Livelihood</option>
+                                        <option value="Infrastructure">Infrastructure</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    <label for="filter-dropdown-sorting" class="form-label small text-muted text-uppercase fw-semibold mb-1">Sort By</label>
+                                    <select class="form-select form-select-sm dynamic-input-bg" id="filter-dropdown-sorting">
+                                        <option value="highest">Highest Raised</option>
+                                        <option value="lowest">Lowest Raised</option>
+                                        <option value="newest">Newest</option>
+                                        <option value="deadline">Approaching Deadline</option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="button" class="btn btn-success btn-sm rounded-pill px-3 fw-semibold shadow-sm" id="btn-trigger-create-campaign">
+                            <i class="bi bi-plus-lg me-1"></i> New Campaign
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row g-4" id="fundraising-cards-container">
+                    
+                    <div class="col-xl-4 col-md-6 col-12 dynamic-campaign-card-wrapper">
+                        <div class="card border-0 h-100 rounded-4 shadow-sm dynamic-card-bg overflow-hidden position-relative">
+                            
+                            <div class="position-relative ratio ratio-16x9 bg-secondary-subtle card-image-placeholder-zone">
+                                <div class="position-absolute top-0 start-0 w-100 p-3 d-flex justify-content-between align-items-start z-1">
+                                    <span class="badge bg-dark bg-opacity-75 rounded-pill px-2 py-1 fs-xs"><i class="bi bi-tag-fill me-1"></i>Category Shell</span>
+                                    <span class="badge bg-warning text-dark rounded-pill px-2 py-1 fs-xs">Status Shell</span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center text-muted">
+                                    <i class="bi bi-image fs-2"></i>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-4 d-flex flex-column">
+                                <h5 class="fw-bold dynamic-text-main mb-2">Campaign Title Placeholder</h5>
+                                <p class="dynamic-text-muted small text-line-clamp-3 mb-3">Campaign description abstract text content structure goes here inside your script rendering loops.</p>
+                                
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center mb-1 font-monospace small">
+                                        <span class="fw-bold text-success">₱0 raised</span>
+                                        <span class="dynamic-text-muted">0%</span>
+                                    </div>
+                                    <div class="progress rounded-pill mb-2" style="height: 6px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 40%"></div>
+                                    </div>
+                                    <div class="dynamic-text-muted font-monospace small mb-3">
+                                        of ₱0 goal
+                                    </div>
+
+                                    <div class="d-flex justify-content-between text-muted font-monospace small border-top pt-3 mb-3">
+                                        <span><i class="bi bi-people me-1"></i> 0 donors</span>
+                                        <span><i class="bi bi-clock me-1"></i> 0 days left</span>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-success btn-sm w-100 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modal-quick-donate-wizard">
+                                                <i class="bi bi-heart-fill small"></i> Donate
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm w-100 rounded-pill fw-bold text-muted dynamic-outline-btn d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modal-campaign-detail-viewer">
+                                                <i class="bi bi-eye"></i> View
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" id="modal-campaign-detail-viewer" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 rounded-4 shadow dynamic-modal-bg">
+                <div class="modal-header border-0 pb-0 justify-content-end p-3">
+                    <button type="button" class="btn-close dynamic-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4 pt-0">
+                    <div class="row g-4">
+                        <div class="col-md-5">
+                            <div class="rounded-3 bg-secondary-subtle w-100 h-100 d-flex align-items-center justify-content-center text-muted" style="min-height: 240px;" id="view-campaign-image-wrapper">
+                                <i class="bi bi-image fs-1"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="d-flex gap-2 mb-2" id="view-campaign-badges-container"></div>
+                            <h4 class="fw-bold dynamic-text-main mb-2" id="view-campaign-title">---</h4>
+                            <p class="dynamic-text-muted small mb-3" id="view-campaign-description">---</p>
+                            
+                            <div class="p-3 dynamic-input-addon rounded-3 mb-3 border border-secondary border-opacity-10">
+                                <div class="d-flex justify-content-between mb-1 small font-monospace fw-semibold dynamic-text-main">
+                                    <span id="view-campaign-raised-amount">Raised: ₱0.00</span>
+                                    <span id="view-campaign-goal-amount">Goal: ₱0.00</span>
+                                </div>
+                                <div class="progress rounded-pill" style="height: 8px;">
+                                    <div class="progress-bar bg-success rounded-pill" id="view-campaign-progress-bar" style="width: 0%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 small font-monospace text-muted">
+                                <div class="col-6">Category: <span class="fw-semibold dynamic-text-main" id="view-campaign-category">---</span></div>
+                                <div class="col-6">Urgency: <span class="fw-semibold dynamic-text-main" id="view-campaign-urgency">---</span></div>
+                                <div class="col-6">Deadline: <span class="fw-semibold dynamic-text-main" id="view-campaign-deadline">---</span></div>
+                                <div class="col-6">Beneficiaries: <span class="fw-semibold dynamic-text-main" id="view-campaign-beneficiaries">---</span></div>
+                                <div class="col-12"><hr class="my-1 border-secondary border-opacity-25"></div>
+                                <div class="col-12">Point of Contact: <span class="fw-semibold dynamic-text-main" id="view-campaign-poc-name">---</span></div>
+                                <div class="col-6"><i class="bi bi-telephone me-1"></i> <span id="view-campaign-poc-phone">---</span></div>
+                                <div class="col-6"><i class="bi bi-envelope me-1"></i> <span id="view-campaign-poc-email">---</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
+                        <h6 class="fw-bold dynamic-text-main mb-2"><i class="bi bi-list-check me-2 text-success"></i>Requested Specific Items</h6>
+                        <ul class="list-group list-group-flush small font-monospace rounded-3" id="view-campaign-requested-items-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-quick-donate-wizard" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow p-2 dynamic-modal-bg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-success"><i class="bi bi-heart-fill me-2"></i>Quick Donation Form</h5>
+                    <button type="button" class="btn-close dynamic-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="form-quick-donate-submission" method="POST">
+                    <input type="hidden" id="input-donate-campaign-id" name="campaign_id" value="">
+                    
+                    <div class="modal-body py-3">
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold dynamic-text-muted d-block">Select Preset Amount</label>
+                            <div class="row g-2" id="donation-preset-buttons-wrapper">
+                                <div class="col-4"><button type="button" class="btn btn-outline-success btn-sm w-100 rounded-3 btn-preset-amt" data-amount="100">₱100</button></div>
+                                <div class="col-4"><button type="button" class="btn btn-outline-success btn-sm w-100 rounded-3 btn-preset-amt" data-amount="200">₱200</button></div>
+                                <div class="col-4"><button type="button" class="btn btn-outline-success btn-sm w-100 rounded-3 btn-preset-amt" data-amount="500">₱500</button></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="input-donate-custom-amount" class="form-label small fw-semibold dynamic-text-muted">Or Enter Custom Amount (₱) *</label>
+                            <div class="input-group">
+                                <span class="input-group-text dynamic-input-addon border-end-0">₱</span>
+                                <input type="number" class="form-control border-start-0 rounded-end-3 dynamic-input-bg" id="input-donate-custom-amount" name="donation_amount" min="1" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="input-donor-display-name" class="form-label small fw-semibold dynamic-text-muted">Donor Name</label>
+                            <input type="text" class="form-control rounded-3 dynamic-input-bg" id="input-donor-display-name" name="donor_name" placeholder="e.g., Juan Dela Cruz">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="input-donor-custom-message" class="form-label small fw-semibold dynamic-text-muted">Leave a Message / Words of Support</label>
+                            <textarea class="form-control rounded-3 dynamic-input-bg" id="input-donor-custom-message" name="donor_message" rows="3" placeholder="Write a word of encouragement..."></textarea>
+                        </div>
+
+                        <div class="form-check form-switch p-3 dynamic-input-addon rounded-3 border">
+                            <input class="form-check-input ms-0 float-end text-success" type="checkbox" role="switch" id="checkbox-toggle-anonymous-mode" name="is_anonymous">
+                            <label class="form-check-label small fw-semibold dynamic-text-main" for="checkbox-toggle-anonymous-mode"><i class="bi bi-incognito me-2"></i> Donate Anonymously</label>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="submit" class="btn btn-success btn-sm rounded-pill px-4 fw-bold w-100" id="btn-submit-quick-donation">Confirm Donation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Anonymous field controller behavior matching
+        const anonToggle = document.getElementById('checkbox-toggle-anonymous-mode');
+        const donorNameField = document.getElementById('input-donor-display-name');
+        
+        anonToggle.addEventListener('change', () => {
+            if(anonToggle.checked) {
+                donorNameField.value = "Anonymous Donor";
+                donorNameField.setAttribute('disabled', 'true');
+            } else {
+                donorNameField.value = "";
+                donorNameField.removeAttribute('disabled');
+            }
+        });
+
+        const presetBtns = document.querySelectorAll('.btn-preset-amt');
+        const customAmtInput = document.getElementById('input-donate-custom-amount');
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', () => { customAmtInput.value = btn.getAttribute('data-amount'); });
+        });
+
+        // Dark Mode Setup Switches
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            darkModeSwitch.checked = true;
+        }
+        darkModeSwitch.addEventListener('change', () => {
+            if (darkModeSwitch.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>

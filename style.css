@@ -1,0 +1,409 @@
+/* ==========================================================================
+   1. Theme Variables (Light Mode Defaults & System Rules)
+   ========================================================================== */
+:root, [data-bs-theme="light"] {
+    --bg-main: #f4f6f9;
+    --text-color: #212529;
+    --text-muted-custom: #6c757d;
+    --sidebar-green: #14532d;       
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --stat-icon-bg: #f0fdf4;
+    --stat-icon-color: #16a34a;
+    --placeholder-bg: #e2e8f0;
+    --user-profile-bg: #ffffff;
+    
+    /* Consolidated Layout Mapping Syncs */
+    --main-workspace-bg: #f8f9fa;
+    --dynamic-card-bg: #ffffff;
+    --dynamic-text-main: #212529;
+    --dynamic-text-muted: #6c757d;
+    --dynamic-input-bg: #ffffff;
+    --dynamic-input-addon: #f8f9fa;
+    --dynamic-input-border: #dee2e6;
+    --dynamic-outline-btn-border: #6c757d;
+    --dynamic-outline-btn-text: #6c757d;
+    --dynamic-upload-zone: #f8f9fa;
+    --btn-action-add-item-bg: #f8f9fa;
+    --btn-action-add-item-color: #198754;
+    
+    /* Modal Theme Map */
+    --dynamic-modal-bg: #ffffff;
+    --dynamic-modal-text: #212529;
+    --dynamic-modal-close-filter: none;
+}
+
+/* ==========================================================================
+   2. Dark Mode Overrides (Consolidated Theme Matrix)
+   ========================================================================== */
+[data-bs-theme="dark"], .dark-mode {
+    --bg-main: #121214;            
+    --text-color: #f8fafc;
+    --text-muted-custom: #94a3b8;
+    --sidebar-green: #064e3b;       
+    --card-bg: #1e1e24;            
+    --border-color: #2d2d34;
+    --stat-icon-bg: #064e3b;
+    --stat-icon-color: #4ade80;
+    --placeholder-bg: #2d2d34;
+    --user-profile-bg: #1e1e24;
+
+    /* Theme Variable Mapping Swaps Override Hooks */
+    --main-workspace-bg: #121212;
+    --dynamic-card-bg: #1e1e1e;
+    --dynamic-text-main: #f8f9fa;
+    --dynamic-text-muted: #a0a0a0;
+    --dynamic-input-bg: #2b2b2b;
+    --dynamic-input-addon: #333333;
+    --dynamic-input-border: #3d3d3d;
+    --dynamic-outline-btn-border: #4d4d4d;
+    --dynamic-outline-btn-text: #a0a0a0;
+    --dynamic-upload-zone: #252525;
+    --btn-action-add-item-bg: #2b2b2b;
+    --btn-action-add-item-color: #2ea44f;
+
+    /* Modal Theme Map Dark */
+    --dynamic-modal-bg: #1e1e1e;
+    --dynamic-modal-text: #f8f9fa;
+    --dynamic-modal-close-filter: invert(1) grayscale(1) brightness(2);
+}
+
+/* ==========================================================================
+   3. Global Layout & Utility Classes
+   ========================================================================== */
+body {
+    background-color: var(--bg-main) !important;
+    color: var(--text-color) !important;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.text-dark, .text-secondary { color: var(--text-color) !important; }
+.text-muted, .text-white-50 { color: var(--text-muted-custom) !important; }
+.cursor-pointer { cursor: pointer !important; }
+.border-dashed { border-style: dashed !important; }
+.x-small { font-size: 10px !important; text-uppercase: uppercase; }
+
+/* Uniform Graphic Line Clamps */
+.text-line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+.text-line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+/* Base Theme Class Hook Architectures */
+.main-workspace-bg { background-color: var(--main-workspace-bg) !important; min-height: 100vh; }
+.dynamic-card-bg { background-color: var(--dynamic-card-bg); border: 1px solid var(--border-color); }
+.dynamic-text-main { color: var(--dynamic-text-main); }
+.dynamic-text-muted { color: var(--dynamic-text-muted); }
+.dynamic-input-bg { background-color: var(--dynamic-input-bg); color: var(--dynamic-text-main); border: 1px solid var(--dynamic-input-border); }
+.dynamic-input-addon { background-color: var(--dynamic-input-addon); color: var(--dynamic-text-main); border: 1px solid var(--dynamic-input-border); }
+.dynamic-outline-btn { border-color: var(--dynamic-outline-btn-border); color: var(--dynamic-outline-btn-text); }
+.dynamic-upload-zone { background-color: var(--dynamic-upload-zone); }
+.btn-action-add-item { background-color: var(--btn-action-add-item-bg); color: var(--btn-action-add-item-color); border: 1px dashed var(--btn-action-add-item-color); }
+
+/* ==========================================================================
+   4. Navigation & Sidebar Component
+   ========================================================================== */
+.sidebar {
+    width: 260px;
+    min-width: 260px;
+    min-height: 100vh;
+    background-color: var(--sidebar-green) !important;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-section-header {
+    font-size: 11px; 
+    letter-spacing: 0.5px;
+    color: var(--text-color);
+    opacity: 0.4;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    border-radius: 8px;
+    padding: 10px 12px;
+    transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover, 
+.sidebar .nav-link.active {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.sidebar .nav-submenu .nav-link {
+    font-size: 0.85rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    opacity: 0.85;
+}
+
+.sidebar .nav-submenu .nav-link:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sub-menu-dot {
+    font-size: 6px;
+    color: #86efac !important;
+}
+
+.submenu-chevron { transition: transform 0.2s ease; }
+.nav-link[aria-expanded="true"] .submenu-chevron { transform: rotate(180deg); }
+
+/* ==========================================================================
+   5. Dashboard Layout Panels, Cards, & Elements
+   ========================================================================== */
+.main-content {
+    background-color: var(--bg-main);
+    min-height: 100vh;
+    width: 100%;
+}
+
+.user-profile {
+    background-color: var(--user-profile-bg) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.user-avatar { width: 32px; height: 32px; background-color: #16a34a; }
+.user-role-text { font-size: 9px; letter-spacing: 0.5px; }
+
+.hero-banner {
+    background: linear-gradient(135deg, #22c55e, #15803d) !important;
+    border: none;
+    box-shadow: 0 4px 20px rgba(21, 128, 61, 0.15);
+}
+
+.hero-heading { font-size: 1.8rem; line-height: 1.3; color: #ffffff !important; }
+.btn-action-light { background-color: #ffffff !important; color: #15803d !important; border: none; }
+.btn-action-light:hover { background-color: #f0fdf4 !important; }
+
+/* Info Data Cards */
+.stat-card, .data-card, .metric-card {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    border-radius: 1rem;
+}
+
+.stat-label { font-size: 11px; }
+.placeholder-box { width: 40px; height: 40px; background-color: var(--placeholder-bg); }
+.card-section-title { color: var(--stat-icon-color) !important; font-size: 0.8rem; letter-spacing: 0.75px; }
+
+.stat-icon, .metric-icon-box {
+    width: 40px;
+    height: 40px;
+    background-color: var(--stat-icon-bg) !important;
+    color: var(--stat-icon-color) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    border-radius: 0.5rem;
+}
+
+.btn-brand { background-color: #16a34a !important; color: #ffffff !important; border: none; }
+.btn-brand:hover { background-color: #15803d !important; }
+.progress { background-color: var(--placeholder-bg) !important; }
+.progress-bar { background-color: #22c55e !important; }
+
+/* ==========================================================================
+   6. Core Framework Overrides (Forms & Tables)
+   ========================================================================== */
+.btn-check:checked + .btn-outline-secondary {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(25, 135, 84, 0.15);
+}
+
+#drop-zone-container { transition: all 0.2s ease-in-out; }
+#drop-zone-container:hover {
+    border-color: #198754 !important;
+    background-color: rgba(25, 135, 84, 0.02) !important;
+}
+[data-bs-theme="dark"] #drop-zone-container:hover,
+.dark-mode #drop-zone-container:hover {
+    background-color: rgba(25, 135, 84, 0.08) !important;
+}
+
+.table-analytics, .table-donations { font-size: 0.85rem; vertical-align: middle; }
+.table-analytics th { font-size: 0.75rem; letter-spacing: 0.5px; color: var(--text-muted-custom); text-uppercase: uppercase; }
+.table-donations th { background-color: var(--placeholder-bg) !important; color: var(--text-color) !important; font-weight: 600; font-size: 0.8rem; text-uppercase: uppercase; letter-spacing: 0.5px; }
+
+.hover-table-analytics tbody tr { transition: background-color 0.2s ease; }
+.hover-table-analytics tbody tr:hover { background-color: rgba(0, 0, 0, 0.015); }
+
+/* ==========================================================================
+   7. Specific Feature Page Modules
+   ========================================================================== */
+
+/* Membership Page Rules */
+.membership-banner { background: linear-gradient(135deg, #bbf7d0, #f0fdf4) !important; border: 1px solid #d1fae5; }
+.membership-banner .banner-title { color: #14532d !important; }
+.membership-banner .banner-sub { color: #166534 !important; }
+
+[data-bs-theme="dark"] .membership-banner,
+.dark-mode .membership-banner { background: linear-gradient(135deg, #064e3b, #022c22) !important; border: 1px solid #065f46; }
+[data-bs-theme="dark"] .membership-banner .banner-title,
+[data-bs-theme="dark"] .membership-banner .banner-sub,
+.dark-mode .membership-banner .banner-title,
+.dark-mode .membership-banner .banner-sub { color: #f8fafc !important; }
+
+.nav-tabs-custom .nav-link { color: var(--text-color) !important; border: none; border-bottom: 2px solid transparent; font-weight: 600; padding: 0.5rem 1rem; opacity: 0.7; }
+.nav-tabs-custom .nav-link.active { background: none !important; border-bottom: 2px solid #16a34a !important; opacity: 1 !important; }
+.chart-container { min-height: 220px; position: relative; }
+.member-avatar-badge { width: 36px; height: 36px; background-color: #22c55e; color: #ffffff; font-weight: bold; font-size: 0.85rem; }
+
+/* Reports Page Rules */
+.reports-banner { background: linear-gradient(135deg, #22c55e, #16a34a) !important; border: none; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.15); }
+.reports-banner h4 { color: #ffffff !important; font-size: 1.75rem; letter-spacing: -0.5px; }
+.chart-box-large { min-height: 280px; background-color: rgba(0, 0, 0, 0.02); border: 1px dashed var(--border-color); }
+[data-bs-theme="dark"] .chart-box-large, .dark-mode .chart-box-large { background-color: rgba(255, 255, 255, 0.02); }
+.mini-report-card { border-left: 4px solid #16a34a !important; }
+.download-tool-row { background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; transition: transform 0.2s ease, background-color 0.2s ease; }
+.download-tool-row:hover { background-color: var(--border-color); transform: translateX(3px); }
+
+/* Donations & Collections System */
+.badge-status { font-size: 0.75rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; display: inline-block; }
+.badge-status-confirmed { background-color: #d1fae5 !important; color: #065f46 !important; }
+.badge-status-pending { background-color: #fef3c7 !important; color: #92400e !important; }
+
+[data-bs-theme="dark"] .badge-status-confirmed, .dark-mode .badge-status-confirmed { background-color: #064e3b !important; color: #a7f3d0 !important; }
+[data-bs-theme="dark"] .badge-status-pending, .dark-mode .badge-status-pending { background-color: #78350f !important; color: #fde68a !important; }
+
+.top-donor-item { border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; }
+.top-donor-item:last-child { border-bottom: none; }
+.donor-rank-number { font-weight: bold; color: var(--stat-icon-color); min-width: 20px; }
+
+.collection-item-card, .solicitation-card, .announcement-card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.collection-item-card:hover, .solicitation-card:hover, .announcement-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.collection-media-thumbnail { width: 80px; height: 80px; background-color: #e2e8f0; border-radius: 8px; flex-shrink: 0; }
+.announcement-media-box { width: 100%; height: 180px; background-color: #e2e8f0; border-radius: 8px; flex-shrink: 0; }
+.card-img-container { position: relative; height: 160px; background-color: #e9ecef; }
+
+[data-bs-theme="dark"] .collection-media-thumbnail, [data-bs-theme="dark"] .announcement-media-box, [data-bs-theme="dark"] .card-img-container,
+.dark-mode .collection-media-thumbnail, .dark-mode .announcement-media-box, .dark-mode .card-img-container { background-color: #252525 !important; }
+
+.status-pill { font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 50px; display: inline-block; }
+.status-pill-active { background-color: #d1fae5 !important; color: #065f46 !important; }
+.status-pill-ending { background-color: #fef3c7 !important; color: #92400e !important; }
+.status-pill-completed { background-color: #e2e8f0 !important; color: #334155 !important; }
+
+[data-bs-theme="dark"] .status-pill-active, .dark-mode .status-pill-active { background-color: #064e3b !important; color: #a7f3d0 !important; }
+[data-bs-theme="dark"] .status-pill-ending, .dark-mode .status-pill-ending { background-color: #78350f !important; color: #fde68a !important; }
+[data-bs-theme="dark"] .status-pill-completed, .dark-mode .status-pill-completed { background-color: #1e293b !important; color: #cbd5e1 !important; }
+
+/* Announcement Core System */
+.announcement-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+@media (min-width: 992px) { .announcement-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.announcement-body-text { font-size: 0.9rem; line-height: 1.5; color: var(--text-color); opacity: 0.85; }
+
+/* Solicitations Layout Dynamic Split Drawers Workspaces */
+.badge-urgency { position: absolute; top: 12px; left: 12px; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 600; }
+.card-category-tag { position: absolute; bottom: 12px; left: 12px; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; }
+
+.workspace-wrapper { display: flex; transition: all 0.3s ease; position: relative; }
+.feed-container { flex: 1; transition: all 0.3s ease; }
+
+.details-drawer {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    background: #ffffff;
+    border-radius: 1rem;
+    box-shadow: -2px 0 15px rgba(0,0,0,0.05);
+    transition: width 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+    padding: 0 !important; 
+}
+.details-drawer.open { width: 400px; opacity: 1; margin-left: 1.5rem; padding: 1.5rem !important; overflow-y: auto; max-height: calc(100vh - 120px); }
+.drawer-carousel-placeholder { height: 180px; background-color: #f1f3f5; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; }
+#drawer-status-badge, #drawer-urgency-badge { border-radius: 20px; font-size: 11px; padding: 5px 12px; }
+#drawer-post-description { text-align: justify; }
+.drawer-contact-card { background-color: #f8f9fa; border: none; }
+
+.dark-mode .details-drawer { background: #1e1e1e !important; box-shadow: -2px 0 15px rgba(0,0,0,0.3); }
+.dark-mode .drawer-carousel-placeholder { background-color: #2b2b2b !important; }
+.dark-mode .drawer-contact-card { background-color: #252525 !important; }
+.dark-mode .dynamic-close-arrow { color: #a0a0a0 !important; }
+.dark-mode .metadata-divider { border-bottom-color: #2d2d2d !important; }
+.dark-mode .metadata-column { border-right-color: #2d2d2d !important; }
+
+/* Interactive Urgency Component Selection Wrapper States */
+.btn-urgency-wrapper { transition: all 0.2s ease-in-out; }
+.btn-urgency-wrapper:has(#urgency-low:checked) { border-color: #0dcaf0 !important; background-color: #f0faff !important; font-weight: 600; }
+.btn-urgency-wrapper:has(#urgency-medium:checked) { border-color: #ffc107 !important; background-color: #fffdf2 !important; font-weight: 600; }
+.btn-urgency-wrapper:has(#urgency-high:checked) { border-color: #dc3545 !important; background-color: #fff5f5 !important; font-weight: 600; }
+.btn-urgency-wrapper:has(#urgency-critical:checked) { border-color: #7a1a25 !important; background-color: #ffe5e7 !important; font-weight: 700; }
+
+.dark-mode .btn-urgency-wrapper:has(#urgency-low:checked) { background-color: rgba(13, 202, 240, 0.15) !important; color: #0dcaf0; }
+.dark-mode .btn-urgency-wrapper:has(#urgency-medium:checked) { background-color: rgba(255, 193, 7, 0.15) !important; color: #ffc107; }
+.dark-mode .btn-urgency-wrapper:has(#urgency-high:checked) { background-color: rgba(220, 53, 69, 0.15) !important; color: #ea868f; }
+
+/* ==========================================================================
+   8. Modals UI Element & Overrides
+   ========================================================================== */
+.modal-content, .dynamic-modal-bg {
+    background-color: var(--dynamic-modal-bg, var(--card-bg)) !important;
+    color: var(--dynamic-modal-text, var(--text-color)) !important;
+    border: 1px solid var(--border-color) !important;
+}
+.modal-custom-title { letter-spacing: 1px; color: #43a047 !important; }
+.modal-custom-body { max-height: 400px; overflow-y: auto; }
+.modal-close-btn { background-color: #43a047; font-size: 13px; border: none; }
+.dynamic-modal-close { filter: var(--dynamic-modal-close-filter); }
+
+/* Custom Layout Schedule Modal System Contexts */
+.custom-schedule-modal-dialog { max-width: 480px; margin-right: auto; margin-left: auto; }
+.custom-schedule-modal-content {
+    border: none !important;
+    border-radius: 24px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    background-color: var(--card-bg) !important;
+    padding: 35px 40px !important;
+}
+.custom-schedule-title { font-size: 24px; font-weight: 700; color: #41a64f; letter-spacing: 1.5px; margin-bottom: 35px; margin-top: 5px; text-align: center; }
+.custom-schedule-close-btn {
+    background-color: #41a64f !important;
+    color: #ffffff !important;
+    width: 100%;
+    padding: 14px 0 !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    border: none !important;
+    transition: background-color 0.2s ease, transform 0.1s ease !important;
+}
+.custom-schedule-close-btn:hover { background-color: #368e42 !important; }
+.custom-schedule-close-btn:active { transform: scale(0.99); }
+
+[data-bs-theme="dark"] .custom-schedule-modal-content,
+.dark-mode .custom-schedule-modal-content { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important; }
