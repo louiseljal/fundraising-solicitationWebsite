@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Community Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body class="d-flex align-items-center justify-content-center py-5">
+
+    <div class="form-check form-switch theme-switch-wrapper">
+        <input class="form-check-input cursor-pointer theme-switch-input" type="checkbox" id="darkModeToggle">
+        <label class="form-check-label small fw-semibold ms-2 user-select-none theme-switch-label" for="darkModeToggle">
+            Dark Mode
+        </label>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-9 col-lg-6">
+                
+                <div class="stat-card">
+                    
+                    <div class="identity-banner">
+                        <div class="d-inline-flex align-items-center justify-content-center mb-2 app-icon-badge">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <h4 class="fw-bold mb-1">Community Management</h4>
+                        <p class="small text-white ">Create an account to join our portal</p>
+                    </div>
+
+                    <div class="p-4 p-sm-5 login-content-panel">
+                        
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-1">Account Registration</h5>
+                            <p class="text-muted small">Please fill up the required fields below to register</p>
+                        </div>
+
+                        <form action="register_process.php" method="POST">
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name" class="form-label small fw-semibold">First Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text dynamic-input-addon"><i class="fa-solid fa-id-card"></i></span>
+                                        <input type="text" name="first_name" id="first_name" class="form-control form-control-lg dynamic-input-bg fs-6" placeholder="Juan" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name" class="form-label small fw-semibold">Last Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text dynamic-input-addon"><i class="fa-solid fa-id-card"></i></span>
+                                        <input type="text" name="last_name" id="last_name" class="form-control form-control-lg dynamic-input-bg fs-6" placeholder="Dela Cruz" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label small fw-semibold">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text dynamic-input-addon"><i class="fa-solid fa-user"></i></span>
+                                    <input type="text" name="username" id="username" class="form-control form-control-lg dynamic-input-bg fs-6" placeholder="juan_delacruz" required autocomplete="username">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label small fw-semibold">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text dynamic-input-addon"><i class="fa-solid fa-envelope"></i></span>
+                                    <input type="email" name="email" id="email" class="form-control form-control-lg dynamic-input-bg fs-6" placeholder="juan@example.com" required autocomplete="email">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label small fw-semibold">Password</label>
+                                <div class="input-group position-relative">
+                                    <span class="input-group-text dynamic-input-addon"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" name="password" id="password" class="form-control form-control-lg dynamic-input-bg fs-6 pe-5" placeholder="••••••••" required autocomplete="new-password">
+                                    <span class="password-toggle-icon cursor-pointer toggle-password" data-target="password">
+                                        <i class="fa-solid fa-eye-slash text-muted"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label small fw-semibold">Confirm Password</label>
+                                <div class="input-group position-relative">
+                                    <span class="input-group-text dynamic-input-addon"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" name="confirm_password" id="confirm_password" class="form-control form-control-lg dynamic-input-bg fs-6 pe-5" placeholder="••••••••" required autocomplete="new-password">
+                                    <span class="password-toggle-icon cursor-pointer toggle-password" data-target="confirm_password">
+                                        <i class="fa-solid fa-eye-slash text-muted"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-4 d-flex align-items-center">
+                                <input class="form-check-input cursor-pointer text-success remember-me-checkbox" type="checkbox" id="termsAgreement" name="terms" required>
+                                <label class="form-check-label small text-muted cursor-pointer user-select-none ms-2" for="termsAgreement">
+                                    I agree to the system terms and privacy policies
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-brand w-100 btn-lg rounded-3 mb-2">
+                                Register Account <i class="fa-solid fa-user-check ms-2"></i>
+                            </button>
+                        </form>
+
+                        <div class="text-center mt-4 pt-3 border-top login-footer-separator">
+                            <p class="small text-muted mb-0">Already have an account? 
+                                <a href="login.html" class="fw-semibold text-decoration-none text-brand-color">Sign In instead</a>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
