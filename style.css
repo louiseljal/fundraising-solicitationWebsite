@@ -407,3 +407,143 @@ body {
 
 [data-bs-theme="dark"] .custom-schedule-modal-content,
 .dark-mode .custom-schedule-modal-content { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important; }
+
+/** LOGIN PAGE CSS **/
+
+/* ==========================================================================
+   1. Theme Variables mapped directly from your design style rules
+   ========================================================================== */
+:root, [data-bs-theme="light"] {
+    --bg-main: #f4f6f9;               
+    --text-color: #212529;            
+    --text-muted-custom: #6c757d;
+    --sidebar-green: #14532d;         
+    --card-bg: #ffffff;               
+    --border-color: #e2e8f0;
+    --stat-icon-bg: #f0fdf4;
+    --stat-icon-color: #16a34a;       
+    
+    --dynamic-input-bg: #ffffff;
+    --dynamic-input-addon: #f8f9fa;
+    --dynamic-input-border: #dee2e6;
+    --dynamic-text-main: #212529;
+}
+
+[data-bs-theme="dark"] {
+    --bg-main: #121214;            
+    --text-color: #f8fafc;
+    --text-muted-custom: #94a3b8;
+    --sidebar-green: #064e3b;       
+    --card-bg: #1e1e24;            
+    --border-color: #2d2d34;
+    --stat-icon-bg: #064e3b;
+    --stat-icon-color: #4ade80;
+
+    --dynamic-input-bg: #2b2b2b;
+    --dynamic-input-addon: #333333;
+    --dynamic-input-border: #3d3d3d;
+    --dynamic-text-main: #f8f9fa;
+}
+
+/* ==========================================================================
+   2. Global Layout & Utilities
+   ========================================================================== */
+body {
+    background-color: var(--bg-main) !important;
+    color: var(--text-color) !important;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+}
+
+/* Elements structured using your card architecture */
+.stat-card {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+/* Dynamic Theme Mapping System Elements */
+.dynamic-input-bg { 
+    background-color: var(--dynamic-input-bg) !important; 
+    color: var(--dynamic-text-main) !important; 
+    border: 1px solid var(--dynamic-input-border) !important; 
+}
+
+.dynamic-input-addon { 
+    background-color: var(--dynamic-input-addon) !important; 
+    color: var(--dynamic-text-main) !important; 
+    border: 1px solid var(--dynamic-input-border) !important; 
+}
+
+/* Identity Banner Block matching your live system header shape */
+.identity-banner {
+    background: linear-gradient(135deg, #22c55e, #14532d) !important;
+    color: #ffffff !important;
+    padding: 2.5rem 2rem;
+    text-align: center;
+}
+
+/* Button configurations mapping to .btn-brand style hooks */
+.btn-brand { 
+    background-color: #16a34a !important; 
+    color: #ffffff !important; 
+    border: none; 
+    padding: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.btn-brand:hover { 
+    background-color: #12823a !important; 
+    transform: translateY(-1px);
+}
+
+.text-brand-color {
+    color: #16a34a !important;
+}
+
+/* ==========================================================================
+   3. Custom Alignment System Classes
+   ========================================================================== */
+.theme-switch-wrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.theme-switch-input {
+    width: 40px;
+    height: 20px;
+    border-color: var(--border-color);
+}
+
+.theme-switch-label {
+    color: var(--text-color);
+    padding-top: 2px;
+}
+
+.app-icon-badge {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    font-size: 1.25rem;
+}
+
+.login-content-panel {
+    background-color: var(--card-bg);
+}
+
+.remember-me-checkbox {
+    width: 17px;
+    height: 17px;
+}
+
+.login-footer-separator {
+    border-top-color: var(--border-color) !important;
+}
