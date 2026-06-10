@@ -217,23 +217,7 @@
             }
         });
 
-        // Global Core Dark Mode Toggle Script Sync Framework Logic Interceptions
-        const darkModeSwitch = document.getElementById('darkModeSwitch');
-        
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            darkModeSwitch.checked = true;
-        }
-
-        darkModeSwitch.addEventListener('change', () => {
-            if (darkModeSwitch.checked) {
-                document.body.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.remove('dark-mode');
-                localStorage.setItem('theme', 'light');
-            }
-        });
     </script>
+    <script src="main.js"></script>
 </body>
 </html>
