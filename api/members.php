@@ -18,21 +18,21 @@ try {
     $totalFundsRaised = (float)($stmtFunds->fetchColumn() ?: 0.00);
 
 
-    // 3. FETCH ALL USERS (FIXED: Removed 'LIMIT 4' so the frontend can display everyone in the directory!)
+    // 3. FETCH ALL USERS (includes role so frontend can detect admins)
     $recentStmt = $pdo->query("
-        SELECT user_id, username, DATE_FORMAT(created_at, '%b %d, %Y') as joined_date 
+        SELECT user_id, username, user_role, DATE_FORMAT(created_at, '%b %d, %Y') as joined_date 
         FROM users 
-        WHERE user_id != 1 AND is_deleted = 0
+        WHERE is_deleted = 0
         ORDER BY created_at DESC
     ");
     $allMembers = $recentStmt->fetchAll();
 
 
-    // 4. FETCH SYSTEM ADMINISTRATORS
+    // 4. FETCH SYSTEM ADMINISTRATORS (based on user_role flag)
     $adminStmt = $pdo->query("
-        SELECT user_id, username 
+        SELECT user_id, username, user_role 
         FROM users 
-        WHERE user_id = 1
+        WHERE is_deleted = 0 AND user_role = 'Admin'
         ORDER BY username ASC
     ");
     $rawAdmins = $adminStmt->fetchAll();
@@ -42,7 +42,7 @@ try {
         $adminMembers[] = [
             'user_id'   => $userRow['user_id'],
             'username'  => $userRow['username'],
-            'role'      => 'Admin'
+            'role'      => $userRow['user_role'] ?? 'Admin'
         ];
     }
 

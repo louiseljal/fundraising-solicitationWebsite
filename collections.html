@@ -121,5 +121,43 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const container = document.getElementById('collections-cards-container');
+            if (!container) return;
+
+            function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;') : ''; }
+
+            try {
+                const resp = await fetch('api/campaigns.php');
+                const data = await resp.json();
+                const campaigns = Array.isArray(data.campaigns) ? data.campaigns : [];
+                container.innerHTML = '';
+                if (campaigns.length === 0) {
+                    container.innerHTML = '<div class="col-12"><div class="alert alert-light">No collections available.</div></div>';
+                    return;
+                }
+
+                campaigns.forEach(c => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-4';
+                    col.innerHTML = `
+                        <div class="card p-3 h-100">
+                            <h6 class="fw-bold mb-2">${esc(c.title || c.campaign_title || 'Untitled')}</h6>
+                            <p class="small text-muted mb-3">${esc((c.description || c.post_description || '').slice(0, 120))}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <span class="fw-bold text-success">₱${Number(c.total_raised || 0).toLocaleString()}</span>
+                                <a href="fundraising.html#campaign-${esc(c.campaign_id || c.id || '')}" class="small">View</a>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(col);
+                });
+            } catch (e) {
+                console.error('Error loading collections:', e);
+                container.innerHTML = '<div class="col-12"><div class="alert alert-light">Unable to load collections.</div></div>';
+            }
+        });
+    </script>
 </body>
 </html>

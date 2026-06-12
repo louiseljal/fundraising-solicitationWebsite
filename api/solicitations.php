@@ -155,15 +155,24 @@ $items = $_POST['allocation_items'] ?? null;
             exit;
         }
 
+        // Allow admins to set initial status; otherwise default to Pending
+        $submitted_status = trim($_POST['status'] ?? '');
+        $status = 'Pending';
+        if (!empty($submitted_status) && isAdminRole($_SESSION['user_role'] ?? '')) {
+            if (in_array($submitted_status, ['Pending','Approved','Rejected','Completed'], true)) {
+                $status = $submitted_status;
+            }
+        }
+
         try {
             $stmt = $pdo->prepare("
                 INSERT INTO solicitations 
                 (user_id, post_title, solicitation_category, target_amount, campaign_deadline, post_description, urgency_level, poc_name, poc_phone, beneficiary_count, allocation_items_json, attachments_json, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt->execute([
                 (int)$user_id, $title, $category, $amount, $deadline, $description, $urgency, $poc_name, $poc_phone,
-                $beneficiary_count, $items_json, $attachments_json
+                $beneficiary_count, $items_json, $attachments_json, $status
             ]);
 
             // Redirect to index.html with success message

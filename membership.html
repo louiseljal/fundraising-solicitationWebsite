@@ -357,12 +357,11 @@
                 users.forEach(user => {
                     const tr = document.createElement('tr');
                     
-                    const isSystemAdmin = (parseInt(user.user_id) === 1);
-                    const userRole = isSystemAdmin ? 'Admin' : 'User';
-                    
-                    const joinedDate = user.joined_date ? user.joined_date : 'N/A';
-                    const badgeClass = isSystemAdmin ? 'bg-success text-success border border-success-subtle' : 'bg-secondary text-secondary border border-secondary-subtle';
-                    const initialBg = isSystemAdmin ? 'bg-success' : 'bg-secondary';
+                        const userRole = ((user.user_role || user.role) || '').toLowerCase() === 'admin' ? 'Admin' : 'User';
+                        const isSystemAdmin = (userRole === 'Admin');
+                        const joinedDate = user.joined_date ? user.joined_date : 'N/A';
+                        const badgeClass = isSystemAdmin ? 'bg-success text-success border border-success-subtle' : 'bg-secondary text-secondary border border-secondary-subtle';
+                        const initialBg = isSystemAdmin ? 'bg-success' : 'bg-secondary';
 
                     tr.innerHTML = `
                         <td class="text-muted font-monospace">#${user.user_id}</td>

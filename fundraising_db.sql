@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2026 at 01:32 PM
+-- Generation Time: Jun 12, 2026 at 05:37 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,6 +38,13 @@ CREATE TABLE `announcements` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `announcements`
+--
+
+INSERT INTO `announcements` (`announcement_id`, `user_id`, `title`, `content`, `priority`, `is_pinned`, `is_deleted`, `created_at`) VALUES
+(1, 11, 'Solicitation Approved: Donations for fire victims', 'this is to support fire victims', 'Normal', 0, 0, '2026-06-12 14:03:02');
+
 -- --------------------------------------------------------
 
 --
@@ -71,7 +78,7 @@ INSERT INTO `campaigns` (`campaign_id`, `title`, `slug`, `description`, `goal_am
 (4, 'Salamat Paw-Pals Animal Shelter Expansion', 'animal-shelter-expansion', 'Building extra cages and securing kibble for rescued dogs.', 80000.00, 0.00, 'Active', 'Animal Welfare', '2026-05-20', '2026-06-20', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (5, 'Community Kitchen Clean Water Project', 'clean-water-project', 'Installing high-grade water filters in local districts.', 100000.00, 0.00, 'Draft', 'Community', '2026-06-01', '2026-09-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (6, 'Reforestation in Sierra Madre', 'reforestation-sierra-madre', 'Planting 10,000 native trees to combat landslides.', 120000.00, 0.00, 'Paused', 'Environment', '2026-03-01', '2026-09-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
-(7, 'Surgical Fund for Baby Neo', 'surgical-fund-baby-neo', 'Urgent congenital heart disease operation.', 400000.00, 0.00, 'Active', 'Medical', '2026-05-22', '2026-06-22', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
+(7, 'Surgical Fund for Baby Neo', 'surgical-fund-baby-neo', 'Urgent congenital heart disease operation.', 400000.00, 6000000.00, 'Active', 'Medical', '2026-05-22', '2026-06-22', 0, '2026-05-25 07:13:10', '2026-06-12 14:03:06'),
 (8, 'Scholars Across Borders 2026', 'scholars-across-borders-2026', 'College tuition assistance for underprivileged students.', 250000.00, 0.00, 'Active', 'Education', '2026-05-01', '2026-12-31', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (9, 'Artists Support Group Grant', 'artists-support-grant', 'Micro-grants for local street muralists.', 50000.00, 0.00, 'Completed', 'Arts & Culture', '2026-01-01', '2026-04-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (10, 'Bike-for-a-Cause Metro Manila', 'bike-for-a-cause-manila', 'Purchasing commuter bikes for working-class citizens.', 90000.00, 0.00, 'Cancelled', 'Community', '2026-02-01', '2026-03-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10');
@@ -131,7 +138,8 @@ INSERT INTO `donations` (`donation_id`, `user_id`, `campaign_id`, `amount`, `cur
 (10, 3, 4, 1000.00, 'PHP', 'Failed', 'Credit_Card', 'TXN-20260525-010', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
 (11, 11, 1, 10000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-063418-3788', 0, '2026-06-12 04:34:18', '2026-06-12 04:34:33'),
 (12, 11, 3, 125000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-123427-5887', 0, '2026-06-12 10:34:27', '2026-06-12 10:35:45'),
-(13, 11, 4, 500000.00, 'PHP', 'Failed', 'Manual', 'TXN-20260612-123515-8257', 0, '2026-06-12 10:35:15', '2026-06-12 10:35:55');
+(13, 11, 4, 500000.00, 'PHP', 'Failed', 'Manual', 'TXN-20260612-123515-8257', 0, '2026-06-12 10:35:15', '2026-06-12 10:35:55'),
+(14, 11, 7, 6000000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-160215-7831', 0, '2026-06-12 14:02:15', '2026-06-12 14:03:06');
 
 -- --------------------------------------------------------
 
@@ -163,7 +171,7 @@ CREATE TABLE `solicitations` (
 --
 
 INSERT INTO `solicitations` (`solicitation_id`, `user_id`, `post_title`, `solicitation_category`, `target_amount`, `campaign_deadline`, `post_description`, `urgency_level`, `poc_name`, `poc_phone`, `beneficiary_count`, `allocation_items_json`, `attachments_json`, `status`, `is_deleted`, `created_at`) VALUES
-(1, 11, 'Donations for fire victims', 'Disaster Relief', 100000.00, '2026-07-16', 'this is to support fire victims', 'High', 'Lewis', '09871234567', 1000, '[\"Clothes\",\"water\"]', '[]', 'Pending', 0, '2026-06-12 04:30:57');
+(1, 11, 'Donations for fire victims', 'Disaster Relief', 100000.00, '2026-07-16', 'this is to support fire victims', 'High', 'Lewis', '09871234567', 1000, '[\"Clothes\",\"water\"]', '[]', 'Approved', 0, '2026-06-12 04:30:57');
 
 -- --------------------------------------------------------
 
@@ -199,7 +207,7 @@ INSERT INTO `users` (`user_id`, `username`, `email`, `password_hash`, `user_role
 (8, 'david_lim', 'dlim99@yahoo.com', '$2y$10$q2W4eRt...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51'),
 (9, 'grace_pua', 'grace.p@outlook.com', '$2y$10$z7X8cCv...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51'),
 (10, 'rachel_uy', 'rachel.uy@gmail.com', '$2y$10$u3I4oPp...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51'),
-(11, 'louiseledesma', 'louise@gmail.com', '$2y$10$OMm1oMLSQRYRmB/E/YGIBO4HujA7VMK1MGNKKq2yhtDwYwIDWiwAa', 'Donor', 'Active', 0, 1, '2026-06-12 03:33:57', '2026-06-12 03:33:57');
+(11, 'louiseledesma', 'louise@gmail.com', '$2y$10$OMm1oMLSQRYRmB/E/YGIBO4HujA7VMK1MGNKKq2yhtDwYwIDWiwAa', 'Admin', 'Active', 0, 1, '2026-06-12 03:33:57', '2026-06-12 03:33:57');
 
 -- --------------------------------------------------------
 
@@ -308,7 +316,7 @@ ALTER TABLE `user_profiles`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `campaigns`
@@ -326,7 +334,7 @@ ALTER TABLE `collections`
 -- AUTO_INCREMENT for table `donations`
 --
 ALTER TABLE `donations`
-  MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `solicitations`

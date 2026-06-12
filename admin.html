@@ -245,6 +245,20 @@
                             <label for="form_goal" class="form-label small fw-bold text-secondary">Financial Goal Amount ($)</label>
                             <input type="number" step="0.01" class="form-control rounded-3" id="form_goal" required placeholder="0.00" style="border-color: var(--border-color);">
                         </div>
+                        <div class="mb-3">
+                            <label for="form_status" class="form-label small fw-bold text-secondary">Status</label>
+                            <select id="form_status" class="form-select rounded-3">
+                                <option value="Draft">Draft</option>
+                                <option value="Active">Active</option>
+                                <option value="Paused">Paused</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="form_description" class="form-label small fw-bold text-secondary">Description (optional)</label>
+                            <textarea id="form_description" class="form-control rounded-3" rows="3" style="border-color: var(--border-color);"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer border-0 pt-0 p-4">
                         <button type="button" class="btn btn-light rounded-pill px-3 fw-semibold text-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -254,6 +268,85 @@
             </div>
         </div>
     </div>
+
+    <!-- Admin: Create Solicitation Modal -->
+    <div class="modal fade" id="solicitationModal" tabindex="-1" aria-labelledby="solicitationModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow" style="background-color: var(--card-bg);">
+                <div class="modal-header border-0 pb-0 pt-4 px-4 justify-content-between">
+                    <h5 class="modal-title fw-bold text-brand-color text-center" id="solicitationModalTitle">Create Solicitation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="form-admin-create-solicitation" action="api/solicitations.php?action=create" method="POST" enctype="multipart/form-data" target="_hidden_iframe">
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <div class="col-12 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Post Title</label>
+                                <input type="text" name="post_title" class="form-control rounded-3" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Category</label>
+                                <select name="solicitation_category" class="form-select rounded-3">
+                                    <option>Disaster Relief</option>
+                                    <option>Medical</option>
+                                    <option>Education</option>
+                                    <option>Community</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Urgency</label>
+                                <select name="urgency_level" class="form-select rounded-3">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium" selected>Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Target Amount</label>
+                                <input type="number" name="target_amount" step="0.01" class="form-control rounded-3" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Deadline</label>
+                                <input type="date" name="campaign_deadline" class="form-control rounded-3" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Description</label>
+                                <textarea name="post_description" class="form-control rounded-3" rows="4" required></textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Contact Name</label>
+                                <input type="text" name="poc_name" class="form-control rounded-3">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Contact Phone</label>
+                                <input type="tel" name="poc_phone" class="form-control rounded-3">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Attachments</label>
+                                <input type="file" name="attachments[]" class="form-control" multiple accept="image/*">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label small fw-bold text-secondary">Initial Status (Admin)</label>
+                                <select name="status" class="form-select rounded-3">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved" selected>Approved</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0 p-4">
+                        <button type="button" class="btn btn-light rounded-pill px-3 fw-semibold text-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-brand rounded-pill text-white px-4 fw-semibold">Create Solicitation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- hidden iframe target for admin solicitation form to avoid navigating away -->
+    <iframe name="_hidden_iframe" id="_hidden_iframe" style="display:none;"></iframe>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -283,7 +376,7 @@
                     const campaignContainer = document.getElementById('campaignCrudRows');
                     campaignContainer.innerHTML = ''; 
                     
-                    if(data.campaigns.length === 0) {
+                    if(!data.campaigns || data.campaigns.length === 0) {
                         campaignContainer.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No campaigns metrics mapped.</td></tr>`;
                     } else {
                         data.campaigns.forEach(campaign => {
@@ -291,20 +384,51 @@
                             row.innerHTML = `
                                 <td><strong>${campaign.campaign_id}</strong></td>
                                 <td>
-                                    <span class="fw-bold d-block" style="color: var(--text-color);">${escapeHTML(campaign.title)}</span>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="fw-bold" style="color: var(--text-color);">${escapeHTML(campaign.title)}</span>
+                                        <span class="badge bg-secondary-subtle text-dark rounded-pill px-2 py-1 small">${escapeHTML(campaign.campaign_status || 'Draft')}</span>
+                                    </div>
                                     <small class="text-muted d-inline-block text-truncate" style="max-width: 320px;">${escapeHTML(campaign.description || 'No description assigned.')}</small>
                                 </td>
                                 <td class="text-end fw-semibold">${formatCurrency(campaign.goal_amount)}</td>
                                 <td class="text-end text-brand-color fw-bold">${formatCurrency(campaign.current_raised_cache)}</td>
                                 <td class="text-center">
                                     <div class="btn-group gap-1">
-                                        <button class="btn btn-sm btn-outline-primary rounded-3 px-2 py-1" onclick="openEditModal(${campaign.campaign_id}, '${escapeQuote(campaign.title)}', ${campaign.goal_amount})"><i class="bi bi-pencil-square"></i> Update</button>
+                                        <button class="btn btn-sm btn-outline-primary rounded-3 px-2 py-1" onclick="openEditModal(${campaign.campaign_id}, '${escapeQuote(campaign.title)}', ${campaign.goal_amount}, '${escapeQuote(campaign.description || '')}', '${escapeQuote(campaign.campaign_status || 'Draft')}')"><i class="bi bi-pencil-square"></i> Update</button>
+                                        ${campaign.campaign_status === 'Draft' ? `<button class="btn btn-sm btn-success rounded-3 px-2 py-1" onclick="approveCampaign(${campaign.campaign_id})"><i class="bi bi-check2-circle"></i> Approve</button>` : ''}
                                         <button class="btn btn-sm btn-outline-danger rounded-3 px-2 py-1" onclick="triggerArchiveDelete(${campaign.campaign_id})"><i class="bi bi-archive-fill"></i> Delete</button>
                                     </div>
                                 </td>
                             `;
                             campaignContainer.appendChild(row);
                         });
+                    }
+
+                    // Render pending solicitations for moderation
+                    const solicitationContainer = document.getElementById('solicitationQueueRows');
+                    if (solicitationContainer) {
+                        solicitationContainer.innerHTML = '';
+                        const pendingS = data.pendingSolicitations || [];
+                        if (pendingS.length === 0) {
+                            solicitationContainer.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No pending solicitations.</td></tr>`;
+                        } else {
+                            pendingS.forEach(item => {
+                                const r = document.createElement('tr');
+                                r.innerHTML = `
+                                    <td>${escapeHTML(item.post_title)}</td>
+                                    <td>${escapeHTML(item.solicitation_category)}</td>
+                                    <td>${escapeHTML(item.urgency_level)}</td>
+                                    <td class="text-end fw-bold">${formatCurrency(item.target_amount)}</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-sm btn-success rounded-pill px-3 py-1 fw-bold" onclick="updatePostStatus(${item.solicitation_id}, 'Approved')"><i class="bi bi-check-circle-fill me-1"></i> Approve</button>
+                                            <button class="btn btn-sm btn-danger rounded-pill px-3 py-1 fw-bold" onclick="updatePostStatus(${item.solicitation_id}, 'Rejected')"><i class="bi bi-x-circle-fill me-1"></i> Reject</button>
+                                        </div>
+                                    </td>
+                                `;
+                                solicitationContainer.appendChild(r);
+                            });
+                        }
                     }
 
                     const txContainer = document.getElementById('verificationQueueRows');
@@ -349,6 +473,7 @@
             document.getElementById('form_campaign_id').value = '';
             document.getElementById('campaignModalTitle').innerText = "Create New Campaign";
             document.getElementById('formSubmitBtn').innerText = "Create Campaign";
+            const desc = document.getElementById('form_description'); if (desc) desc.value = '';
         }
 
         function openEditModal(id, title, goal) {
@@ -357,7 +482,10 @@
             document.getElementById('form_campaign_id').value = id;
             document.getElementById('form_title').value = title;
             document.getElementById('form_goal').value = goal;
-            campaignModalObj.show();
+            // Attempt to set description and status if available on the row (caller passes them)
+            const descEl = document.getElementById('form_description'); if (descEl && typeof arguments[3] !== 'undefined') descEl.value = arguments[3];
+            const statusEl = document.getElementById('form_status'); if (statusEl && typeof arguments[4] !== 'undefined') statusEl.value = arguments[4];
+                campaignModalObj.show();
         }
 
         // --- SUBMIT CAMPAIGN (CREATE & UPDATE FUNCTION) ---
@@ -366,11 +494,14 @@
             const id = document.getElementById('form_campaign_id').value;
             const title = document.getElementById('form_title').value;
             const goal = document.getElementById('form_goal').value;
+            const description = document.getElementById('form_description') ? document.getElementById('form_description').value : '';
+            const status = document.getElementById('form_status') ? document.getElementById('form_status').value : 'Draft';
 
             fetch('api/admin_backend.php?action=save_campaign', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ campaign_id: id, title: title, goal_amount: goal })
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ campaign_id: id, title: title, goal_amount: goal, description: description, campaign_status: status })
             })
             .then(res => res.json())
             .then(data => {
@@ -388,7 +519,8 @@
             if(confirm(`Are you sure you want to flag entity ID [${id}] as deleted within the database layer?`)) {
                 fetch('api/admin_backend.php?action=delete_campaign', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ campaign_id: id })
                 })
                 .then(res => res.json())
@@ -402,11 +534,62 @@
             }
         }
 
+        // Approve a Draft campaign (Admin only)
+        function approveCampaign(id) {
+            if (!confirm('Approve this campaign and make it Active?')) return;
+            fetch('api/admin_backend.php?action=change_campaign_status', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ campaign_id: id, status: 'Active' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success) {
+                    loadAdminDashboardData();
+                } else {
+                    alert('Failed to change campaign status: ' + (data.error || data.message || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                console.error('Approve campaign failed:', err);
+                alert('Request failed: ' + (err.message || err));
+            });
+        }
+
+        // Update solicitation status from admin.html (Approve/Reject)
+        function updatePostStatus(id, newStatus) {
+            const payload = new URLSearchParams();
+            payload.append('action', 'update_status');
+            payload.append('solicitation_id', id);
+            payload.append('status', newStatus);
+
+            fetch('api/solicitations.php', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+                body: payload.toString()
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success) {
+                    loadAdminDashboardData();
+                } else {
+                    alert('Error updating solicitation: ' + (data.message || data.error || 'Unknown'));
+                }
+            })
+            .catch(err => {
+                console.error('Error updating solicitation:', err);
+                alert('Request failed: ' + (err.message || err));
+            });
+        }
+
         // --- APPROVE & REJECT TRANSACTION ENGINE PIPELINE ---
         function processTransaction(txId, actionType) {
             fetch('api/admin_backend.php?action=process_transaction', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({ donation_id: txId, status_action: actionType })
             })
             .then(res => res.json())
@@ -473,19 +656,38 @@
         });
     </script>
 
-        <script>
-            // Admin page: ensure theme is applied and toggle is bound after DOM ready
-            document.addEventListener('DOMContentLoaded', function () {
-                try {
-                    const saved = localStorage.getItem('theme');
-                    if (saved) {
-                        setTheme(saved === 'dark' ? 'dark' : 'light');
-                    }
-                    if (typeof bindThemeToggle === 'function') bindThemeToggle();
-                } catch (e) {
-                    console.warn('Admin theme init failed:', e);
+    <script>
+        // Admin page: ensure theme is applied and toggle is bound after DOM ready
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                const saved = localStorage.getItem('theme');
+                if (saved) {
+                    setTheme(saved === 'dark' ? 'dark' : 'light');
                 }
-            });
-        </script>
+                if (typeof bindThemeToggle === 'function') bindThemeToggle();
+
+                // Auto-open campaign modal when redirected from fundraising page
+                try {
+                    const params = new URLSearchParams(window.location.search);
+                    if (params.get('openCampaign')) {
+                        openCreateModal();
+                        if (typeof campaignModalObj !== 'undefined' && campaignModalObj) campaignModalObj.show();
+                    }
+                } catch (innerErr) {
+                    // ignore
+                }
+
+                // Hook hidden iframe to refresh admin data after submit
+                const hidden = document.getElementById('_hidden_iframe');
+                if (hidden) {
+                    hidden.addEventListener('load', function () {
+                        setTimeout(() => loadAdminDashboardData(), 500);
+                    });
+                }
+            } catch (e) {
+                console.warn('Admin theme init failed:', e);
+            }
+        });
+    </script>
 </body>
 </html>

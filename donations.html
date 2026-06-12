@@ -254,6 +254,54 @@
             document.getElementById('btn-export-donations-csv').addEventListener('click', function() {
                 window.location.href = 'api/donations.php?action=export_csv';
             });
+
+            // 3. DONATION TABLE FILTER UI
+            const filterBtn = document.getElementById('btn-filter-donations-table');
+            if (filterBtn) {
+                const filterPanel = document.createElement('div');
+                filterPanel.id = 'donations-filter-panel';
+                filterPanel.className = 'd-inline-flex align-items-center ms-3';
+                filterPanel.style.gap = '8px';
+                filterPanel.innerHTML = `
+                    <select id="donation-filter-select" class="form-select form-select-sm" style="width:160px;">
+                        <option value="all">All Statuses</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Failed">Failed</option>
+                    </select>
+                    <button id="donation-filter-apply" class="btn btn-sm btn-outline-secondary">Apply</button>
+                    <button id="donation-filter-clear" class="btn btn-sm btn-link">Clear</button>
+                `;
+
+                filterBtn.parentNode.insertBefore(filterPanel, filterBtn.nextSibling);
+
+                document.getElementById('donation-filter-apply').addEventListener('click', () => {
+                    applyDonationFilter(document.getElementById('donation-filter-select').value);
+                });
+
+                document.getElementById('donation-filter-clear').addEventListener('click', () => {
+                    document.getElementById('donation-filter-select').value = 'all';
+                    applyDonationFilter('all');
+                });
+            }
+
+            function applyDonationFilter(status) {
+                const rows = document.querySelectorAll('#donations_body tr');
+                rows.forEach(r => {
+                    // skip placeholder/info rows that have colspan
+                    const firstTd = r.querySelector('td');
+                    if (!firstTd) return;
+                    if (firstTd.hasAttribute('colspan')) return;
+
+                    const statusCell = r.querySelector('td:nth-child(5)');
+                    const txt = statusCell ? statusCell.textContent.trim() : '';
+                    if (status === 'all' || txt === status) {
+                        r.style.display = '';
+                    } else {
+                        r.style.display = 'none';
+                    }
+                });
+            }
         });
 
         // Prevention pipeline string parsing mitigation utility

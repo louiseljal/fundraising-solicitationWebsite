@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $campaign_id = !empty($rawInput['campaign_id']) ? intval($rawInput['campaign_id']) : null;
             $title = trim($rawInput['title'] ?? '');
             $goal_amount = floatval($rawInput['goal_amount'] ?? 0);
+            $description = trim($rawInput['description'] ?? '');
+            $campaign_status = trim($rawInput['campaign_status'] ?? 'Draft');
 
             if (empty($title) || $goal_amount <= 0) {
                 echo json_encode(['success' => false, 'error' => 'Invalid title or goal parameters.']);
@@ -25,16 +27,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($campaign_id) {
                 // Update Entity
-                $stmt = $pdo->prepare("UPDATE campaigns SET title = ?, goal_amount = ? WHERE campaign_id = ?");
-                $stmt->execute([$title, $goal_amount, $campaign_id]);
+                $stmt = $pdo->prepare("UPDATE campaigns SET title = ?, description = ?, goal_amount = ?, campaign_status = ? WHERE campaign_id = ?");
+                $stmt->execute([$title, $description, $goal_amount, $campaign_status, $campaign_id]);
                 echo json_encode(['success' => true, 'message' => 'Campaign record updated successfully.']);
             } else {
                 // Create Entity
                 $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title), '-'));
-                $stmt = $pdo->prepare("INSERT INTO campaigns (title, slug, description, goal_amount, current_raised_cache) VALUES (?, ?, '', ?, 0.00)");
-                $stmt->execute([$title, $slug, $goal_amount]);
+                $stmt = $pdo->prepare("INSERT INTO campaigns (title, slug, description, goal_amount, campaign_status, current_raised_cache) VALUES (?, ?, ?, ?, ?, 0.00)");
+                $stmt->execute([$title, $slug, $description, $goal_amount, $campaign_status]);
                 echo json_encode(['success' => true, 'message' => 'Campaign record created successfully.']);
             }
+            exit;
+        }
+
+        // 1b. CHANGE CAMPAIGN STATUS (ADMIN ONLY)
+        if ($action === 'change_campaign_status') {
+            // Ensure only admins can change status
+            require_once dirname(__DIR__) . '/includes/session.php';
+            if (!function_exists('requireAdmin')) {
+                // fallback: simple role check
+                session_start();
+                if (empty($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Admin') {
+                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                    exit;
+                }
+            } else {
+                requireAdmin();
+            }
+
+            $campaign_id = intval($rawInput['campaign_id'] ?? 0);
+            $status = trim($rawInput['status'] ?? '');
+            $allowed = ['Draft','Active','Paused','Completed','Cancelled'];
+            if (!$campaign_id || !in_array($status, $allowed, true)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid parameters']);
+                exit;
+            }
+
+            $stmt = $pdo->prepare("UPDATE campaigns SET campaign_status = ? WHERE campaign_id = ?");
+            $stmt->execute([$status, $campaign_id]);
+            echo json_encode(['success' => true, 'message' => 'Campaign status updated']);
             exit;
         }
 
@@ -111,7 +142,7 @@ $stmtAvg = $pdo->query("SELECT AVG(amount) FROM donations WHERE payment_status =
 $avgDonationSize = (float)($stmtAvg->fetchColumn() ?: 0.00);
 
 // 2. Campaigns Database Collection
-$campaignsStmt = $pdo->query("SELECT campaign_id, title, description, goal_amount, current_raised_cache FROM campaigns WHERE is_deleted = 0 ORDER BY campaign_id DESC");
+$campaignsStmt = $pdo->query("SELECT campaign_id, title, description, goal_amount, current_raised_cache, campaign_status FROM campaigns WHERE is_deleted = 0 ORDER BY campaign_id DESC");
 $allCampaigns = $campaignsStmt->fetchAll();
 
 // 3. Verification ledger records
@@ -124,6 +155,10 @@ $queueStmt = $pdo->query("
     ORDER BY d.created_at DESC
 ");
 $pendingTransactions = $queueStmt->fetchAll();
+
+// 4. Pending solicitations for admin moderation
+$solicitationsStmt = $pdo->query("SELECT s.solicitation_id, s.post_title, s.solicitation_category, s.urgency_level, s.target_amount, s.post_description, u.username FROM solicitations s JOIN users u ON s.user_id = u.user_id WHERE s.status = 'Pending' AND s.is_deleted = 0 ORDER BY s.created_at DESC");
+$pendingSolicitations = $solicitationsStmt->fetchAll();
 
 // 4. Trend Analysis Metadata Compilation
 $trendsData = $pdo->query("
@@ -142,6 +177,7 @@ echo json_encode([
     ],
     'campaigns' => $allCampaigns,
     'pendingTransactions' => $pendingTransactions,
+    'pendingSolicitations' => $pendingSolicitations,
     'charts' => [
         'trendLabels'    => array_column($trendsData, 'month_label'),
         'trendValues'    => array_map('floatval', array_column($trendsData, 'total_amount')),

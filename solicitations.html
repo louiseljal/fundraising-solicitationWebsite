@@ -353,6 +353,110 @@ const dItemsList = document.getElementById('solicitation-detail-items-list');
         const mCritical = document.getElementById('metric-critical-posts');
         const mFulfilled = document.getElementById('metric-fulfilled-posts');
 
+        // Container for solicitation cards
+        const solicitationsRow = document.getElementById('solicitations-row-container');
+
+        // Load solicitations from API and render into the grid
+        function loadSolicitations() {
+            fetch('api/solicitations.php')
+                .then(r => r.json())
+                .then(data => {
+                    if (!data || !data.success) {
+                        console.error('Failed to load solicitations', data);
+                        solicitationsRow.innerHTML = '<div class="col-12 text-center text-muted py-4">Unable to load solicitations.</div>';
+                        return;
+                    }
+                    renderSolicitations(data.solicitations || []);
+                    executeDashboardFilters();
+                })
+                .catch(err => {
+                    console.error('Error fetching solicitations', err);
+                    solicitationsRow.innerHTML = '<div class="col-12 text-center text-muted py-4">Error loading solicitations.</div>';
+                });
+        }
+
+        function renderSolicitations(list) {
+            solicitationsRow.innerHTML = '';
+            if (!Array.isArray(list) || list.length === 0) {
+                solicitationsRow.innerHTML = '<div class="col-12 text-center text-muted py-4">No solicitations found.</div>';
+                updateDashboardMetrics();
+                return;
+            }
+
+            list.forEach(item => {
+                const attachmentsJson = item.attachments_json || item.attachments || '[]';
+                const attachments = (() => { try { return JSON.parse(attachmentsJson); } catch(e){ return []; } })();
+                const imgTag = attachments.length ? `<img src="uploads/solicitations/${attachments[0]}" alt="attachment" class="img-fluid rounded-3" style="height:140px;object-fit:cover;width:100%">` : `<div class="position-absolute inset-0 w-100 h-100 d-flex align-items-center justify-content-center text-muted opacity-25"><i class="bi bi-image fs-2"></i></div>`;
+
+                const col = document.createElement('div');
+                col.className = 'col solicitation-post-card';
+                // Normalize backend status values to frontend filter keys
+                const rawStatus = (item.status||'').toLowerCase();
+                let normalizedStatus = rawStatus;
+                if (rawStatus === 'approved' || rawStatus === 'pending') normalizedStatus = 'open';
+                if (rawStatus === 'completed') normalizedStatus = 'fulfilled';
+                col.setAttribute('data-card-status', normalizedStatus);
+                col.setAttribute('data-card-urgency', (item.urgency_level||'').toLowerCase());
+                col.setAttribute('data-card-category', (item.solicitation_category||'').toLowerCase());
+
+                const title = item.post_title || '';
+                const description = item.post_description || '';
+                const target = item.target_amount || 0;
+                const donors = item.donor_count || 0;
+
+                col.innerHTML = `
+                    <div class="card solicitation-card dynamic-card-bg h-100 cursor-pointer logic-card-trigger"
+                         data-title="${escapeHtml(title)}"
+                         data-category="${escapeHtml(item.solicitation_category||'')}"
+                         data-urgency="${escapeHtml(item.urgency_level||'')}"
+                         data-urgency-badge-class="badge border fw-bold text-danger"
+                         data-status="${escapeHtml(item.status||'')}"
+                         data-status-badge-class="badge border fw-bold text-success"
+                         data-target="${escapeHtml(target)}"
+                         data-deadline="${escapeHtml(item.campaign_deadline||'')}"
+                         data-beneficiaries="${escapeHtml(item.beneficiary_count||'')}"
+                         data-urgency-level="${escapeHtml(item.urgency_level||'')}"
+                         data-contact-name="${escapeHtml(item.poc_name||'')}"
+                         data-contact-phone="${escapeHtml(item.poc_phone||'')}"
+                         data-contact-email="${escapeHtml(item.email||'') }"
+                         data-description="${escapeHtml(description)}"
+                         data-allocation-items='${escapeHtml(item.allocation_items_json || "[]")}'
+                         data-attachments='${escapeHtml(attachmentsJson)}'>
+                        <div class="card-img-container" style="position:relative;overflow:hidden;height:140px;">
+                            ${imgTag}
+                            <span class="badge-urgency" style="position:absolute;left:12px;top:12px;background:rgba(255,255,255,0.9);padding:4px;border-radius:6px;font-size:12px;">${escapeHtml(item.urgency_level||'')}</span>
+                            <span class="badge-status shadow-sm" style="position:absolute;right:12px;top:12px;background:rgba(0,0,0,0.6);color:#fff;padding:4px;border-radius:6px;font-size:12px;">${escapeHtml(item.status||'')}</span>
+                            <span class="card-category-tag text-white" style="position:absolute;left:12px;bottom:12px;background:rgba(22,163,74,0.9);padding:4px 8px;border-radius:6px;font-size:12px;">${escapeHtml(item.solicitation_category||'')}</span>
+                        </div>
+                        <div class="card-body p-3 d-flex flex-column">
+                            <h6 class="fw-bold mb-2 dynamic-text-main text-truncate">${escapeHtml(title)}</h6>
+                            <p class="text-muted small mb-3 text-line-clamp-2">${escapeHtml(description)}</p>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between text-muted small mb-1 font-monospace x-small">
+                                    <span class="fw-bold text-success">₱${Number(target).toLocaleString()}</span>
+                                    <span class="text-muted">${donors} donors</span>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted x-small border-top pt-2 font-monospace">
+                                    <span><i class="bi bi-people me-1"></i> ${donors}</span>
+                                    <span><i class="bi bi-clock me-1"></i> ${item.campaign_deadline || '--'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                solicitationsRow.appendChild(col);
+            });
+
+            // After rendering, update metrics
+            updateDashboardMetrics();
+        }
+
+        function escapeHtml(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;') : ''; }
+
+        // Initial load
+        loadSolicitations();
+
         // Metrics Processing Logic
         function updateDashboardMetrics() {
             const allCards = document.querySelectorAll('.solicitation-post-card');

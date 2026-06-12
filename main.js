@@ -932,7 +932,23 @@ function bindInteractiveButtons() {
     const createCampaignButton = document.getElementById('btn-trigger-create-campaign');
     if (createCampaignButton) {
         createCampaignButton.addEventListener('click', () => {
-            window.location.href = 'create_solicitation.html';
+            // If page contains inline create campaign modal, show it; otherwise fallback to admin page
+            const modalEl = document.getElementById('modal-create-campaign');
+            if (modalEl) {
+                try {
+                    const form = modalEl.querySelector('form');
+                    if (form) form.reset();
+                    const bsModal = new bootstrap.Modal(modalEl);
+                    bsModal.show();
+                } catch (err) {
+                    console.warn('Failed to open inline create campaign modal:', err);
+                    // Fallback to fundraising page where donors can create campaigns instead of admin
+                    window.location.href = 'fundraising.html#openCampaign';
+                }
+            } else {
+                // If modal not present here, take user to the public fundraising page to create campaigns
+                window.location.href = 'fundraising.html#openCampaign';
+            }
         });
     }
 

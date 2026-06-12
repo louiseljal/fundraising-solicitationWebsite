@@ -58,6 +58,15 @@ if ($method === 'GET') {
         $params[] = $_GET['category'];
     }
 
+    // Optional month filter (month number '01'..'12' or integer)
+    if (!empty($_GET['month'])) {
+        $month = (int)ltrim($_GET['month'], '0');
+        if ($month >=1 && $month <= 12) {
+            $where[] = "MONTH(c.start_date) = ?";
+            $params[] = $month;
+        }
+    }
+
     if (!empty($_GET['search'])) {
         $where[]  = "c.title LIKE ?";
         $params[] = '%' . $_GET['search'] . '%';
