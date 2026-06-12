@@ -46,7 +46,7 @@
             
             <div class="sidebar-footer pt-3 mt-auto border-top border-secondary-subtle">
                 <span class="text-uppercase text-white-50 small px-2 mb-1 d-block sidebar-section-header">Settings</span>
-                <a class="nav-link mb-2" href="#"><i class="bi bi-gear-fill me-2"></i> Settings</a>
+                <a class="nav-link mb-2" href="settings.html"><i class="bi bi-gear-fill me-2"></i> Settings</a>
                 
                 <div class="d-flex align-items-center justify-content-between px-2 py-1 text-white-50 rounded">
                     <span class="small"><i class="bi bi-moon-stars-fill me-2 text-white"></i> Dark Mode</span>
@@ -101,45 +101,9 @@
                     <h5 class="fw-bold text-success tracking-wide text-uppercase mb-0" style="letter-spacing: 1px;">Collections Overview</h5>
                 </div>
 
-                <div class="d-flex flex-column gap-3" id="collections-overview-loop-container">
-                    
-                    <div class="p-4 rounded-3 collection-item-card d-flex gap-4 align-items-start dynamic-collection-row" data-collection-id="">
-                        
-                        <div class="collection-media-thumbnail d-flex align-items-center justify-content-center text-muted position-relative overflow-hidden">
-                            <img src="" class="position-absolute w-100 h-100 object-fit-cover d-none collection-live-image" alt="Campaign Banner">
-                            <i class="bi bi-image fs-3 collection-image-fallback"></i>
-                        </div>
-                        
-                        <div class="flex-grow-1 row g-3">
-                            <div class="col-md-5">
-                                <h6 class="fw-bold text-dark mb-3 collection-event-title"></h6>
-                                
-                                <div class="small mb-1 text-muted">
-                                    <span class="fw-semibold text-secondary">Goal Amount:</span> 
-                                    <span class="collection-goal-value"></span>
-                                </div>
-                                <div class="small text-muted">
-                                    <span class="fw-semibold text-secondary">Amount Raised:</span> 
-                                    <span class="collection-raised-value"></span>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-5">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="small fw-semibold text-muted text-uppercase">Progress Bar</span>
-                                    <span class="small fw-bold text-success collection-progress-percentage"></span>
-                                </div>
-                                
-                                <div class="progress rounded-pill" style="height: 10px;">
-                                    <div class="progress-bar bg-success collection-live-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                
-                                <div class="mt-2">
-                                    <span class="small fw-semibold text-muted text-uppercase me-2">Status:</span>
-                                    <span class="status-pill text-uppercase collection-status-indicator"></span>
-                                </div>
-                            </div>
-                        </div>
+                <div class="row g-4" id="collections-cards-container">
+                    <div class="col-12">
+                        <div class="alert alert-light border mb-0">Loading collections...</div>
                     </div>
                 </div>
 

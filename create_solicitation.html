@@ -121,7 +121,7 @@
                                 <div class="mb-3">
                                     <label for="textarea-description" class="form-label small fw-semibold dynamic-text-muted">Description <span class="text-danger">*</span></label>
                                     <textarea class="form-control rounded-3 dynamic-input-bg" id="textarea-description" name="post_description" rows="5" maxlength="500" placeholder="Provide full context..." required></textarea>
-                                    <div class="text-end mt-1"><small class="dynamic-text-muted font-monospace id-character-counter">0 / 500 characters</small></div>
+                                    <div class="text-end mt-1"><small id="id-character-counter" class="dynamic-text-muted font-monospace">0 / 500 characters</small></div>
                                 </div>
                             </div>
 
@@ -135,7 +135,7 @@
                                             <input type="text" class="form-control form-control-sm rounded-3 dynamic-input-bg" name="allocation_items[]" placeholder="e.g., Sound System Rental Allocation">
                                         </div>
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-outline-danger btn-sm w-100 rounded-3"><i class="bi bi-trash-fill"></i></button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm w-100 rounded-3 remove-allocation-row"><i class="bi bi-trash-fill"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -217,23 +217,7 @@
             }
         });
 
-        // Global Core Dark Mode Toggle Script Sync Framework Logic Interceptions
-        const darkModeSwitch = document.getElementById('darkModeSwitch');
-        
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            darkModeSwitch.checked = true;
-        }
-
-        darkModeSwitch.addEventListener('change', () => {
-            if (darkModeSwitch.checked) {
-                document.body.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.remove('dark-mode');
-                localStorage.setItem('theme', 'light');
-            }
-        });
     </script>
+    <script src="main.js"></script>
 </body>
 </html>

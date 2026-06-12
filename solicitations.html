@@ -275,7 +275,69 @@
         const dTargetAmount = document.getElementById('solicitation-detail-target-amount');
         const dBeneficiaries = document.getElementById('solicitation-detail-beneficiaries');
         const dUrgencyLevel = document.getElementById('solicitation-detail-urgency-level');
-        const dItemsList = document.getElementById('solicitation-detail-items-list');
+const dItemsList = document.getElementById('solicitation-detail-items-list');
+
+        function renderAllocationItemsFromJson(jsonString) {
+            dItemsList.innerHTML = '';
+            if (!jsonString) return;
+            let items = [];
+            try {
+                items = JSON.parse(jsonString);
+            } catch (e) {
+                // If already an array-string, attempt fallback
+                items = [];
+            }
+            if (!Array.isArray(items) || items.length === 0) {
+                return;
+            }
+            items.forEach(it => {
+                const li = document.createElement('li');
+                li.className = 'small text-secondary';
+                li.textContent = String(it);
+                dItemsList.appendChild(li);
+            });
+        }
+
+        function renderAttachmentsFromJson(jsonString) {
+            const mediaContainer = document.getElementById('solicitation-detail-media-container');
+            if (!mediaContainer) return;
+            
+            if (!jsonString) {
+                mediaContainer.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="bi bi-images fs-2 d-block mb-1 text-secondary opacity-50"></i>
+                        <span class="small font-monospace text-secondary" style="font-size: 11px;">No attachments</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            let attachments = [];
+            try {
+                attachments = JSON.parse(jsonString);
+            } catch (e) {
+                attachments = [];
+            }
+            
+            if (!Array.isArray(attachments) || attachments.length === 0) {
+                mediaContainer.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="bi bi-images fs-2 d-block mb-1 text-secondary opacity-50"></i>
+                        <span class="small font-monospace text-secondary" style="font-size: 11px;">No attachments</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Render images as a carousel/grid
+            mediaContainer.innerHTML = '<div class="row g-2">' + attachments.map(att => {
+                return `
+                    <div class="col-4 col-md-3">
+                        <img src="uploads/solicitations/${att}" alt="Attachment" class="img-fluid rounded-3" style="max-height: 100px; object-fit: cover; cursor: pointer;" onclick="window.open('uploads/solicitations/${att}', '_blank')">
+                    </div>
+                `;
+            }).join('') + '</div>';
+        }
         const dContactName = document.getElementById('solicitation-detail-contact-name');
         const dContactPhone = document.getElementById('solicitation-detail-contact-phone');
         const dContactEmail = document.getElementById('solicitation-detail-contact-email');
@@ -393,7 +455,13 @@
             dUrgencyBadge.className = "badge border fw-bold " + (triggerCard.getAttribute('data-urgency-badge-class') || 'd-none');
 
             // Items Array Node Reset (Hook into loops here)
-            dItemsList.innerHTML = ''; 
+            dItemsList.innerHTML = '';
+            const allocItemsJson = triggerCard.getAttribute('data-allocation-items') || '';
+            renderAllocationItemsFromJson(allocItemsJson);
+
+            // Render attachments if available
+            const attachmentsJson = triggerCard.getAttribute('data-attachments') || '';
+            renderAttachmentsFromJson(attachmentsJson);
 
             sidebarDrawer.classList.add('open');
         });
@@ -402,7 +470,7 @@
             sidebarDrawer.classList.remove('open');
         });
 
-        document.addEventListener("DOMContentLoaded", updateDashboardMetrics);
+     
 
         // Theme Toggle Persistence Tracker
         const darkModeSwitch = document.getElementById('darkModeSwitch');
@@ -424,21 +492,22 @@
     </script>
 
     <div class="modal fade" id="scheduleModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered custom-schedule-modal-dialog">
-        <div class="modal-content custom-schedule-modal-content">
-            <div class="modal-body p-0">
-                <h2 class="custom-schedule-title">SCHEDULE</h2>
-                
-                <div id="modal-schedule-content-container">
-                    </div>
+        <div class="modal-dialog modal-dialog-centered custom-schedule-modal-dialog">
+            <div class="modal-content custom-schedule-modal-content">
+                <div class="modal-body p-0">
+                    <h2 class="custom-schedule-title">SCHEDULE</h2>
+                    
+                    <div id="scheduleItemsContainer"></div>
 
-                <button type="button" class="btn custom-schedule-close-btn" data-bs-dismiss="modal">
-                    CLOSE SCHEDULE
-                </button>
+                    <button type="button" class="btn custom-schedule-close-btn" data-bs-dismiss="modal">
+                        CLOSE SCHEDULE
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js?v=2"></script>
 </body>
 </html>

@@ -46,7 +46,7 @@
             
             <div class="sidebar-footer pt-3 mt-auto border-top border-secondary-subtle">
                 <span class="text-uppercase text-white-50 small px-2 mb-1 d-block sidebar-section-header">Settings</span>
-                <a class="nav-link mb-2" href="#"><i class="bi bi-gear-fill me-2"></i> Settings</a>
+                <a class="nav-link mb-2" href="settings.html"><i class="bi bi-gear-fill me-2"></i> Settings</a>
                 
                 <div class="d-flex align-items-center justify-content-between px-2 py-1 text-white-50 rounded">
                     <span class="small"><i class="bi bi-moon-stars-fill me-2 text-white"></i> Dark Mode</span>
@@ -73,10 +73,10 @@
                     </button>
                     
                     <div class="user-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill">
-                        <div id="user-avatar-initial" class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold">U</div>
+                        <div class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold" style="background-color: #16a34a;">A</div>
                         <div>
-                            <div id="user-display-name" class="fw-bold lh-1 small text-dark"></div>
-                            <small id="user-display-role" class="text-muted text-uppercase user-role-text">User</small>
+                            <div class="fw-bold lh-1 small text-dark">System Admin</div>
+                            <small class="text-muted text-uppercase user-role-text">Donor Core</small>
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                 <div>
                     <h3 class="fw-bold mb-2 hero-heading">Together, we build<br>a better community.</h3>
                     <div class="d-flex gap-2 mt-3">
-                        <a href="#" id="btn-donations-create-solicitation" class="btn btn-action-light fw-bold btn-sm rounded-pill px-3 py-2 text-decoration-none d-inline-flex align-items-center">
+                        <a href="create_solicitation.html" id="btn-donations-create-solicitation" class="btn btn-action-light fw-bold btn-sm rounded-pill px-3 py-2 text-decoration-none d-inline-flex align-items-center">
                             <i class="bi bi-plus-lg me-1"></i> Create Solicitation
                         </a>
                         <a href="collections.html" id="btn-donations-view-collections" class="btn btn-outline-light fw-bold btn-sm rounded-pill px-3 py-2 text-decoration-none d-inline-flex align-items-center">
@@ -99,7 +99,7 @@
             <div class="row g-4">
                 
                 <div class="col-xl-8 col-lg-12">
-                    <div class="card data-card border-0 p-4 rounded-4 h-100">
+                    <div class="card data-card border-0 p-4 rounded-4 h-100 shadow-sm">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="fw-bold text-dark mb-0">All Donations (Detailed View)</h5>
                             <button id="btn-filter-donations-table" class="btn btn-brand btn-sm rounded-pill px-3 py-1.5">
@@ -108,20 +108,20 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover table-donations mb-0">
-                                <thead>
+                            <table class="table table-hover table-donations mb-0 align-middle">
+                                <thead class="table-light text-secondary small text-uppercase">
                                     <tr>
                                         <th scope="col">Date</th>
                                         <th scope="col">Donor Name</th>
                                         <th scope="col">Campaign</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Status</th>
+                                        <th scope="col" class="text-end">Amount</th>
+                                        <th scope="col" class="text-center">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody id="donations_body">
+                                <tbody id="donations_body" class="small">
                                     <tr>
-                                        <td colspan="5" class="text-center py-5 text-muted small font-monospace">
-                                            [SQL Transactions Table Row Loop - ID: donations_body]
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>Loading donation registers...
                                         </td>
                                     </tr>
                                 </tbody>
@@ -134,13 +134,11 @@
                     <div class="row g-4">
                         
                         <div class="col-12">
-                            <div class="card data-card border-0 p-4 rounded-4" style="border: 2px solid #3b82f6 !important;">
-                                <h6 class="fw-bold text-primary mb-3">Top Donors (This Month)</h6>
+                            <div class="card data-card border-0 p-4 rounded-4 shadow-sm" style="border: 2px solid #3b82f6 !important;">
+                                <h6 class="fw-bold text-primary mb-3"><i class="bi bi-trophy-fill me-1"></i> Top Donors (This Month)</h6>
                                 
                                 <div class="d-flex flex-column gap-2" id="top_donors">
-                                    <div class="p-3 text-center text-muted small font-monospace bg-light rounded-3">
-                                        [Monthly Donor Ranking Loop - ID: top_donors]
-                                    </div>
+                                    <div class="text-center text-muted small py-3">Loading leaderboards...</div>
                                 </div>
                             </div>
                         </div>
@@ -152,11 +150,11 @@
                                 <div class="d-flex flex-column gap-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-muted small">Average Donation</span>
-                                        <span id="insight-average-donation" class="fw-bold text-dark">--</span>
+                                        <span id="insight-average-donation" class="fw-bold text-dark">$0.00</span>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-muted small">No. of Solicitors</span>
-                                        <span id="insight-solicitors-count" class="fw-bold text-dark">--</span>
+                                        <span class="text-muted small">No. of Active Records</span>
+                                        <span id="insight-solicitors-count" class="fw-bold text-dark">0</span>
                                     </div>
                                 </div>
                             </div>
@@ -164,9 +162,10 @@
 
                         <div class="col-12">
                             <div class="card data-card border-0 p-4 rounded-4 shadow-sm">
-                                <h6 class="fw-bold text-dark mb-3">Export Data</h6>
-                                <button id="btn-export-donations-pdf" class="btn btn-brand w-100 py-2.5 rounded-3 fw-bold">
-                                    Export as PDF
+                                <h6 class="fw-bold text-dark mb-1">Export Ledger Logs</h6>
+                                <p class="text-muted small mb-3">Extract data tables into standard extensions.</p>
+                                <button id="btn-export-donations-csv" class="btn btn-brand w-100 py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-file-earmark-spreadsheet-fill"></i> Export as CSV Spreadsheet
                                 </button>
                             </div>
                         </div>
@@ -186,9 +185,10 @@
                     <h5 class="modal-title fw-bold text-success text-center modal-custom-title">SCHEDULE</h5>
                 </div>
                 <div class="modal-body py-4 modal-custom-body" id="scheduleItemsContainer">
+                    <p class="text-muted text-center small">No pending scheduled community items found.</p>
                 </div>
                 <div class="modal-footer border-0 p-0">
-                    <button type="button" class="btn text-white w-100 py-2 rounded-3 fw-bold modal-close-btn" data-bs-dismiss="modal">CLOSE SCHEDULE</button>
+                    <button type="button" class="btn text-white w-100 py-2 rounded-3 fw-bold modal-close-btn" data-bs-dismiss="modal" style="background-color: #16a34a;">CLOSE SCHEDULE</button>
                 </div>
             </div>
         </div>
@@ -196,6 +196,82 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="main.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+
+            // 1. DATA COLLECTION ASYNC LOOP (Targeting renamed api/donations.php file layout)
+            fetch('api/donations.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error(data.error);
+                        return;
+                    }
+
+                    // Populate Summary Analytics Cards
+                    document.getElementById('insight-average-donation').innerText = formatCurrency(data.insights.avgDonation);
+                    document.getElementById('insight-solicitors-count').innerText = data.insights.totalCount.toLocaleString();
+
+                    // Map Ledger Detailed Rows
+                    const tableBody = document.getElementById('donations_body');
+                    tableBody.innerHTML = '';
+
+                    if (data.donations.length === 0) {
+                        tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No historical transactions logged.</td></tr>`;
+                    } else {
+                        data.donations.forEach(tx => {
+                            let badgeStyle = 'bg-secondary';
+                            if (tx.payment_status === 'Completed') badgeStyle = 'bg-success-subtle text-success border border-success-subtle';
+                            if (tx.payment_status === 'Pending') badgeStyle = 'bg-warning-subtle text-warning border border-warning-subtle';
+                            if (tx.payment_status === 'Failed') badgeStyle = 'bg-danger-subtle text-danger border border-danger-subtle';
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td class="text-muted">${tx.formatted_date}</td>
+                                <td><span class="fw-bold text-dark">${escapeHTML(tx.username)}</span></td>
+                                <td><span class="text-truncate d-inline-block" style="max-width: 200px;">${escapeHTML(tx.campaign_title)}</span></td>
+                                <td class="text-end fw-bold text-dark">${formatCurrency(tx.amount)}</td>
+                                <td class="text-center"><span class="badge rounded-pill px-2.5 py-1 ${badgeStyle}">${tx.payment_status}</span></td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    }
+
+                    // Map Leaderboard Container UI
+                    const leaderboardContainer = document.getElementById('top_donors');
+                    leaderboardContainer.innerHTML = '';
+
+                    if (data.topDonors.length === 0) {
+                        leaderboardContainer.innerHTML = `<div class="p-3 text-center text-muted small bg-light rounded-3">No monthly records accumulated yet.</div>`;
+                    } else {
+                        data.topDonors.forEach((donor, index) => {
+                            const rankBadge = index === 0 ? '🏆' : `#${index + 1}`;
+                            const donorDiv = document.createElement('div');
+                            donorDiv.className = 'd-flex justify-content-between align-items-center p-2.5 rounded-3 border bg-light-subtle';
+                            donorDiv.innerHTML = `
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="small fw-bold">${rankBadge}</span>
+                                    <span class="fw-semibold text-dark small">${escapeHTML(donor.username)}</span>
+                                </div>
+                                <span class="badge bg-primary rounded-pill px-2.5">${formatCurrency(donor.total_contributed)}</span>
+                            `;
+                            leaderboardContainer.appendChild(donorDiv);
+                        });
+                    }
+                })
+                .catch(err => console.error("Error linking with backend processing core:", err));
+
+            // 2. CSV EXPORT TRIGGER ROUTING CONTROL
+            document.getElementById('btn-export-donations-csv').addEventListener('click', function() {
+                window.location.href = 'api/donations.php?action=export_csv';
+            });
+        });
+
+        // Prevention pipeline string parsing mitigation utility
+        function escapeHTML(str) {
+            return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : '';
+        }
+    </script>
 </body>
 </html>

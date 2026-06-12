@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2026 at 06:52 PM
+-- Generation Time: Jun 12, 2026 at 06:23 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,23 @@ SET time_zone = "+00:00";
 --
 -- Database: `fundraising_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `announcements`
+--
+
+CREATE TABLE `announcements` (
+  `announcement_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `content` text NOT NULL,
+  `priority` enum('Normal','Important','Urgent') DEFAULT 'Normal',
+  `is_pinned` tinyint(1) DEFAULT 0,
+  `is_deleted` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -48,7 +65,7 @@ CREATE TABLE `campaigns` (
 --
 
 INSERT INTO `campaigns` (`campaign_id`, `title`, `slug`, `description`, `goal_amount`, `current_raised_cache`, `campaign_status`, `category`, `start_date`, `end_date`, `is_deleted`, `created_at`, `updated_at`) VALUES
-(1, 'Typhoon Relief Drive 2026', 'typhoon-relief-2026', 'Providing food and shelter packs to displaced families.', 500000.00, 23000.00, 'Active', 'Disaster Relief', '2026-05-01', '2026-06-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
+(1, 'Typhoon Relief Drive 2026', 'typhoon-relief-2026', 'Providing food and shelter packs to displaced families.', 500000.00, 25000.00, 'Active', 'Disaster Relief', '2026-05-01', '2026-06-01', 0, '2026-05-25 07:13:10', '2026-06-12 03:04:18'),
 (2, 'Juan’s Medical & Chemotherapy Fund', 'juans-medical-fund', 'Helping Juan battle stage 3 lung cancer.', 300000.00, 12500.00, 'Active', 'Medical', '2026-04-15', '2026-07-15', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (3, 'Public School Books & Laptops Project', 'school-books-laptops', 'Sponsoring tech upgrades for remote public schools.', 150000.00, 500.00, 'Active', 'Education', '2026-05-10', '2026-08-10', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (4, 'Salamat Paw-Pals Animal Shelter Expansion', 'animal-shelter-expansion', 'Building extra cages and securing kibble for rescued dogs.', 80000.00, 0.00, 'Active', 'Animal Welfare', '2026-05-20', '2026-06-20', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
@@ -58,6 +75,24 @@ INSERT INTO `campaigns` (`campaign_id`, `title`, `slug`, `description`, `goal_am
 (8, 'Scholars Across Borders 2026', 'scholars-across-borders-2026', 'College tuition assistance for underprivileged students.', 250000.00, 0.00, 'Active', 'Education', '2026-05-01', '2026-12-31', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (9, 'Artists Support Group Grant', 'artists-support-grant', 'Micro-grants for local street muralists.', 50000.00, 0.00, 'Completed', 'Arts & Culture', '2026-01-01', '2026-04-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (10, 'Bike-for-a-Cause Metro Manila', 'bike-for-a-cause-manila', 'Purchasing commuter bikes for working-class citizens.', 90000.00, 0.00, 'Cancelled', 'Community', '2026-02-01', '2026-03-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `collections`
+--
+
+CREATE TABLE `collections` (
+  `collection_id` int(11) NOT NULL,
+  `campaign_id` int(11) NOT NULL,
+  `collected_by` int(11) NOT NULL,
+  `amount` decimal(12,2) NOT NULL,
+  `collection_date` date NOT NULL,
+  `collection_method` varchar(100) DEFAULT 'Cash',
+  `notes` text DEFAULT NULL,
+  `is_deleted` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -72,8 +107,9 @@ CREATE TABLE `donations` (
   `amount` decimal(10,2) NOT NULL,
   `currency` char(3) DEFAULT 'PHP',
   `payment_status` enum('Pending','Completed','Failed','Refunded') DEFAULT 'Pending',
-  `payment_method` enum('Credit_Card','PayPal','G_Cash','Bank_Transfer') NOT NULL,
+  `payment_method` enum('Credit_Card','PayPal','G_Cash','Bank_Transfer','Manual') NOT NULL,
   `transaction_reference` varchar(100) NOT NULL,
+  `is_deleted` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -82,17 +118,42 @@ CREATE TABLE `donations` (
 -- Dumping data for table `donations`
 --
 
-INSERT INTO `donations` (`donation_id`, `user_id`, `campaign_id`, `amount`, `currency`, `payment_status`, `payment_method`, `transaction_reference`, `created_at`, `updated_at`) VALUES
-(1, 2, 1, 5000.00, 'PHP', 'Completed', 'G_Cash', 'TXN-20260525-001', '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
-(2, 2, 2, 1500.00, 'PHP', 'Completed', 'G_Cash', 'TXN-20260525-002', '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
-(3, 3, 1, 1500.00, 'PHP', 'Completed', 'Credit_Card', 'TXN-20260525-003', '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
-(4, 5, 1, 12000.00, 'PHP', 'Completed', 'Bank_Transfer', 'TXN-20260525-004', '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
-(5, 6, 3, 500.00, 'PHP', 'Completed', 'PayPal', 'TXN-20260525-005', '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
-(6, 7, 2, 2500.00, 'PHP', 'Completed', 'G_Cash', 'TXN-20260525-006', '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
-(7, 9, 1, 4500.00, 'PHP', 'Completed', 'Bank_Transfer', 'TXN-20260525-007', '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
-(8, 10, 2, 8500.00, 'PHP', 'Completed', 'Credit_Card', 'TXN-20260525-008', '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
-(9, 8, 1, 2000.00, 'PHP', 'Pending', 'G_Cash', 'TXN-20260525-009', '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
-(10, 3, 4, 1000.00, 'PHP', 'Failed', 'Credit_Card', 'TXN-20260525-010', '2026-05-25 07:13:23', '2026-05-25 07:13:23');
+INSERT INTO `donations` (`donation_id`, `user_id`, `campaign_id`, `amount`, `currency`, `payment_status`, `payment_method`, `transaction_reference`, `is_deleted`, `created_at`, `updated_at`) VALUES
+(1, 2, 1, 5000.00, 'PHP', 'Completed', 'G_Cash', 'TXN-20260525-001', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
+(2, 2, 2, 1500.00, 'PHP', 'Completed', 'G_Cash', 'TXN-20260525-002', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
+(3, 3, 1, 1500.00, 'PHP', 'Completed', 'Credit_Card', 'TXN-20260525-003', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
+(4, 5, 1, 12000.00, 'PHP', 'Completed', 'Bank_Transfer', 'TXN-20260525-004', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
+(5, 6, 3, 500.00, 'PHP', 'Completed', 'PayPal', 'TXN-20260525-005', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
+(6, 7, 2, 2500.00, 'PHP', 'Completed', 'G_Cash', 'TXN-20260525-006', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
+(7, 9, 1, 4500.00, 'PHP', 'Completed', 'Bank_Transfer', 'TXN-20260525-007', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
+(8, 10, 2, 8500.00, 'PHP', 'Completed', 'Credit_Card', 'TXN-20260525-008', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
+(9, 8, 1, 2000.00, 'PHP', 'Completed', 'G_Cash', 'TXN-20260525-009', 0, '2026-05-25 07:13:23', '2026-06-12 03:04:18'),
+(10, 3, 4, 1000.00, 'PHP', 'Failed', 'Credit_Card', 'TXN-20260525-010', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `solicitations`
+--
+
+CREATE TABLE `solicitations` (
+  `solicitation_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `post_title` varchar(200) NOT NULL,
+  `solicitation_category` varchar(100) NOT NULL,
+  `target_amount` decimal(12,2) NOT NULL,
+  `campaign_deadline` date NOT NULL,
+  `post_description` text NOT NULL,
+  `urgency_level` enum('Low','Medium','High') DEFAULT 'Medium',
+  `poc_name` varchar(100) DEFAULT NULL,
+  `poc_phone` varchar(30) DEFAULT NULL,
+  `beneficiary_count` int(11) DEFAULT NULL,
+  `allocation_items_json` longtext DEFAULT NULL,
+  `attachments_json` longtext DEFAULT NULL,
+  `status` enum('Pending','Approved','Rejected','Completed') DEFAULT 'Pending',
+  `is_deleted` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -127,7 +188,8 @@ INSERT INTO `users` (`user_id`, `username`, `email`, `password_hash`, `user_role
 (7, 'ana_gomez', 'ana.gomez@gmail.com', '$2y$10$h9J2kLl...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51'),
 (8, 'david_lim', 'dlim99@yahoo.com', '$2y$10$q2W4eRt...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51'),
 (9, 'grace_pua', 'grace.p@outlook.com', '$2y$10$z7X8cCv...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51'),
-(10, 'rachel_uy', 'rachel.uy@gmail.com', '$2y$10$u3I4oPp...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51');
+(10, 'rachel_uy', 'rachel.uy@gmail.com', '$2y$10$u3I4oPp...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51'),
+(11, 'louiseledesma', 'louise@gmail.com', '$2y$10$OMm1oMLSQRYRmB/E/YGIBO4HujA7VMK1MGNKKq2yhtDwYwIDWiwAa', 'Donor', 'Active', 0, 1, '2026-06-12 03:33:57', '2026-06-12 03:33:57');
 
 -- --------------------------------------------------------
 
@@ -161,11 +223,20 @@ INSERT INTO `user_profiles` (`profile_id`, `user_id`, `first_name`, `last_name`,
 (7, 7, 'Ana', 'Gomez', '09231112223', 'avatar7.png', 'PH', 'Davao Region', 2500.00),
 (8, 8, 'David', 'Lim', '09248887776', 'avatar8.png', 'PH', 'Calabarzon', 0.00),
 (9, 9, 'Grace', 'Pua', '09256664442', 'avatar9.png', 'PH', 'Western Visayas', 4500.00),
-(10, 10, 'Rachel', 'Uy', '09263331119', 'avatar10.png', 'PH', 'NCR', 8500.00);
+(10, 10, 'Rachel', 'Uy', '09263331119', 'avatar10.png', 'PH', 'NCR', 8500.00),
+(11, 11, 'louise', 'ledesma', NULL, NULL, NULL, NULL, 0.00);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `announcements`
+--
+ALTER TABLE `announcements`
+  ADD PRIMARY KEY (`announcement_id`),
+  ADD KEY `idx_announcements_user` (`user_id`),
+  ADD KEY `idx_announcements_pinned` (`is_pinned`,`created_at`);
 
 --
 -- Indexes for table `campaigns`
@@ -177,6 +248,15 @@ ALTER TABLE `campaigns`
   ADD KEY `idx_campaigns_etl` (`updated_at`);
 
 --
+-- Indexes for table `collections`
+--
+ALTER TABLE `collections`
+  ADD PRIMARY KEY (`collection_id`),
+  ADD KEY `idx_collections_campaign` (`campaign_id`),
+  ADD KEY `idx_collections_collected_by` (`collected_by`),
+  ADD KEY `idx_collections_date` (`collection_date`);
+
+--
 -- Indexes for table `donations`
 --
 ALTER TABLE `donations`
@@ -185,6 +265,13 @@ ALTER TABLE `donations`
   ADD KEY `campaign_id` (`campaign_id`),
   ADD KEY `idx_donations_user_campaign` (`user_id`,`campaign_id`),
   ADD KEY `idx_donations_etl` (`updated_at`,`payment_status`);
+
+--
+-- Indexes for table `solicitations`
+--
+ALTER TABLE `solicitations`
+  ADD PRIMARY KEY (`solicitation_id`),
+  ADD KEY `solicitations_ibfk_1` (`user_id`);
 
 --
 -- Indexes for table `users`
@@ -208,10 +295,22 @@ ALTER TABLE `user_profiles`
 --
 
 --
+-- AUTO_INCREMENT for table `announcements`
+--
+ALTER TABLE `announcements`
+  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `campaigns`
 --
 ALTER TABLE `campaigns`
   MODIFY `campaign_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `collections`
+--
+ALTER TABLE `collections`
+  MODIFY `collection_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `donations`
@@ -220,20 +319,39 @@ ALTER TABLE `donations`
   MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT for table `solicitations`
+--
+ALTER TABLE `solicitations`
+  MODIFY `solicitation_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `user_profiles`
 --
 ALTER TABLE `user_profiles`
-  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `announcements`
+--
+ALTER TABLE `announcements`
+  ADD CONSTRAINT `announcements_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `collections`
+--
+ALTER TABLE `collections`
+  ADD CONSTRAINT `collections_ibfk_1` FOREIGN KEY (`campaign_id`) REFERENCES `campaigns` (`campaign_id`),
+  ADD CONSTRAINT `collections_ibfk_2` FOREIGN KEY (`collected_by`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `donations`
@@ -241,6 +359,12 @@ ALTER TABLE `user_profiles`
 ALTER TABLE `donations`
   ADD CONSTRAINT `donations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   ADD CONSTRAINT `donations_ibfk_2` FOREIGN KEY (`campaign_id`) REFERENCES `campaigns` (`campaign_id`);
+
+--
+-- Constraints for table `solicitations`
+--
+ALTER TABLE `solicitations`
+  ADD CONSTRAINT `solicitations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `user_profiles`
