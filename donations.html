@@ -86,25 +86,28 @@
                 <div>
                     <h3 class="fw-bold mb-2 hero-heading">Together, we build<br>a better community.</h3>
                     <div class="d-flex gap-2 mt-3">
-                        <a href="create_solicitation.html" id="btn-donations-create-solicitation" class="btn btn-action-light fw-bold btn-sm rounded-pill px-3 py-2 text-decoration-none d-inline-flex align-items-center">
-                            <i class="bi bi-plus-lg me-1"></i> Create Solicitation
-                        </a>
-                        <a href="collections.html" id="btn-donations-view-collections" class="btn btn-outline-light fw-bold btn-sm rounded-pill px-3 py-2 text-decoration-none d-inline-flex align-items-center">
-                            <i class="bi bi-collection-fill me-1"></i> View Collections
+                        <a href="fundraising.html" class="btn btn-action-light fw-bold btn-sm rounded-pill px-3 py-2 text-decoration-none d-inline-flex align-items-center">
+                            <i class="bi bi-heart-fill me-1"></i> Donate Now
                         </a>
                     </div>
                 </div>
             </section>
 
             <div class="row g-4">
-                
                 <div class="col-xl-8 col-lg-12">
                     <div class="card data-card border-0 p-4 rounded-4 h-100 shadow-sm">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="fw-bold text-dark mb-0">All Donations (Detailed View)</h5>
-                            <button id="btn-filter-donations-table" class="btn btn-brand btn-sm rounded-pill px-3 py-1.5">
-                                <i class="bi bi-filter"></i> Filter
-                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-brand btn-sm rounded-pill px-3 py-1.5 dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-filter"></i> Filter
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="filterDropdown">
+                                    <li><a class="dropdown-item" href="#" data-status="All">All</a></li>
+                                    <li><a class="dropdown-item" href="#" data-status="Completed">Completed</a></li>
+                                    <li><a class="dropdown-item" href="#" data-status="Failed">Failed</a></li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div class="table-responsive">
@@ -132,21 +135,17 @@
 
                 <div class="col-xl-4 col-lg-12">
                     <div class="row g-4">
-                        
                         <div class="col-12">
                             <div class="card data-card border-0 p-4 rounded-4 shadow-sm" style="border: 2px solid #3b82f6 !important;">
                                 <h6 class="fw-bold text-primary mb-3"><i class="bi bi-trophy-fill me-1"></i> Top Donors (This Month)</h6>
-                                
                                 <div class="d-flex flex-column gap-2" id="top_donors">
                                     <div class="text-center text-muted small py-3">Loading leaderboards...</div>
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-12">
                             <div class="card data-card border-0 p-4 rounded-4 shadow-sm">
                                 <h6 class="fw-bold text-dark mb-3">Donation Insights</h6>
-                                
                                 <div class="d-flex flex-column gap-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-muted small">Average Donation</span>
@@ -159,7 +158,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-12">
                             <div class="card data-card border-0 p-4 rounded-4 shadow-sm">
                                 <h6 class="fw-bold text-dark mb-1">Export Ledger Logs</h6>
@@ -169,142 +167,74 @@
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 </div>
-
             </div>
-
         </main>
     </div>
 
-    <!-- schedule modal removed; use schedule.html -->
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="main.js"></script>
 
     <script>
+        let allDonationData = []; 
         document.addEventListener("DOMContentLoaded", function() {
             const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
-
-            // 1. DATA COLLECTION ASYNC LOOP (Targeting renamed api/donations.php file layout)
             fetch('api/donations.php')
                 .then(response => response.json())
                 .then(data => {
-                    if (data.error) {
-                        console.error(data.error);
-                        return;
-                    }
-
-                    // Populate Summary Analytics Cards
+                    allDonationData = data.donations;
                     document.getElementById('insight-average-donation').innerText = formatCurrency(data.insights.avgDonation);
                     document.getElementById('insight-solicitors-count').innerText = data.insights.totalCount.toLocaleString();
+                    renderTable(allDonationData);
+                    renderLeaderboard(data.topDonors);
+                });
 
-                    // Map Ledger Detailed Rows
-                    const tableBody = document.getElementById('donations_body');
-                    tableBody.innerHTML = '';
-
-                    if (data.donations.length === 0) {
-                        tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No historical transactions logged.</td></tr>`;
-                    } else {
-                        data.donations.forEach(tx => {
-                            let badgeStyle = 'bg-secondary';
-                            if (tx.payment_status === 'Completed') badgeStyle = 'bg-success-subtle text-success border border-success-subtle';
-                            if (tx.payment_status === 'Pending') badgeStyle = 'bg-warning-subtle text-warning border border-warning-subtle';
-                            if (tx.payment_status === 'Failed') badgeStyle = 'bg-danger-subtle text-danger border border-danger-subtle';
-
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td class="text-muted">${tx.formatted_date}</td>
-                                <td><span class="fw-bold text-dark">${escapeHTML(tx.username)}</span></td>
-                                <td><span class="text-truncate d-inline-block" style="max-width: 200px;">${escapeHTML(tx.campaign_title)}</span></td>
-                                <td class="text-end fw-bold text-dark">${formatCurrency(tx.amount)}</td>
-                                <td class="text-center"><span class="badge rounded-pill px-2.5 py-1 ${badgeStyle}">${tx.payment_status}</span></td>
-                            `;
-                            tableBody.appendChild(row);
-                        });
-                    }
-
-                    // Map Leaderboard Container UI
-                    const leaderboardContainer = document.getElementById('top_donors');
-                    leaderboardContainer.innerHTML = '';
-
-                    if (data.topDonors.length === 0) {
-                        leaderboardContainer.innerHTML = `<div class="p-3 text-center text-muted small bg-light rounded-3">No monthly records accumulated yet.</div>`;
-                    } else {
-                        data.topDonors.forEach((donor, index) => {
-                            const rankBadge = index === 0 ? '🏆' : `#${index + 1}`;
-                            const donorDiv = document.createElement('div');
-                            donorDiv.className = 'd-flex justify-content-between align-items-center p-2.5 rounded-3 border bg-light-subtle';
-                            donorDiv.innerHTML = `
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="small fw-bold">${rankBadge}</span>
-                                    <span class="fw-semibold text-dark small">${escapeHTML(donor.username)}</span>
-                                </div>
-                                <span class="badge bg-primary rounded-pill px-2.5">${formatCurrency(donor.total_contributed)}</span>
-                            `;
-                            leaderboardContainer.appendChild(donorDiv);
-                        });
-                    }
-                })
-                .catch(err => console.error("Error linking with backend processing core:", err));
-
-            // 2. CSV EXPORT TRIGGER ROUTING CONTROL
-            document.getElementById('btn-export-donations-csv').addEventListener('click', function() {
-                window.location.href = 'api/donations.php?action=export_csv';
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const status = this.getAttribute('data-status');
+                    renderTable(status === 'All' ? allDonationData : allDonationData.filter(tx => tx.payment_status === status));
+                });
             });
 
-            // 3. DONATION TABLE FILTER UI
-            const filterBtn = document.getElementById('btn-filter-donations-table');
-            if (filterBtn) {
-                const filterPanel = document.createElement('div');
-                filterPanel.id = 'donations-filter-panel';
-                filterPanel.className = 'd-inline-flex align-items-center ms-3';
-                filterPanel.style.gap = '8px';
-                filterPanel.innerHTML = `
-                    <select id="donation-filter-select" class="form-select form-select-sm" style="width:160px;">
-                        <option value="all">All Statuses</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Failed">Failed</option>
-                    </select>
-                    <button id="donation-filter-apply" class="btn btn-sm btn-outline-secondary">Apply</button>
-                    <button id="donation-filter-clear" class="btn btn-sm btn-link">Clear</button>
-                `;
-
-                filterBtn.parentNode.insertBefore(filterPanel, filterBtn.nextSibling);
-
-                document.getElementById('donation-filter-apply').addEventListener('click', () => {
-                    applyDonationFilter(document.getElementById('donation-filter-select').value);
-                });
-
-                document.getElementById('donation-filter-clear').addEventListener('click', () => {
-                    document.getElementById('donation-filter-select').value = 'all';
-                    applyDonationFilter('all');
-                });
-            }
-
-            function applyDonationFilter(status) {
-                const rows = document.querySelectorAll('#donations_body tr');
-                rows.forEach(r => {
-                    // skip placeholder/info rows that have colspan
-                    const firstTd = r.querySelector('td');
-                    if (!firstTd) return;
-                    if (firstTd.hasAttribute('colspan')) return;
-
-                    const statusCell = r.querySelector('td:nth-child(5)');
-                    const txt = statusCell ? statusCell.textContent.trim() : '';
-                    if (status === 'all' || txt === status) {
-                        r.style.display = '';
-                    } else {
-                        r.style.display = 'none';
-                    }
-                });
-            }
+            document.getElementById('btn-export-donations-csv').addEventListener('click', () => window.location.href = 'api/donations.php?action=export_csv');
         });
 
-        // Prevention pipeline string parsing mitigation utility
+        function renderTable(dataToRender) {
+            const tableBody = document.getElementById('donations_body');
+            tableBody.innerHTML = '';
+            if (dataToRender.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No transactions found.</td></tr>`;
+                return;
+            }
+            dataToRender.forEach(tx => {
+                let badgeStyle = tx.payment_status === 'Completed' ? 'bg-success-subtle text-success border-success-subtle' : 
+                                 (tx.payment_status === 'Failed' ? 'bg-danger-subtle text-danger border-danger-subtle' : 'bg-warning-subtle text-warning border-warning-subtle');
+                tableBody.innerHTML += `<tr>
+                    <td class="text-muted">${tx.created_at}</td>
+                    <td><span class="fw-bold text-dark">${escapeHTML(tx.username)}</span></td>
+                    <td><span class="text-truncate d-inline-block" style="max-width: 200px;">${escapeHTML(tx.campaign_title)}</span></td>
+                    <td class="text-end fw-bold text-dark">$${parseFloat(tx.amount).toFixed(2)}</td>
+                    <td class="text-center"><span class="badge rounded-pill px-2.5 py-1 ${badgeStyle}">${tx.payment_status}</span></td>
+                </tr>`;
+            });
+        }
+
+        function renderLeaderboard(data) {
+            const container = document.getElementById('top_donors');
+            container.innerHTML = '';
+            data.forEach((donor, i) => {
+                container.innerHTML += `<div class="d-flex justify-content-between align-items-center p-2.5 rounded-3 border bg-light-subtle">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="small fw-bold">${i === 0 ? '🏆' : '#' + (i+1)}</span>
+                        <span class="fw-semibold text-dark small">${escapeHTML(donor.username)}</span>
+                    </div>
+                    <span class="badge bg-primary rounded-pill px-2.5">$${parseFloat(donor.total_contributed).toFixed(2)}</span>
+                </div>`;
+            });
+        }
+
         function escapeHTML(str) {
             return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : '';
         }

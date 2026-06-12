@@ -134,17 +134,15 @@ try {
     ");
     $allDonations = $donationsStmt->fetchAll();
 
-    // Monthly Top 3 Donors Leaderboard
+    // ALL-TIME Top 5 Donors Leaderboard (Monthly restriction removed)
     $topDonorsStmt = $pdo->query("
         SELECT u.username, SUM(d.amount) AS total_contributed
         FROM donations d
         JOIN users u ON d.user_id = u.user_id
         WHERE d.payment_status = 'Completed' AND d.is_deleted = 0
-          AND MONTH(d.created_at) = MONTH(CURRENT_DATE())
-          AND YEAR(d.created_at) = YEAR(CURRENT_DATE())
         GROUP BY d.user_id
         ORDER BY total_contributed DESC
-        LIMIT 3
+        LIMIT 5
     ");
     $topDonors = $topDonorsStmt->fetchAll();
 
