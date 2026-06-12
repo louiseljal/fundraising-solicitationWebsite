@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2026 at 06:23 AM
+-- Generation Time: Jun 12, 2026 at 01:32 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -65,9 +65,9 @@ CREATE TABLE `campaigns` (
 --
 
 INSERT INTO `campaigns` (`campaign_id`, `title`, `slug`, `description`, `goal_amount`, `current_raised_cache`, `campaign_status`, `category`, `start_date`, `end_date`, `is_deleted`, `created_at`, `updated_at`) VALUES
-(1, 'Typhoon Relief Drive 2026', 'typhoon-relief-2026', 'Providing food and shelter packs to displaced families.', 500000.00, 25000.00, 'Active', 'Disaster Relief', '2026-05-01', '2026-06-01', 0, '2026-05-25 07:13:10', '2026-06-12 03:04:18'),
+(1, 'Typhoon Relief Drive 2026', 'typhoon-relief-2026', 'Providing food and shelter packs to displaced families.', 500000.00, 35000.00, 'Active', 'Disaster Relief', '2026-05-01', '2026-06-01', 0, '2026-05-25 07:13:10', '2026-06-12 04:34:33'),
 (2, 'Juan’s Medical & Chemotherapy Fund', 'juans-medical-fund', 'Helping Juan battle stage 3 lung cancer.', 300000.00, 12500.00, 'Active', 'Medical', '2026-04-15', '2026-07-15', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
-(3, 'Public School Books & Laptops Project', 'school-books-laptops', 'Sponsoring tech upgrades for remote public schools.', 150000.00, 500.00, 'Active', 'Education', '2026-05-10', '2026-08-10', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
+(3, 'Public School Books & Laptops Project', 'school-books-laptops', 'Sponsoring tech upgrades for remote public schools.', 150000.00, 125500.00, 'Active', 'Education', '2026-05-10', '2026-08-10', 0, '2026-05-25 07:13:10', '2026-06-12 10:35:45'),
 (4, 'Salamat Paw-Pals Animal Shelter Expansion', 'animal-shelter-expansion', 'Building extra cages and securing kibble for rescued dogs.', 80000.00, 0.00, 'Active', 'Animal Welfare', '2026-05-20', '2026-06-20', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (5, 'Community Kitchen Clean Water Project', 'clean-water-project', 'Installing high-grade water filters in local districts.', 100000.00, 0.00, 'Draft', 'Community', '2026-06-01', '2026-09-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (6, 'Reforestation in Sierra Madre', 'reforestation-sierra-madre', 'Planting 10,000 native trees to combat landslides.', 120000.00, 0.00, 'Paused', 'Environment', '2026-03-01', '2026-09-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
@@ -128,7 +128,10 @@ INSERT INTO `donations` (`donation_id`, `user_id`, `campaign_id`, `amount`, `cur
 (7, 9, 1, 4500.00, 'PHP', 'Completed', 'Bank_Transfer', 'TXN-20260525-007', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
 (8, 10, 2, 8500.00, 'PHP', 'Completed', 'Credit_Card', 'TXN-20260525-008', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
 (9, 8, 1, 2000.00, 'PHP', 'Completed', 'G_Cash', 'TXN-20260525-009', 0, '2026-05-25 07:13:23', '2026-06-12 03:04:18'),
-(10, 3, 4, 1000.00, 'PHP', 'Failed', 'Credit_Card', 'TXN-20260525-010', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23');
+(10, 3, 4, 1000.00, 'PHP', 'Failed', 'Credit_Card', 'TXN-20260525-010', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
+(11, 11, 1, 10000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-063418-3788', 0, '2026-06-12 04:34:18', '2026-06-12 04:34:33'),
+(12, 11, 3, 125000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-123427-5887', 0, '2026-06-12 10:34:27', '2026-06-12 10:35:45'),
+(13, 11, 4, 500000.00, 'PHP', 'Failed', 'Manual', 'TXN-20260612-123515-8257', 0, '2026-06-12 10:35:15', '2026-06-12 10:35:55');
 
 -- --------------------------------------------------------
 
@@ -154,6 +157,13 @@ CREATE TABLE `solicitations` (
   `is_deleted` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `solicitations`
+--
+
+INSERT INTO `solicitations` (`solicitation_id`, `user_id`, `post_title`, `solicitation_category`, `target_amount`, `campaign_deadline`, `post_description`, `urgency_level`, `poc_name`, `poc_phone`, `beneficiary_count`, `allocation_items_json`, `attachments_json`, `status`, `is_deleted`, `created_at`) VALUES
+(1, 11, 'Donations for fire victims', 'Disaster Relief', 100000.00, '2026-07-16', 'this is to support fire victims', 'High', 'Lewis', '09871234567', 1000, '[\"Clothes\",\"water\"]', '[]', 'Pending', 0, '2026-06-12 04:30:57');
 
 -- --------------------------------------------------------
 
@@ -316,13 +326,13 @@ ALTER TABLE `collections`
 -- AUTO_INCREMENT for table `donations`
 --
 ALTER TABLE `donations`
-  MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `solicitations`
 --
 ALTER TABLE `solicitations`
-  MODIFY `solicitation_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `solicitation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
