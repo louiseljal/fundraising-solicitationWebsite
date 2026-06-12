@@ -306,8 +306,6 @@ async function loadHomeDashboard() {
     const scheduleMeta = document.querySelectorAll('.card.data-card .text-muted.d-block')[1];
     const announcementTitle = document.querySelectorAll('.card.data-card .fw-bold.small.text-dark')[2];
     const announcementMeta = document.querySelectorAll('.card.data-card .text-muted.d-block')[2];
-    const scheduleModal = document.getElementById('scheduleItemsContainer');
-
     if (!totalDonations && !activeMembers && !ongoingCampaigns && !collectionsThisMonth && !pendingPayments) return;
 
     try {
@@ -349,14 +347,7 @@ async function loadHomeDashboard() {
         if (announcementTitle) announcementTitle.textContent = latestAnnouncement ? (latestAnnouncement.title || 'Announcement') : 'No announcements yet';
         if (announcementMeta) announcementMeta.textContent = latestAnnouncement ? (latestAnnouncement.content || 'Latest system update') : 'The announcement feed is empty.';
 
-        if (scheduleModal) {
-            const items = campaigns.slice(0, 3).map(item => `
-                <div class="border rounded-3 p-3 mb-2">
-                    <div class="fw-semibold small text-dark">${item.title || 'Campaign'}</div>
-                    <small class="text-muted">${item.category || 'General'} • Goal ₱${Number(item.goal_amount || 0).toLocaleString()} • ${item.end_date || 'TBD'}</small>
-                </div>`).join('');
-            scheduleModal.innerHTML = items || '<p class="text-muted mb-0 small">No campaign schedule items are available yet.</p>';
-        }
+        // schedule content is now served on the standalone schedule.html page.
     } catch (error) {
         console.error('Home dashboard load failed:', error);
         if (totalDonations) totalDonations.textContent = '—';
