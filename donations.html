@@ -36,6 +36,7 @@
 
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
                 <a class="nav-link active" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
+                <a class="nav-link mt-2" href="admin.php"><i class="bi bi-shield-lock-fill me-2"></i> Admin Panel</a>
             </nav>
             
             <div class="sidebar-footer mt-auto pt-3 border-top border-secondary border-opacity-25">
@@ -49,29 +50,23 @@
 
         <main class="main-content flex-grow-1 p-4">
             
-            <header class="d-flex justify-content-between align-items-center mb-4">
-                <div class="search-bar position-relative w-50">
-                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" id="search-input-field" class="form-control ps-5 rounded-pill bg-light border-0" placeholder="Search donations...">
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-light rounded-circle text-muted position-relative">
-                        <i class="bi bi-bell"></i>
-                    </button>
-                    <button class="btn btn-light rounded-circle text-muted position-relative me-2">
-                        <i class="bi bi-envelope"></i>
-                    </button>
-                    
-                    <a href="user-dashboard.html" class="user-profile-link text-decoration-none">
-                        <div class="user-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill">
-                            <div id="user-avatar-initial" class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold">U</div>
-                            <div>
-                                <div id="user-display-name" class="fw-bold lh-1 small text-dark"></div>
-                                <small id="user-display-role" class="text-muted text-uppercase user-role-text">User</small>
-                            </div>
+            <header class="d-flex justify-content-end align-items-center mb-4 gap-2">
+                <button class="btn btn-light rounded-circle text-muted position-relative">
+                    <i class="bi bi-bell"></i>
+                </button>
+                <button class="btn btn-light rounded-circle text-muted position-relative me-2">
+                    <i class="bi bi-envelope"></i>
+                </button>
+                
+                <a href="user-dashboard.html" class="user-profile-link text-decoration-none">
+                    <div class="user-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill">
+                        <div id="user-avatar-initial" class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold">U</div>
+                        <div>
+                            <div id="user-display-name" class="fw-bold lh-1 small text-dark"></div>
+                            <small id="user-display-role" class="text-muted text-uppercase user-role-text">User</small>
                         </div>
-                    </a>
-                </div>
+                    </div>
+                </a>
             </header>
 
             <section class="hero-banner p-4 rounded-4 mb-4 text-white d-flex justify-content-between align-items-center">
@@ -102,6 +97,13 @@
                             </div>
                         </div>
 
+                        <div class="input-group mb-4 shadow-sm rounded-pill overflow-hidden border">
+                            <span class="input-group-text bg-white border-0 text-muted ps-4">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" id="search-input-field" class="form-control border-0 py-2 ps-2 pe-4" placeholder="Search by username, campaign, amount, or status...">
+                        </div>
+
                         <div class="table-responsive">
                             <table class="table table-hover table-donations mb-0 align-middle">
                                 <thead class="table-light text-secondary small text-uppercase">
@@ -121,6 +123,18 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <span id="page-info" class="text-muted small">Page 1 of 1</span>
+                            <div class="d-flex gap-2">
+                                <button id="btn-prev-page" class="btn btn-outline-secondary btn-sm rounded-pill px-3" disabled>
+                                    <i class="bi bi-arrow-left me-1"></i> Previous
+                                </button>
+                                <button id="btn-next-page" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                    Next <i class="bi bi-arrow-right ms-1"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -170,15 +184,22 @@
 
     <script>
         let allDonationData = []; 
+        let currentDisplayData = [];
+        let currentPage = 1;
+        const recordsPerPage = 10;
+
         document.addEventListener("DOMContentLoaded", function() {
             const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+            
             fetch('api/donations.php')
                 .then(response => response.json())
                 .then(data => {
                     allDonationData = data.donations;
+                    currentDisplayData = [...allDonationData];
                     document.getElementById('insight-average-donation').innerText = formatCurrency(data.insights.avgDonation);
                     document.getElementById('insight-solicitors-count').innerText = data.insights.totalCount.toLocaleString();
-                    renderTable(allDonationData);
+                    
+                    renderPage();
                     renderLeaderboard(data.topDonors);
                 });
 
@@ -186,39 +207,93 @@
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
                     const status = this.getAttribute('data-status');
-                    renderTable(status === 'All' ? allDonationData : allDonationData.filter(tx => tx.payment_status === status));
+                    
+                    currentDisplayData = status === 'All' ? [...allDonationData] : allDonationData.filter(tx => tx.payment_status === status);
+                    currentPage = 1;
+                    renderPage();
                 });
             });
 
-            // Search functionality
+            // Enhanced search functionality (searches by username, campaign, amount, or status)
             const searchInput = document.getElementById('search-input-field');
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     const searchQuery = this.value.toLowerCase().trim();
-                    const filteredData = allDonationData.filter(tx => {
+                    
+                    currentDisplayData = allDonationData.filter(tx => {
                         const donorName = (tx.username || '').toLowerCase();
                         const campaignTitle = (tx.campaign_title || '').toLowerCase();
                         const amount = String(tx.amount || '');
                         const status = (tx.payment_status || '').toLowerCase();
+                        
                         return donorName.includes(searchQuery) || 
                                campaignTitle.includes(searchQuery) || 
                                amount.includes(searchQuery) || 
                                status.includes(searchQuery);
                     });
-                    renderTable(filteredData);
+                    
+                    currentPage = 1;
+                    renderPage();
                 });
             }
 
             document.getElementById('btn-export-donations-csv').addEventListener('click', () => window.location.href = 'api/donations.php?action=export_csv');
+
+            // Pagination button events
+            document.getElementById('btn-prev-page').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage();
+                }
+            });
+
+            document.getElementById('btn-next-page').addEventListener('click', () => {
+                const totalPages = Math.ceil(currentDisplayData.length / recordsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderPage();
+                }
+            });
         });
+
+        function renderPage() {
+            const start = (currentPage - 1) * recordsPerPage;
+            const end = start + recordsPerPage;
+            const paginatedData = currentDisplayData.slice(start, end);
+            
+            renderTable(paginatedData);
+
+            // Update UI page information
+            const totalPages = Math.ceil(currentDisplayData.length / recordsPerPage) || 1;
+            document.getElementById('page-info').innerText = `Page ${currentPage} of ${totalPages}`;
+
+            const prevBtn = document.getElementById('btn-prev-page');
+            const nextBtn = document.getElementById('btn-next-page');
+
+            // Enable/Disable Previous button
+            if (currentPage === 1) {
+                prevBtn.setAttribute('disabled', 'true');
+            } else {
+                prevBtn.removeAttribute('disabled');
+            }
+
+            // Enable/Disable Next button
+            if (currentPage === totalPages || currentDisplayData.length === 0) {
+                nextBtn.setAttribute('disabled', 'true');
+            } else {
+                nextBtn.removeAttribute('disabled');
+            }
+        }
 
         function renderTable(dataToRender) {
             const tableBody = document.getElementById('donations_body');
             tableBody.innerHTML = '';
+            
             if (dataToRender.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No transactions found.</td></tr>`;
                 return;
             }
+            
             dataToRender.forEach(tx => {
                 let badgeStyle = tx.payment_status === 'Completed' ? 'bg-success-subtle text-success border-success-subtle' : 
                                  (tx.payment_status === 'Failed' ? 'bg-danger-subtle text-danger border-danger-subtle' : 'bg-warning-subtle text-warning border-warning-subtle');
@@ -235,6 +310,7 @@
         function renderLeaderboard(data) {
             const container = document.getElementById('top_donors');
             container.innerHTML = '';
+            
             data.forEach((donor, i) => {
                 container.innerHTML += `<div class="d-flex justify-content-between align-items-center p-2.5 rounded-3 border bg-light-subtle">
                     <div class="d-flex align-items-center gap-2">

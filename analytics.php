@@ -42,6 +42,7 @@
                 <a class="nav-link text-start" href="activity_log.php">
                     <i class="bi bi-journal-check me-2"></i> Activity Logs
                 </a>
+                <a class="nav-link" href="index.html"><i class="bi bi-house-door-fill me-2"></i> Home</a>
                 
             </nav>
             
