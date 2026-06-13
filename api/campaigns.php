@@ -1,12 +1,15 @@
 <?php
 // ==================================================================
 // api/campaigns.php
-// Operations API Layer: Handles Campaign Fetching (GET) and CRUD (POST).
+// Operations API Layer: Handles Campaign Fetching (GET) and Secured CRUD (POST).
 // ==================================================================
 
-// Absolute directory reference to pull our central session logic safely
-require_once dirname(__DIR__) . '/includes/session.php';
 require_once dirname(__DIR__) . '/includes/db.php';
+
+// Ensure sessions are active for authentication checks
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 header('Content-Type: application/json');
 
@@ -74,8 +77,6 @@ if ($method === 'GET') {
 
     $whereSQL = implode(' AND ', $where);
 
-    // Dynamic parameterized database compilation block
-    // Added NULLIF(c.goal_amount, 0) to cleanly avoid math crashes if a goal is zero.
     $stmt = $pdo->prepare("
         SELECT c.*,
                COALESCE(SUM(CASE WHEN d.payment_status = 'Completed' THEN d.amount ELSE 0 END), 0) AS total_raised,
@@ -98,12 +99,37 @@ if ($method === 'GET') {
 }
 
 // ==================================================================
-// POST METHODS - Restricted Administrative Modifications (CRUD)
+// POST METHODS - Password-Secured Administrative Modifications (CRUD)
 // ==================================================================
 if ($method === 'POST') {
 
-    // Rubric Compliance: Trigger unified secure guard handler
-    requireAdmin();
+    // 1. Session & Role Verification
+    $currentAdminId = $_SESSION['user_id'] ?? null;
+    $userRole = $_SESSION['user_role'] ?? $_SESSION['role'] ?? '';
+
+    if (!$currentAdminId || $userRole !== 'Admin') {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Unauthorized access. Session invalid or insufficient privileges.']);
+        exit;
+    }
+
+    // 2. Strict Password Verification against the Database
+    $adminPassword = $_POST['admin_password'] ?? null;
+    if (!$adminPassword) {
+        echo json_encode(['success' => false, 'message' => 'Authentication parameters missing. Action refused.']);
+        exit;
+    }
+
+    $authStmt = $pdo->prepare("SELECT password_hash FROM users WHERE user_id = ? AND user_role = 'Admin'");
+    $authStmt->execute([$currentAdminId]);
+    $adminRecord = $authStmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$adminRecord || !password_verify($adminPassword, $adminRecord['password_hash'])) {
+        echo json_encode(['success' => false, 'message' => 'Security verification rejected: Admin password incorrect.']);
+        exit;
+    }
+
+    // 3. Authorized Actions Execution
 
     // --- Action Tier: CREATE ---
     if ($action === 'create') {
@@ -116,18 +142,22 @@ if ($method === 'POST') {
         $status      = $_POST['campaign_status'] ?? 'Draft';
 
         if (!$title || !$description || !$goal || !$category || !$start_date || !$end_date) {
-            http_response_code(400); // 400 Bad Request
+            http_response_code(400); 
             echo json_encode(['success' => false, 'message' => 'Operational processing failed. Missing required fields.']);
             exit;
         }
 
         $stmt = $pdo->prepare("
-            INSERT INTO campaigns (title, description, goal_amount, campaign_status, category, start_date, end_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO campaigns (title, slug, description, goal_amount, campaign_status, category, start_date, end_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->execute([$title, $description, $goal, $status, $category, $start_date, $end_date]);
+        
+        // Auto-generate a basic slug
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title))) . '-' . time();
+        
+        $stmt->execute([$title, $slug, $description, $goal, $status, $category, $start_date, $end_date]);
 
-        http_response_code(201); // 201 Created
+        http_response_code(201); 
         echo json_encode(['success' => true, 'message' => 'Campaign profile populated successfully!', 'id' => $pdo->lastInsertId()]);
         exit;
     }
@@ -142,6 +172,12 @@ if ($method === 'POST') {
         $start_date  = $_POST['start_date'] ?? '';
         $end_date    = $_POST['end_date'] ?? '';
         $status      = $_POST['campaign_status'] ?? 'Draft';
+
+        if (!$title || !$description || !$goal || !$category || !$start_date || !$end_date) {
+            http_response_code(400); 
+            echo json_encode(['success' => false, 'message' => 'Operational processing failed. Missing required fields.']);
+            exit;
+        }
 
         $stmt = $pdo->prepare("
             UPDATE campaigns

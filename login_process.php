@@ -75,15 +75,16 @@ try {
     $_SESSION['full_name'] = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
     $_SESSION['logged_in'] = true;
 
-    // Send successful confirmation packet back to frontend fetch script
-    echo json_encode([
-        'success'   => true,
-        'message'   => 'Login successful!',
-        'redirect'  => 'index.html',
-        'user_role' => $user['user_role'],
-        'full_name' => $_SESSION['full_name']
-    ]);
+    $redirectPage = ($user['user_role'] === 'Admin') ? 'admin.php' : 'index.html';
 
+// Send successful confirmation packet back to frontend fetch script
+echo json_encode([
+    'success'   => true,
+    'message'   => 'Login successful!',
+    'redirect'  => $redirectPage, // Updated to use the variable
+    'user_role' => $user['user_role'],
+    'full_name' => $_SESSION['full_name']
+]);
 } catch (PDOException $e) {
     // If the database query breaks, protect credentials and log it on the backend
     error_log("Login Query Fault: " . $e->getMessage());
