@@ -34,21 +34,15 @@
                     </a>
                 </div>
 
-                <a class="nav-link" href="schedule.html"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
-                
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
                 <a class="nav-link active" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
             </nav>
             
-            <div class="sidebar-footer pt-3 mt-auto border-top border-secondary-subtle">
-                <span class="text-uppercase text-white-50 small px-2 mb-1 d-block sidebar-section-header">Settings</span>
-                <a class="nav-link mb-2" href="settings.html"><i class="bi bi-gear-fill me-2"></i> Settings</a>
-                
-                <div class="d-flex align-items-center justify-content-between px-2 py-1 text-white-50 rounded">
-                    <span class="small"><i class="bi bi-moon-stars-fill me-2 text-white"></i> Dark Mode</span>
-                    <div class="form-check form-switch mb-0">
-                        <input class="form-check-input" type="checkbox" role="switch" id="darkModeToggle">
-                    </div>
+            <div class="sidebar-footer mt-auto pt-3 border-top border-secondary border-opacity-25">
+                <a class="nav-link mb-2 text-white-50" href="settings.html"><i class="bi bi-gear-fill me-2"></i> Settings</a>
+                <div class="form-check form-switch d-flex align-items-center justify-content-between ps-2 py-1 bg-dark bg-opacity-50 rounded-3 border border-secondary border-opacity-25 px-2">
+                    <label class="form-check-label small text-white-50 cursor-pointer" for="darkModeSwitch"><i class="bi bi-moon-stars-fill me-2 text-warning"></i>Dark Mode</label>
+                    <input class="form-check-input ms-0 cursor-pointer" type="checkbox" role="switch" id="darkModeSwitch">
                 </div>
             </div>
         </aside>
@@ -68,13 +62,15 @@
                         <i class="bi bi-envelope"></i>
                     </button>
                     
-                    <div class="user-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill">
-                        <div class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold" style="background-color: #16a34a;">A</div>
-                        <div>
-                            <div class="fw-bold lh-1 small text-dark">System Admin</div>
-                            <small class="text-muted text-uppercase user-role-text">Donor Core</small>
+                    <a href="user-dashboard.html" class="user-profile-link text-decoration-none">
+                        <div class="user-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill">
+                            <div id="user-avatar-initial" class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold">U</div>
+                            <div>
+                                <div id="user-display-name" class="fw-bold lh-1 small text-dark"></div>
+                                <small id="user-display-role" class="text-muted text-uppercase user-role-text">User</small>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </header>
 
