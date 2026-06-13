@@ -31,8 +31,6 @@
                 
                 <span class="text-uppercase text-white-50 small px-2 mt-4 mb-1 sidebar-section-header">Navigation Quick-Links</span>
                 <a class="nav-link" href="index.html"><i class="bi bi-house-door-fill me-2"></i> Home</a>
-                <a class="nav-link" href="announcement.html"><i class="bi bi-megaphone-fill me-2"></i> Announcements</a>
-                <a class="nav-link" href="collections.html"><i class="bi bi-grid-fill me-2"></i> Collections</a>
                 <a class="nav-link" href="donations.html"><i class="bi bi-heart-fill me-2"></i> All Donations</a>
                 <a class="nav-link" href="reports.php"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports & Insights</a>
             </nav>
@@ -52,7 +50,7 @@
             <header class="d-flex justify-content-between align-items-center mb-4">
                 <div class="search-bar position-relative w-50">
                     <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" class="form-control ps-5 rounded-pill bg-white border-0 shadow-sm" placeholder="Search system logs, campaigns, or transactions...">
+                    <input type="text" id="search-input-field" class="form-control ps-5 rounded-pill bg-white border-0 shadow-sm" placeholder="Search system logs, campaigns, or transactions...">
                 </div>
                 
                 <div class="d-flex align-items-center gap-2">
@@ -459,7 +457,41 @@
                 .catch(err => console.error("Error executing dashboard initialization mapping:", err));
         }
 
-        document.addEventListener("DOMContentLoaded", loadAdminDashboardData);
+        document.addEventListener("DOMContentLoaded", function() {
+            loadAdminDashboardData();
+            
+            // Search functionality
+            const searchInput = document.getElementById('search-input-field');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchQuery = this.value.toLowerCase().trim();
+                    filterAdminTables(searchQuery);
+                });
+            }
+        });
+
+        function filterAdminTables(searchQuery) {
+            // Filter campaign rows
+            const campaignRows = document.querySelectorAll('#campaignCrudRows tr');
+            campaignRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchQuery) ? '' : 'none';
+            });
+
+            // Filter solicitation rows
+            const solicitationRows = document.querySelectorAll('#solicitationCrudRows tr');
+            solicitationRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchQuery) ? '' : 'none';
+            });
+
+            // Filter transaction rows
+            const txRows = document.querySelectorAll('#txCrudRows tr');
+            txRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchQuery) ? '' : 'none';
+            });
+        }
 
         function escapeHTML(str) {
             return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : '';

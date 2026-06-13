@@ -34,14 +34,10 @@
                     </a>
                 </div>
 
-                <a class="nav-link" href="membership.html"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
                 <a class="nav-link" href="schedule.html"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
-                <a class="nav-link" href="reports.html"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports</a>
                 
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
                 <a class="nav-link" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
-                <a class="nav-link" href="collections.html"><i class="bi bi-collection-fill me-2"></i> Collection</a>
-                <a class="nav-link" href="announcement.html"><i class="bi bi-bell-fill me-2"></i> Announcement</a>
             </nav>
 
             <div class="sidebar-footer mt-auto pt-3 border-top border-secondary border-opacity-25">
@@ -68,7 +64,7 @@
                     </div>
                 </div>
 
-                <form id="form-create-solicitation" method="POST" enctype="multipart/form-data">
+                <form id="form-create-solicitation" action="api/solicitations.php?action=create" method="POST" enctype="multipart/form-data">
                     <div class="row g-4">
                         
                         <div class="col-lg-8">
@@ -147,10 +143,15 @@
                                 <p class="dynamic-text-muted small mb-3">Include proof documentation layout images or authorization letters.</p>
                                 
                                 <div class="border border-2 border-dashed rounded-4 p-4 text-center dynamic-upload-zone position-relative" id="drop-zone-container">
-                                    <i class="bi bi-cloud-arrow-up-fill fs-1 dynamic-text-muted d-block mb-2"></i>
-                                    <span class="small d-block dynamic-text-main mb-1">Drag & drop photos here or <span class="text-success text-decoration-underline rounded" style="cursor: pointer;">browse files</span></span>
-                                    <span class="dynamic-text-muted font-monospace" style="font-size: 11px;">PNG, JPG, WEBP up to 5MB</span>
+                                    <i class="bi bi-cloud-arrow-up-fill fs-1 dynamic-text-muted d-block mb-2" id="upload-icon"></i>
+                                    <span class="small d-block dynamic-text-main mb-1" id="upload-text">Drag & drop photos here or <span class="text-success text-decoration-underline rounded" style="cursor: pointer;">browse files</span></span>
+                                    <span class="dynamic-text-muted font-monospace" style="font-size: 11px;" id="upload-subtext">PNG, JPG, WEBP up to 5MB</span>
                                     <input type="file" id="input-file-attachments" name="attachments[]" class="position-absolute top-0 start-0 opacity-0 w-100 h-100" style="cursor: pointer;" multiple accept="image/*">
+                                </div>
+                                
+                                <div id="selected-files-preview" class="mt-3 d-none">
+                                    <div class="small fw-semibold dynamic-text-muted mb-2">Selected Files:</div>
+                                    <div class="row g-2" id="preview-container"></div>
                                 </div>
                             </div>
                         </div>
@@ -207,7 +208,7 @@
         // Category Selection Mechanics Controller
         const categoryGroup = document.getElementById('category-toggle-group');
         const customCatContainer = document.getElementById('container-custom-category');
-        
+
         categoryGroup.addEventListener('change', (e) => {
             if(e.target.id === 'cat-other') {
                 customCatContainer.classList.remove('d-none');
@@ -218,6 +219,63 @@
             }
         });
 
+        // File Upload Preview Functionality
+        const fileInput = document.getElementById('input-file-attachments');
+        const previewContainer = document.getElementById('preview-container');
+        const selectedFilesPreview = document.getElementById('selected-files-preview');
+        const uploadIcon = document.getElementById('upload-icon');
+        const uploadText = document.getElementById('upload-text');
+        const uploadSubtext = document.getElementById('upload-subtext');
+
+        fileInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            if (files.length > 0) {
+                selectedFilesPreview.classList.remove('d-none');
+                previewContainer.innerHTML = '';
+                
+                files.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const col = document.createElement('div');
+                        col.className = 'col-3 col-md-2';
+                        col.innerHTML = `
+                            <div class="position-relative">
+                                <img src="${e.target.result}" alt="${file.name}" class="img-fluid rounded-3" style="height: 80px; width: 100%; object-fit: cover;">
+                                <button type="button" class="btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" onclick="removeFile(${index})">
+                                    <i class="bi bi-x" style="font-size: 12px;"></i>
+                                </button>
+                                <div class="small text-muted text-truncate mt-1" style="font-size: 10px;">${file.name}</div>
+                            </div>
+                        `;
+                        previewContainer.appendChild(col);
+                    };
+                    reader.readAsDataURL(file);
+                });
+                
+                // Update upload zone text
+                uploadIcon.className = 'bi bi-check-circle-fill fs-1 text-success d-block mb-2';
+                uploadText.innerHTML = `${files.length} file${files.length > 1 ? 's' : ''} selected`;
+                uploadSubtext.textContent = 'Click to change selection';
+            } else {
+                selectedFilesPreview.classList.add('d-none');
+                previewContainer.innerHTML = '';
+                uploadIcon.className = 'bi bi-cloud-arrow-up-fill fs-1 dynamic-text-muted d-block mb-2';
+                uploadText.innerHTML = 'Drag & drop photos here or <span class="text-success text-decoration-underline rounded" style="cursor: pointer;">browse files</span>';
+                uploadSubtext.textContent = 'PNG, JPG, WEBP up to 5MB';
+            }
+        });
+
+        function removeFile(index) {
+            const dt = new DataTransfer();
+            const files = Array.from(fileInput.files);
+            files.splice(index, 1);
+            files.forEach(file => dt.items.add(file));
+            fileInput.files = dt.files;
+            
+            // Trigger change event to update preview
+            fileInput.dispatchEvent(new Event('change'));
+        }
     </script>
     <script src="main.js"></script>
     <script>

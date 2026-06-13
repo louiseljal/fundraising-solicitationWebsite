@@ -34,14 +34,10 @@
                     </a>
                 </div>
 
-                <a class="nav-link" href="membership.html"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
                 <a class="nav-link" href="schedule.html"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
-                <a class="nav-link" href="reports.html"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports</a>
                 
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
                 <a class="nav-link active" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
-                <a class="nav-link" href="collections.html"><i class="bi bi-collection-fill me-2"></i> Collection</a>
-                <a class="nav-link" href="announcement.html"><i class="bi bi-bell-fill me-2"></i> Announcement</a>
             </nav>
             
             <div class="sidebar-footer pt-3 mt-auto border-top border-secondary-subtle">
@@ -62,7 +58,7 @@
             <header class="d-flex justify-content-between align-items-center mb-4">
                 <div class="search-bar position-relative w-50">
                     <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" class="form-control ps-5 rounded-pill bg-light border-0" placeholder="Search anything...">
+                    <input type="text" id="search-input-field" class="form-control ps-5 rounded-pill bg-light border-0" placeholder="Search donations...">
                 </div>
                 <div class="d-flex align-items-center gap-2">
                     <button class="btn btn-light rounded-circle text-muted position-relative">
@@ -197,6 +193,25 @@
                     renderTable(status === 'All' ? allDonationData : allDonationData.filter(tx => tx.payment_status === status));
                 });
             });
+
+            // Search functionality
+            const searchInput = document.getElementById('search-input-field');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchQuery = this.value.toLowerCase().trim();
+                    const filteredData = allDonationData.filter(tx => {
+                        const donorName = (tx.username || '').toLowerCase();
+                        const campaignTitle = (tx.campaign_title || '').toLowerCase();
+                        const amount = String(tx.amount || '');
+                        const status = (tx.payment_status || '').toLowerCase();
+                        return donorName.includes(searchQuery) || 
+                               campaignTitle.includes(searchQuery) || 
+                               amount.includes(searchQuery) || 
+                               status.includes(searchQuery);
+                    });
+                    renderTable(filteredData);
+                });
+            }
 
             document.getElementById('btn-export-donations-csv').addEventListener('click', () => window.location.href = 'api/donations.php?action=export_csv');
         });
