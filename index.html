@@ -34,26 +34,15 @@
                     </a>
                 </div>
 
-                <a class="nav-link" href="membership.html"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
-                <a class="nav-link" href="schedule.html"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
-                <a class="nav-link" href="reports.html"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports</a>
-                
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
                 <a class="nav-link" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
-                <a class="nav-link" href="collections.html"><i class="bi bi-collection-fill me-2"></i> Collection</a>
-                <a class="nav-link" href="announcement.html"><i class="bi bi-bell-fill me-2"></i> Announcement</a>
             </nav>
-            <div class="sidebar-footer pt-3 border-top border-secondary-subtle">
-                <span class="text-uppercase text-white-50 small px-2 mb-1 d-block sidebar-section-header">Settings</span>
-                
-                <a class="nav-link mb-2" href="settings.html"><i class="bi bi-gear-fill me-2"></i> Settings</a>
+            <div class="sidebar-footer mt-auto pt-3 border-top border-secondary border-opacity-25">
+                <a class="nav-link mb-2 text-white-50" href="settings.html"><i class="bi bi-gear-fill me-2"></i> Settings</a>
                 <a class="nav-link text-danger" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
-                
-                <div class="d-flex align-items-center justify-content-between px-2 py-1 text-white-50 rounded">
-                    <span class="small"><i class="bi bi-moon-stars-fill me-2 text-white"></i> Dark Mode</span>
-                    <div class="form-check form-switch mb-0">
-                        <input class="form-check-input" type="checkbox" role="switch" id="darkModeToggle">
-                    </div>
+                <div class="form-check form-switch d-flex align-items-center justify-content-between ps-2 py-1 bg-dark bg-opacity-50 rounded-3 border border-secondary border-opacity-25 px-2">
+                    <label class="form-check-label small text-white-50 cursor-pointer" for="darkModeSwitch"><i class="bi bi-moon-stars-fill me-2 text-warning"></i>Dark Mode</label>
+                    <input class="form-check-input ms-0 cursor-pointer" type="checkbox" role="switch" id="darkModeSwitch">
                 </div>
             </div>
         </aside>
@@ -67,31 +56,16 @@
             </div>
             
             <header class="d-flex justify-content-between align-items-center mb-4">
-                <div class="search-bar position-relative w-50">
-                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" class="form-control ps-5 rounded-pill bg-light border-0" placeholder="Search anything...">
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <button id="notification-bell" class="btn btn-light rounded-circle text-muted position-relative" type="button">
-                        <i class="bi bi-bell"></i>
-                        <span id="bell-badge-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
-                    </button>
-                    
-                    <button id="mail-button" class="btn btn-light rounded-circle text-muted position-relative me-2" type="button">
-                        <i class="bi bi-envelope"></i>
-                        <span id="envelope-badge-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
-                    </button>
-                    
-                    <a href="user-dashboard.html" class="user-profile-link text-decoration-none">
-                        <div class="user-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill">
-                            <div id="user-avatar-initial" class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold">U</div>
-                            <div>
-                                <div id="user-display-name" class="fw-bold lh-1 small text-dark"></div>
-                                <small id="user-display-role" class="text-muted text-uppercase user-role-text">User</small>
-                            </div>
+                <div></div>
+                <a href="user-dashboard.html" class="user-profile-link text-decoration-none">
+                    <div class="user-profile d-flex align-items-center bg-light p-1 pe-3 rounded-pill">
+                        <div id="user-avatar-initial" class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold">U</div>
+                        <div>
+                            <div id="user-display-name" class="fw-bold lh-1 small text-dark"></div>
+                            <small id="user-display-role" class="text-muted text-uppercase user-role-text">User</small>
                         </div>
-                    </a>
-                </div>
+                    </div>
+                </a>
             </header>
 
             <section class="hero-banner text-white p-4 rounded-4 mb-4 position-relative">
@@ -99,9 +73,6 @@
                     <h2 class="fw-bold mb-3 display-6 hero-heading">Together, we build <br>a better community.</h2>
                     <a href="create_solicitation.html" class="btn btn-action-light fw-bold me-2 btn-sm rounded-pill px-3 py-2 text-decoration-none inline-flex align-items-center">
                         <i class="bi bi-plus-lg"></i> Create Solicitation
-                    </a>
-                    <a href="collections.html" class="btn btn-outline-light btn-sm rounded-pill px-3 py-2 text-decoration-none inline-flex align-items-center">
-                        <i class="bi bi-eye"></i> View Collections
                     </a>
                 </div>
             </section>
@@ -165,7 +136,7 @@
             </section>
 
             <section class="row g-4">
-                <div class="col-lg-4">
+                <div class="col-lg-12">
                     <div class="card data-card border-0 p-3 rounded-4 h-100">
                         <h6 class="card-section-title fw-bold text-center mb-4">ACTIVE CAMPAIGNS</h6>
                         <div class="mb-3">
@@ -182,44 +153,10 @@
                         </a>
                     </div>
                 </div>
-
-                <div class="col-lg-4">
-                    <div class="card data-card border-0 p-3 rounded-4 h-100">
-                        <h6 class="card-section-title fw-bold text-center mb-4">SCHEDULE</h6>
-                        <div class="d-flex gap-3 mb-3 align-items-center">
-                            <div class="placeholder-box rounded"></div>
-                            <div>
-                                <div class="fw-bold small text-dark">Event Collection</div>
-                                <small class="text-muted d-block"></small>
-                            </div>
-                        </div>
-                        <a href="schedule.html" class="btn btn-brand mt-auto w-100 rounded-pill py-2 text-decoration-none d-flex align-items-center justify-content-center">
-                            View Schedule &rarr;
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="card data-card border-0 p-3 rounded-4 h-100">
-                        <h6 class="card-section-title fw-bold text-center mb-4">ANNOUNCEMENTS</h6>
-                        <div class="d-flex gap-3 mb-3 align-items-center">
-                            <div class="placeholder-box rounded"></div>
-                            <div>
-                                <div class="fw-bold small text-dark">New Solicitation Post</div>
-                                <p class="text-muted mb-0 small"></p>
-                            </div>
-                        </div>
-                        <a href="announcement.html" class="btn btn-brand mt-auto w-100 rounded-pill py-2 text-decoration-none d-flex align-items-center justify-content-center">
-                            View Announcements &rarr;
-                        </a>
-                    </div>
-                </div>
             </section>
 
         </main>
     </div>
-
-    <!-- schedule modal removed; use schedule.html -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

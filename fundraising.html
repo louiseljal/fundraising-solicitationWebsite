@@ -34,14 +34,8 @@
                     </a>
                 </div>
 
-                <a class="nav-link" href="membership.html"><i class="bi bi-person-badge-fill me-2"></i> Membership</a>
-                <a class="nav-link" href="schedule.html"><i class="bi bi-calendar-event-fill me-2"></i> Schedule</a>
-                <a class="nav-link" href="reports.html"><i class="bi bi-bar-chart-line-fill me-2"></i> Reports</a>
-                
                 <span class="text-uppercase text-white-50 small px-2 mt-3 mb-1 sidebar-section-header">Quick Access</span>
                 <a class="nav-link" href="donations.html"><i class="bi bi-heart-fill me-2"></i> Donations</a>
-                <a class="nav-link" href="collections.html"><i class="bi bi-collection-fill me-2"></i> Collection</a>
-                <a class="nav-link" href="announcement.html"><i class="bi bi-bell-fill me-2"></i> Announcement</a>
             </nav>
 
             <div class="sidebar-footer mt-auto pt-3 border-top border-secondary border-opacity-25">
@@ -204,6 +198,10 @@
 
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
                     <div class="d-flex flex-wrap align-items-center gap-2" id="filter-controls-group-container">
+                        <div class="search-bar position-relative">
+                            <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                            <input type="text" id="search-input-field" class="form-control ps-5 rounded-pill bg-light border-0" placeholder="Search campaigns...">
+                        </div>
                         <div class="btn-group btn-group-sm" role="group" id="campaign-status-filter-buttons">
                             <button type="button" class="btn btn-success rounded-start-pill px-3 active" data-filter="all">All Campaigns</button>
                             <button type="button" class="btn btn-outline-secondary px-3 dynamic-outline-btn" data-filter="active">Active</button>
@@ -621,6 +619,28 @@
                         renderCampaigns(list);
                     })
                     .catch(err => console.error('Load campaigns failed', err));
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('search-input-field');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchQuery = this.value.toLowerCase().trim();
+                    const campaignCards = document.querySelectorAll('.dynamic-campaign-card-wrapper');
+                    
+                    campaignCards.forEach(card => {
+                        const cardTitle = card.querySelector('h5')?.textContent.toLowerCase() || '';
+                        const cardDesc = card.querySelector('p')?.textContent.toLowerCase() || '';
+                        const cardCategory = card.querySelector('.badge')?.textContent.toLowerCase() || '';
+                        
+                        const matchesSearch = searchQuery === '' || 
+                                            cardTitle.includes(searchQuery) || 
+                                            cardDesc.includes(searchQuery) || 
+                                            cardCategory.includes(searchQuery);
+                        
+                        card.style.display = matchesSearch ? '' : 'none';
+                    });
+                });
             }
 
             // wire status buttons
