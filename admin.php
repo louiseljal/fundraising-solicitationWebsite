@@ -124,8 +124,8 @@
                         <h5 class="fw-bold text-dark mb-2">Hello, Workspace Master! 👋</h5>
                         <p class="text-muted small mb-3">All systems are running tracking nominally. This landing area acts purely as a data pulse viewpoint. To modify active operational elements, manage campaign structures, or approve pending clearance queues, utilize the newly updated panels options on the sidebar.</p>
                         <div class="d-flex gap-2">
-                            <a href="manage_campaigns.html" class="btn btn-brand btn-sm rounded-pill text-white px-3 fw-semibold"><i class="bi bi-plus-circle-fill me-1"></i> Go to Campaigns</a>
-                            <a href="analytics.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-semibold"><i class="bi bi-graph-up-arrow me-1"></i> View Trends</a>
+                            <a href="manage_campaigns.php" class="btn btn-brand btn-sm rounded-pill text-white px-3 fw-semibold"><i class="bi bi-plus-circle-fill me-1"></i> Go to Campaigns</a>
+                            <a href="analytics.php" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-semibold"><i class="bi bi-graph-up-arrow me-1"></i> View Trends</a>
                         </div>
                     </div>
                     <div class="col-lg-5 d-none d-lg-block text-center">
