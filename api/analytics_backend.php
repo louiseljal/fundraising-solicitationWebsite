@@ -6,6 +6,12 @@
 
 require_once '../includes/session.php';
 require_once '../includes/db.php';
+require_once '../includes/dw_db.php';
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_log(1);
+error_reporting(E_ALL);
 
 header('Content-Type: application/json');
 
@@ -26,50 +32,55 @@ if ($action === 'dashboard') {
     $params = [];
 
     if (!empty($startDate) && !empty($endDate)) {
-        // Append time to ensure the entire day is covered
-        $startD = $startDate . ' 00:00:00';
-        $endD = $endDate . ' 23:59:59';
-        
-        $dateFilterDonations = " AND created_at >= :start_date AND created_at <= :end_date";
-        $dateFilterUsers = " AND created_at >= :start_date AND created_at <= :end_date";
+        // OLAP warehouse uses dim_time for date filtering
+        $dateFilterDonations = " AND dt.full_date >= :start_date AND dt.full_date <= :end_date";
+        $dateFilterUsers = " AND dd.joined_date >= :start_date AND dd.joined_date <= :end_date";
         $dateFilterCollections = " AND created_at >= :start_date AND created_at <= :end_date";
         $dateFilterSolicitations = " AND created_at >= :start_date AND created_at <= :end_date";
-        $dateFilterCampaigns = " AND updated_at >= :start_date AND updated_at <= :end_date";
+        $dateFilterCampaigns = " AND dc.start_date >= :start_date AND dc.start_date <= :end_date";
         
-        $params[':start_date'] = $startD;
-        $params[':end_date'] = $endD;
+        $params[':start_date'] = $startDate;
+        $params[':end_date'] = $endDate;
     }
 
-    // 1. KPIs
-    $stmt = $pdo->prepare("
+    // 1. KPIs (Fully converted to data warehouse schema)
+    $kpiSql = "
         SELECT
-            COUNT(donation_id)           AS total_donations,
-            COALESCE(SUM(amount), 0)     AS total_raised,
-            COUNT(DISTINCT user_id)      AS unique_donors,
-            COALESCE(AVG(amount), 0)     AS avg_donation,
-            COUNT(DISTINCT campaign_id)  AS active_campaigns
-        FROM donations
-        WHERE payment_status = 'Completed' AND is_deleted = 0 {$dateFilterDonations}
-    ");
+            COUNT(*)                          AS total_donations,
+            COALESCE(SUM(fd.donation_amount), 0) AS total_raised,
+            COUNT(DISTINCT fd.donor_sk)          AS unique_donors,
+            COALESCE(AVG(fd.donation_amount), 0) AS avg_donation,
+            COUNT(DISTINCT fd.campaign_sk)       AS active_campaigns
+        FROM fact_donations fd
+        LEFT JOIN dim_time dt ON fd.time_id = dt.time_id
+        WHERE 1=1 {$dateFilterDonations}
+    ";
+    $stmt = $dw_pdo->prepare($kpiSql);
     $stmt->execute($params);
     $kpis = $stmt->fetch();
-
+    
     // 2. Donation Trend Chart Data (Dynamic aggregation based on Group By filter)
-    if ($groupBy === 'daily') {
-        $trendSql = "SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS log_date, SUM(amount) AS period_total 
-                     FROM donations WHERE payment_status = 'Completed' AND is_deleted = 0 {$dateFilterDonations}
-                     GROUP BY DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY log_date ASC";
-    } elseif ($groupBy === 'yearly') {
-        $trendSql = "SELECT YEAR(created_at) AS log_date, SUM(amount) AS period_total 
-                     FROM donations WHERE payment_status = 'Completed' AND is_deleted = 0 {$dateFilterDonations}
-                     GROUP BY YEAR(created_at) ORDER BY log_date ASC";
-    } else { // monthly
-        $trendSql = "SELECT DATE_FORMAT(created_at, '%Y-%m') AS log_date, SUM(amount) AS period_total 
-                     FROM donations WHERE payment_status = 'Completed' AND is_deleted = 0 {$dateFilterDonations}
-                     GROUP BY DATE_FORMAT(created_at, '%Y-%m') ORDER BY log_date ASC";
-    }
+   if ($groupBy === 'daily') {
+    $trendSql = "SELECT dt.full_date AS log_date, SUM(fd.donation_amount) AS period_total 
+                 FROM fact_donations fd
+                 LEFT JOIN dim_time dt ON fd.time_id = dt.time_id
+                 WHERE 1=1 {$dateFilterDonations}
+                 GROUP BY dt.full_date ORDER BY dt.full_date ASC";
+} elseif ($groupBy === 'yearly') {
+    $trendSql = "SELECT dt.year AS log_date, SUM(fd.donation_amount) AS period_total 
+                 FROM fact_donations fd
+                 LEFT JOIN dim_time dt ON fd.time_id = dt.time_id
+                 WHERE 1=1 {$dateFilterDonations}
+                 GROUP BY dt.year ORDER BY dt.year ASC";
+} else { // monthly
+    $trendSql = "SELECT CONCAT(dt.year, '-', LPAD(dt.month_num, 2, '0')) AS log_date, SUM(fd.donation_amount) AS period_total 
+                 FROM fact_donations fd
+                 LEFT JOIN dim_time dt ON fd.time_id = dt.time_id
+                 WHERE 1=1 {$dateFilterDonations}
+                 GROUP BY dt.year, dt.month_num ORDER BY dt.year, dt.month_num ASC";
+}
 
-    $stmt = $pdo->prepare($trendSql);
+$stmt = $dw_pdo->prepare($trendSql);
     $stmt->execute($params);
     $trendRaw = $stmt->fetchAll();
 
@@ -87,21 +98,21 @@ if ($action === 'dashboard') {
     }
 
     // 3. User Registration Trend Chart Data
-    if ($groupBy === 'daily') {
-        $userTrendSql = "SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS log_date, COUNT(*) AS period_total 
-                         FROM users WHERE is_deleted = 0 {$dateFilterUsers} 
-                         GROUP BY DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY log_date ASC";
-    } elseif ($groupBy === 'yearly') {
-        $userTrendSql = "SELECT YEAR(created_at) AS log_date, COUNT(*) AS period_total 
-                         FROM users WHERE is_deleted = 0 {$dateFilterUsers} 
-                         GROUP BY YEAR(created_at) ORDER BY log_date ASC";
-    } else { // monthly
-        $userTrendSql = "SELECT DATE_FORMAT(created_at, '%Y-%m') AS log_date, COUNT(*) AS period_total 
-                         FROM users WHERE is_deleted = 0 {$dateFilterUsers} 
-                         GROUP BY DATE_FORMAT(created_at, '%Y-%m') ORDER BY log_date ASC";
-    }
+   if ($groupBy === 'daily') {
+    $userTrendSql = "SELECT dd.joined_date AS log_date, COUNT(*) AS period_total 
+                     FROM dim_donor dd WHERE 1=1 {$dateFilterUsers} 
+                     GROUP BY dd.joined_date ORDER BY dd.joined_date ASC";
+} elseif ($groupBy === 'yearly') {
+    $userTrendSql = "SELECT YEAR(dd.joined_date) AS log_date, COUNT(*) AS period_total 
+                     FROM dim_donor dd WHERE 1=1 {$dateFilterUsers} 
+                     GROUP BY YEAR(dd.joined_date) ORDER BY log_date ASC";
+} else { // monthly
+    $userTrendSql = "SELECT DATE_FORMAT(dd.joined_date, '%Y-%m') AS log_date, COUNT(*) AS period_total 
+                     FROM dim_donor dd WHERE 1=1 {$dateFilterUsers} 
+                     GROUP BY DATE_FORMAT(dd.joined_date, '%Y-%m') ORDER BY log_date ASC";
+}
 
-    $stmt = $pdo->prepare($userTrendSql);
+$stmt = $dw_pdo->prepare($userTrendSql); 
     $stmt->execute($params);
     $userTrendRaw = $stmt->fetchAll();
 
@@ -119,20 +130,19 @@ if ($action === 'dashboard') {
     }
 
     // 4. Category Distribution Chart
-    $donationJoinFilter = $dateFilterDonations ? str_replace('created_at', 'd.created_at', $dateFilterDonations) : "";
-    $stmt = $pdo->prepare("
-        SELECT
-            c.category,
-            COALESCE(SUM(d.amount), 0) AS total_raised
-        FROM campaigns c
-        LEFT JOIN donations d
-            ON c.campaign_id = d.campaign_id
-            AND d.payment_status = 'Completed'
-            AND d.is_deleted = 0 {$donationJoinFilter}
-        GROUP BY c.category
-        ORDER BY total_raised DESC
-        LIMIT 4
-    ");
+    $categorySql = "
+    SELECT
+        dc.category,
+        COALESCE(SUM(fd.donation_amount), 0) AS total_raised
+    FROM dim_campaign dc
+    LEFT JOIN fact_donations fd ON dc.campaign_sk = fd.campaign_sk
+    LEFT JOIN dim_time dt ON fd.time_id = dt.time_id
+    WHERE 1=1 {$dateFilterDonations}
+    GROUP BY dc.category
+    ORDER BY total_raised DESC
+    LIMIT 4
+";
+$stmt = $dw_pdo->prepare($categorySql);
     $stmt->execute($params);
     $categoriesRaw = $stmt->fetchAll();
 
@@ -143,98 +153,98 @@ if ($action === 'dashboard') {
         $categoryValues[] = (float)$cat['total_raised'];
     }
     
-    // 5. Active Members
-    $stmt = $pdo->prepare("
+    // 5. Active Members (Converted to OLAP data warehouse)
+    $stmt = $dw_pdo->prepare("
         SELECT COUNT(*) AS total
-        FROM users
-        WHERE account_status='Active'
-        AND is_deleted=0 {$dateFilterUsers}
+        FROM dim_donor
+        WHERE user_role='Active' {$dateFilterUsers}
     ");
     $stmt->execute($params);
     $activeMembers = $stmt->fetch();
 
-    // 6. Registered Users in Filter Period
-    $stmt = $pdo->prepare("
+    // 6. Registered Users in Filter Period (Converted to OLAP data warehouse)
+    $stmt = $dw_pdo->prepare("
         SELECT COUNT(*) AS total
-        FROM users
-        WHERE is_deleted=0 {$dateFilterUsers}
+        FROM dim_donor
+        WHERE 1=1 {$dateFilterUsers}
     ");
     $stmt->execute($params);
     $monthlyMembers = $stmt->fetch();
 
-    // 7. Campaign Performance (Unfiltered to preserve active campaign contexts)
-    $campaignPerformance = $pdo->query("
+    // 7. Campaign Performance (Pivoted to utilize your summary table: fact_campaign_performance)
+    $campaignPerformance = $dw_pdo->query("
         SELECT
-            title,
-            goal_amount,
-            current_raised_cache,
-            ROUND(
-                (current_raised_cache / NULLIF(goal_amount, 0)) * 100,
-                2
-            ) AS progress_pct
-        FROM campaigns
-        WHERE campaign_status='Active' AND is_deleted=0
+            dc.title,
+            dc.goal_amount,
+            fcp.total_raised AS current_raised_cache,
+            fcp.progress_pct
+        FROM fact_campaign_performance fcp
+        JOIN dim_campaign dc ON fcp.campaign_sk = dc.campaign_sk
     ")->fetchAll();
 
-    // 8. Top Solicitors
-    $stmt = $pdo->prepare("
+    // 8. Top Solicitors (Pivoted to pull from fact_donations and dim_donor)
+    $topSolicitorSql = "
         SELECT
-            CONCAT(up.first_name,' ',up.last_name) AS full_name,
-            SUM(d.amount) AS total_funds
-        FROM donations d
-        JOIN user_profiles up
-            ON d.user_id = up.user_id
-        WHERE d.payment_status='Completed' AND d.is_deleted = 0 {$dateFilterDonations}
-        GROUP BY d.user_id, up.first_name, up.last_name
+            dd.full_name,
+            SUM(fd.donation_amount) AS total_funds
+        FROM fact_donations fd
+        JOIN dim_donor dd ON fd.donor_sk = dd.donor_sk
+        LEFT JOIN dim_time dt ON fd.time_id = dt.time_id
+        WHERE 1=1 {$dateFilterDonations}
+        GROUP BY fd.donor_sk, dd.full_name
         ORDER BY total_funds DESC
         LIMIT 5
-    ");
+    ";
+    $stmt = $dw_pdo->prepare($topSolicitorSql);
     $stmt->execute($params);
     $topSolicitors = $stmt->fetchAll();
 
-    // 9. Total Collections
+    // 9. Total Collections (Keep operational database connection $pdo since OLAP doesn't track logistics/audit logs)
     $stmt = $pdo->prepare("
         SELECT COUNT(*) AS total FROM collections WHERE is_deleted = 0 {$dateFilterCollections}
     ");
     $stmt->execute($params);
     $totalCollections = $stmt->fetch()['total'];
 
-    // 10. Total Solicitations
+    // 10. Total Solicitations (Keep operational database connection $pdo since OLAP doesn't track workflow tickets)
     $stmt = $pdo->prepare("
         SELECT COUNT(*) AS total FROM solicitations WHERE is_deleted = 0 {$dateFilterSolicitations}
     ");
     $stmt->execute($params);
     $totalSolicitations = $stmt->fetch()['total'];
 
-    // 11. Payment Method Breakdown
-    $stmt = $pdo->prepare("
+    // 11. Payment Method Breakdown (Converted to OLAP data warehouse)
+    $paymentSql = "
         SELECT 
-            payment_method, 
-            COALESCE(SUM(amount), 0) AS total_amount, 
+            dpm.method_name AS payment_method, 
+            COALESCE(SUM(fd.donation_amount), 0) AS total_amount, 
             COUNT(*) AS transaction_count
-        FROM donations
-        WHERE payment_status = 'Completed' AND is_deleted = 0 {$dateFilterDonations}
-        GROUP BY payment_method
-    ");
+        FROM fact_donations fd
+        LEFT JOIN dim_time dt ON fd.time_id = dt.time_id
+        JOIN dim_payment_method dpm ON fd.payment_method_id = dpm.payment_method_id
+        WHERE 1=1 {$dateFilterDonations}
+        GROUP BY dpm.method_name
+    ";
+    $stmt = $dw_pdo->prepare($paymentSql);
     $stmt->execute($params);
     $paymentMethodBreakdown = $stmt->fetchAll();
 
-    // 12. Completed Campaigns Trend Chart Data (Connected seamlessly to filters)
+    // 12. Completed Campaigns Trend Chart Data (Pivoted to dim_campaign)
     if ($groupBy === 'daily') {
-        $compTrendSql = "SELECT DATE_FORMAT(updated_at, '%Y-%m-%d') AS log_date, COUNT(*) AS period_total 
-                         FROM campaigns WHERE campaign_status = 'Completed' AND is_deleted = 0 {$dateFilterCampaigns}
-                         GROUP BY DATE_FORMAT(updated_at, '%Y-%m-%d') ORDER BY log_date ASC";
+        $compTrendSql = "SELECT dc.start_date AS log_date, COUNT(*) AS period_total 
+                         FROM dim_campaign dc WHERE dc.status='Completed' {$dateFilterCampaigns}
+                         GROUP BY dc.start_date ORDER BY dc.start_date ASC";
     } elseif ($groupBy === 'yearly') {
-        $compTrendSql = "SELECT YEAR(updated_at) AS log_date, COUNT(*) AS period_total 
-                         FROM campaigns WHERE campaign_status = 'Completed' AND is_deleted = 0 {$dateFilterCampaigns}
-                         GROUP BY YEAR(updated_at) ORDER BY log_date ASC";
+        $compTrendSql = "SELECT YEAR(dc.start_date) AS log_date, COUNT(*) AS period_total 
+                         FROM dim_campaign dc WHERE dc.status='Completed' {$dateFilterCampaigns}
+                         GROUP BY YEAR(dc.start_date) ORDER BY log_date ASC";
     } else { // monthly
-        $compTrendSql = "SELECT DATE_FORMAT(updated_at, '%Y-%m') AS log_date, COUNT(*) AS period_total 
-                         FROM campaigns WHERE campaign_status = 'Completed' AND is_deleted = 0 {$dateFilterCampaigns}
-                         GROUP BY DATE_FORMAT(updated_at, '%Y-%m') ORDER BY log_date ASC";
+        $compTrendSql = "SELECT DATE_FORMAT(dc.start_date, '%Y-%m') AS log_date, COUNT(*) AS period_total 
+                         FROM dim_campaign dc WHERE dc.status='Completed' {$dateFilterCampaigns}
+                         GROUP BY DATE_FORMAT(dc.start_date, '%Y-%m') ORDER BY log_date ASC";
     }
 
-    $stmt = $pdo->prepare($compTrendSql);
+    $stmt = $dw_pdo->prepare($compTrendSql);
     $stmt->execute($params);
     $compTrendRaw = $stmt->fetchAll();
 
@@ -279,16 +289,15 @@ if ($action === 'dashboard') {
 
 // --- DECISION ENGINE ACTION ---
 if ($action === 'decision') {
-    $stmt = $pdo->query("
+    $stmt = $dw_pdo->query("
         SELECT
-            c.campaign_id, c.title, c.goal_amount, c.end_date,
-            DATEDIFF(c.end_date, CURDATE()) AS days_remaining,
-            COALESCE(SUM(CASE WHEN d.payment_status = 'Completed' THEN d.amount ELSE 0 END), 0) AS total_raised,
-            ROUND(COALESCE(SUM(CASE WHEN d.payment_status = 'Completed' THEN d.amount ELSE 0 END), 0) / NULLIF(c.goal_amount, 0) * 100, 2) AS progress_pct
-        FROM campaigns c
-        LEFT JOIN donations d ON c.campaign_id = d.campaign_id AND d.is_deleted = 0
-        WHERE c.campaign_status = 'Active' AND c.is_deleted = 0
-        GROUP BY c.campaign_id, c.title, c.goal_amount, c.end_date
+            dc.campaign_id, dc.title, dc.goal_amount, dc.end_date,
+            DATEDIFF(dc.end_date, CURDATE()) AS days_remaining,
+            fcp.total_raised,
+            fcp.progress_pct
+        FROM dim_campaign dc
+        LEFT JOIN fact_campaign_performance fcp ON dc.campaign_sk = fcp.campaign_sk
+        WHERE dc.status = 'Active'
     ");
     $campaigns = $stmt->fetchAll();
     

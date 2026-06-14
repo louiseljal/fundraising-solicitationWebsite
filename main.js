@@ -302,22 +302,20 @@ async function loadHomeDashboard() {
     const campaignSummary = document.querySelector('.card.data-card .progress-bar');
     const campaignTitle = document.querySelector('.card.data-card .d-flex.justify-content-between .text-secondary');
     const campaignAmount = document.querySelector('.card.data-card .d-flex.justify-content-between .brand-text-color');
-    const scheduleTitle = document.querySelectorAll('.card.data-card .fw-bold.small.text-dark')[1];
-    const scheduleMeta = document.querySelectorAll('.card.data-card .text-muted.d-block')[1];
-    const announcementTitle = document.querySelectorAll('.card.data-card .fw-bold.small.text-dark')[2];
-    const announcementMeta = document.querySelectorAll('.card.data-card .text-muted.d-block')[2];
+    const announcementTitle = document.querySelector('.card.data-card .fw-bold.small.text-dark');
+    const announcementMeta = document.querySelector('.card.data-card .text-muted.d-block');
     if (!totalDonations && !activeMembers && !ongoingCampaigns && !collectionsThisMonth && !pendingPayments) return;
 
     try {
-        const [campaignResult, announcementResult, membersResult, donationsResult] = await Promise.all([
+        const [campaignResult, solicitationsResult, membersResult, donationsResult] = await Promise.all([
             fetchJson('api/campaigns.php'),
-            fetchJson('api/announcements.php'),
+            fetchJson('api/solicitations.php'),
             fetchJson('api/members.php'),
             fetchJson('api/donations.php')
         ]);
 
         const campaigns = Array.isArray(campaignResult.campaigns) ? campaignResult.campaigns : [];
-        const announcements = Array.isArray(announcementResult.announcements) ? announcementResult.announcements : [];
+        const solicitations = Array.isArray(solicitationsResult.solicitations) ? solicitationsResult.solicitations : [];
         const memberCount = membersResult.metrics?.totalMembers || 0;
         const donations = Array.isArray(donationsResult.donations) ? donationsResult.donations : [];
 
@@ -325,7 +323,7 @@ async function loadHomeDashboard() {
         const activeCount = campaigns.filter(item => String(item.campaign_status || '').toLowerCase() === 'active').length;
         const pendingPaymentsCount = donations.filter(item => item.payment_status === 'Pending').length;
         const topCampaign = campaigns[0] || null;
-        const latestAnnouncement = announcements[0] || null;
+        const latestApprovedSolicitation = solicitations.filter(s => s.status === 'Approved')[0] || null;
 
         if (totalDonations) totalDonations.textContent = '₱' + totalRaised.toLocaleString();
         if (activeMembers) activeMembers.textContent = String(memberCount);
@@ -341,13 +339,8 @@ async function loadHomeDashboard() {
         if (campaignTitle && topCampaign) campaignTitle.textContent = topCampaign.title || 'Campaign';
         if (campaignAmount && topCampaign) campaignAmount.textContent = '₱' + Number(topCampaign.goal_amount || 0).toLocaleString();
 
-        if (scheduleTitle) scheduleTitle.textContent = topCampaign ? topCampaign.title : 'No upcoming schedule';
-        if (scheduleMeta) scheduleMeta.textContent = topCampaign ? `Ends ${topCampaign.end_date || 'soon'}` : 'No campaign events are available yet.';
-
-        if (announcementTitle) announcementTitle.textContent = latestAnnouncement ? (latestAnnouncement.title || 'Announcement') : 'No announcements yet';
-        if (announcementMeta) announcementMeta.textContent = latestAnnouncement ? (latestAnnouncement.content || 'Latest system update') : 'The announcement feed is empty.';
-
-        // schedule content is now served on the standalone schedule.html page.
+        if (announcementTitle) announcementTitle.textContent = latestApprovedSolicitation ? `Solicitation Approved: ${latestApprovedSolicitation.post_title}` : 'No approved solicitations yet';
+        if (announcementMeta) announcementMeta.textContent = '';
     } catch (error) {
         console.error('Home dashboard load failed:', error);
         if (totalDonations) totalDonations.textContent = '—';
@@ -357,6 +350,13 @@ async function loadHomeDashboard() {
         if (pendingPayments) pendingPayments.textContent = '0';
     }
 }
+
+// Store campaigns globally for filtering and pagination
+let allCampaigns = [];
+let currentCampaignFilter = 'all';
+let currentCampaignPage = 1;
+const campaignsPerPage = 6;
+let campaignFiltersInitialized = false;
 
 async function loadFundraisingCards() {
     const container = document.getElementById('fundraising-cards-container');
@@ -368,75 +368,222 @@ async function loadFundraisingCards() {
             throw new Error('Unable to load campaigns');
         }
 
-        const campaigns = result.campaigns;
-        const totalRaised = campaigns.reduce((sum, item) => sum + Number(item.total_raised || 0), 0);
-        const activeCampaigns = campaigns.filter(item => String(item.campaign_status).toLowerCase() === 'active').length;
-        const completedCampaigns = campaigns.filter(item => String(item.campaign_status).toLowerCase() === 'completed').length;
-        const donorCount = campaigns.reduce((sum, item) => sum + Number(item.donor_count || 0), 0);
+        allCampaigns = result.campaigns;
+        const totalRaised = allCampaigns.reduce((sum, item) => sum + Number(item.total_raised || 0), 0);
+        const activeCampaigns = allCampaigns.filter(item => String(item.campaign_status).toLowerCase() === 'active').length;
+        const completedCampaigns = allCampaigns.filter(item => String(item.campaign_status).toLowerCase() === 'completed').length;
+        const donorCount = allCampaigns.reduce((sum, item) => sum + Number(item.donor_count || 0), 0);
 
         document.getElementById('display-total-raised-kpi').textContent = peso(totalRaised, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         document.getElementById('display-active-campaigns-count').textContent = String(activeCampaigns);
         document.getElementById('display-total-donors-count').textContent = String(donorCount);
         document.getElementById('display-completed-campaigns-count').textContent = String(completedCampaigns);
 
-        const overallProgress = totalRaised && campaigns.reduce((sum, item) => sum + Number(item.goal_amount || 0), 0)
-            ? (totalRaised / campaigns.reduce((sum, item) => sum + Number(item.goal_amount || 0), 0)) * 100
+        const overallProgress = totalRaised && allCampaigns.reduce((sum, item) => sum + Number(item.goal_amount || 0), 0)
+            ? (totalRaised / allCampaigns.reduce((sum, item) => sum + Number(item.goal_amount || 0), 0)) * 100
             : 0;
         document.getElementById('display-overall-progress-percentage').textContent = overallProgress.toFixed(1) + '%';
         document.getElementById('display-overall-progress-bar').style.width = overallProgress.toFixed(1) + '%';
         document.getElementById('display-overall-raised-cash').textContent = peso(totalRaised, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' raised';
-        document.getElementById('display-overall-target-cash').textContent = 'Goal: ' + peso(campaigns.reduce((sum, item) => sum + Number(item.goal_amount || 0), 0), {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('display-overall-target-cash').textContent = 'Goal: ' + peso(allCampaigns.reduce((sum, item) => sum + Number(item.goal_amount || 0), 0), {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-        container.innerHTML = campaigns.map((campaign, index) => {
-            const raised = Number(campaign.total_raised || 0);
-            const goal = Number(campaign.goal_amount || 0);
-            const progress = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
-            const daysLeft = Math.max(0, Math.ceil((new Date(campaign.end_date) - new Date()) / (1000 * 60 * 60 * 24)));
-            const imageUrl = getCampaignImage(campaign, index);
-            return `
-                <div class="col-xl-4 col-md-6 col-12 dynamic-campaign-card-wrapper">
-                  <div class="card border-0 h-100 rounded-4 shadow-sm dynamic-card-bg overflow-hidden position-relative">
-                    <div class="position-relative ratio ratio-16x9 bg-secondary-subtle card-image-placeholder-zone">
-                      <img src="${imageUrl}" alt="${campaign.title || 'Campaign'}" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
-                      <div class="position-absolute top-0 start-0 w-100 p-3 d-flex justify-content-between align-items-start z-1">
-                        <span class="badge bg-dark bg-opacity-75 rounded-pill px-2 py-1 fs-xs"><i class="bi bi-tag-fill me-1"></i>${campaign.category || 'General'}</span>
-                        <span class="badge bg-warning text-dark rounded-pill px-2 py-1 fs-xs">${campaign.campaign_status || 'Active'}</span>
-                      </div>
-                    </div>
-                    <div class="card-body p-4 d-flex flex-column">
-                      <h5 class="fw-bold dynamic-text-main mb-2">${campaign.title || 'Campaign'}</h5>
-                      <p class="dynamic-text-muted small text-line-clamp-3 mb-3">${campaign.description || 'No description provided.'}</p>
-                      <div class="mt-auto">
-                        <div class="d-flex justify-content-between align-items-center mb-1 font-monospace small">
-                          <span class="fw-bold text-success">${peso(raised, {minimumFractionDigits: 2, maximumFractionDigits: 2})} raised</span>
-                          <span class="dynamic-text-muted">${progress.toFixed(0)}%</span>
-                        </div>
-                        <div class="progress rounded-pill mb-2" style="height: 6px;"><div class="progress-bar bg-success" role="progressbar" style="width: ${progress.toFixed(1)}%"></div></div>
-                        <div class="dynamic-text-muted font-monospace small mb-3">of ${peso(goal, {minimumFractionDigits: 2, maximumFractionDigits: 2})} goal</div>
-                        <div class="d-flex justify-content-between text-muted font-monospace small border-top pt-3 mb-3">
-                          <span><i class="bi bi-people me-1"></i> ${campaign.donor_count || 0} donors</span>
-                          <span><i class="bi bi-clock me-1"></i> ${daysLeft} days left</span>
-                        </div>
-                        <div class="row g-2">
-                          <div class="col-6"><button type="button" class="btn btn-success btn-sm w-100 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modal-quick-donate-wizard" data-campaign-id="${campaign.campaign_id}"><i class="bi bi-heart-fill small"></i> Donate</button></div>
-                          <div class="col-6"><button type="button" class="btn btn-outline-secondary btn-sm w-100 rounded-pill fw-bold text-muted dynamic-outline-btn d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modal-campaign-detail-viewer" data-campaign-id="${campaign.campaign_id}"><i class="bi bi-eye"></i> View</button></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>`;
-        }).join('');
-
-        const donateButtons = container.querySelectorAll('[data-campaign-id]');
-        donateButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                document.getElementById('input-donate-campaign-id').value = button.dataset.campaignId;
-            });
-        });
+        renderCampaignCards();
+        setupCampaignFilters();
 
     } catch (error) {
         console.error('Failed to load campaigns:', error);
         container.innerHTML = '<div class="col-12"><div class="alert alert-warning mb-0">Campaign data could not be loaded right now.</div></div>';
+    }
+}
+
+function renderCampaignCards() {
+    const container = document.getElementById('fundraising-cards-container');
+    if (!container) return;
+
+    // 1. Get current values from the search bar and category drop-down (if they exist)
+    const searchInput = document.getElementById('search-input-field');
+    const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    
+    // Adjust 'select-category-filter' if your select drop-down element has a different ID
+    const categorySelect = document.getElementById('select-category-filter'); 
+    const selectedCategory = categorySelect ? categorySelect.value.toLowerCase() : 'all';
+
+    // 2. Filter campaigns based on status tab, search keyword, and category
+    let filteredCampaigns = allCampaigns.filter(item => {
+        // Status matching (All, Active, Completed)
+        let matchesStatus = true;
+        if (currentCampaignFilter === 'active') {
+            matchesStatus = String(item.campaign_status).toLowerCase() === 'active';
+        } else if (currentCampaignFilter === 'completed') {
+            matchesStatus = String(item.campaign_status).toLowerCase() === 'completed';
+        }
+
+        // Search text matching (Title or Description)
+        const matchesSearch = !searchQuery || 
+            String(item.title).toLowerCase().includes(searchQuery) || 
+            String(item.description).toLowerCase().includes(searchQuery);
+
+        // Category dropdown matching
+        const itemCategory = String(item.category || 'General').toLowerCase();
+        const matchesCategory = (selectedCategory === 'all' || itemCategory === selectedCategory);
+
+        return matchesStatus && matchesSearch && matchesCategory;
+    });
+
+    // 3. Reset page if current page is beyond the filtered results bounds
+    const totalPages = Math.ceil(filteredCampaigns.length / campaignsPerPage);
+    if (currentCampaignPage > totalPages && totalPages > 0) {
+        currentCampaignPage = 1;
+    }
+
+    // 4. Apply pagination slicing
+    const startIndex = (currentCampaignPage - 1) * campaignsPerPage;
+    const endIndex = startIndex + campaignsPerPage;
+    const paginatedCampaigns = filteredCampaigns.slice(startIndex, endIndex);
+
+    // 5. Render to HTML
+    if (paginatedCampaigns.length === 0) {
+        container.innerHTML = `<div class="col-12"><div class="text-center py-5 text-muted">No campaigns found matching your criteria.</div></div>`;
+        updateCampaignPagination(0);
+        return;
+    }
+
+    container.innerHTML = paginatedCampaigns.map((campaign) => {
+        const raised = Number(campaign.total_raised || 0);
+        const goal = Number(campaign.goal_amount || 0);
+        const progress = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
+        const imageUrl = getCampaignImage(campaign, campaign.campaign_id);
+        return `
+            <div class="col-xl-4 col-md-6 col-12 dynamic-campaign-card-wrapper">
+              <div class="card border-0 h-100 rounded-4 shadow-sm dynamic-card-bg overflow-hidden position-relative">
+                <div class="position-relative ratio ratio-16x9 bg-secondary-subtle card-image-placeholder-zone">
+                  <img src="${imageUrl}" alt="${campaign.title || 'Campaign'}" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+                  <div class="position-absolute top-0 start-0 w-100 p-3 d-flex justify-content-between align-items-start z-1">
+                    <span class="badge bg-dark bg-opacity-75 rounded-pill px-2 py-1 fs-xs"><i class="bi bi-tag-fill me-1"></i>${campaign.category || 'General'}</span>
+                    <span class="badge bg-warning text-dark rounded-pill px-2 py-1 fs-xs">${campaign.campaign_status || 'Active'}</span>
+                  </div>
+                </div>
+                <div class="card-body p-4 d-flex flex-column">
+                  <h5 class="fw-bold dynamic-text-main mb-2">${campaign.title || 'Campaign'}</h5>
+                  <p class="dynamic-text-muted small text-line-clamp-3 mb-3">${campaign.description || 'No description provided.'}</p>
+                  <div class="mt-auto">
+                    <div class="d-flex justify-content-between align-items-center mb-1 font-monospace small">
+                      <span class="fw-bold text-success">${peso(raised, {minimumFractionDigits: 2, maximumFractionDigits: 2})} raised</span>
+                      <span class="dynamic-text-muted">${progress.toFixed(0)}%</span>
+                    </div>
+                    <div class="progress rounded-pill mb-2" style="height: 6px;"><div class="progress-bar bg-success" role="progressbar" style="width: ${progress.toFixed(1)}%"></div></div>
+                    <div class="dynamic-text-muted font-monospace small mb-3">of ${peso(goal, {minimumFractionDigits: 2, maximumFractionDigits: 2})} goal</div>
+                    <div class="d-flex justify-content-between text-muted font-monospace small border-top pt-3 mb-3">
+                      <span><i class="bi bi-people me-1"></i> ${campaign.donor_count || 0} donors</span>
+                      <span><i class="bi bi-calendar3 me-1"></i> ${campaign.end_date || '--'}</span>
+                    </div>
+                    <div class="row g-2">
+                      <div class="col-6"><button type="button" class="btn btn-success btn-sm w-100 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modal-quick-donate-wizard" data-campaign-id="${campaign.campaign_id}"><i class="bi bi-heart-fill small"></i> Donate</button></div>
+                      <div class="col-6"><button type="button" class="btn btn-outline-secondary btn-sm w-100 rounded-pill fw-bold text-muted dynamic-outline-btn d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modal-campaign-detail-viewer" data-campaign-id="${campaign.campaign_id}"><i class="bi bi-eye"></i> View</button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+    }).join('');
+
+    const donateButtons = container.querySelectorAll('[data-campaign-id]');
+    donateButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            document.getElementById('input-donate-campaign-id').value = button.dataset.campaignId;
+        });
+    });
+
+    updateCampaignPagination(filteredCampaigns.length);
+}
+
+function setupCampaignFilters() {
+    // Only initialize filters once to prevent duplicate event listeners
+    if (campaignFiltersInitialized) return;
+    
+    // Status tabs filters
+    const filterButtons = document.querySelectorAll('#campaign-status-filter-buttons button');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach(btn => {
+                btn.classList.remove('active', 'btn-success');
+                btn.classList.add('btn-outline-secondary', 'dynamic-outline-btn');
+            });
+            button.classList.remove('btn-outline-secondary', 'dynamic-outline-btn');
+            button.classList.add('active', 'btn-success');
+
+            currentCampaignFilter = button.dataset.filter;
+            currentCampaignPage = 1;
+            renderCampaignCards();
+        });
+    });
+
+    // --- NEW: Search bar real-time listener ---
+    const searchInput = document.getElementById('search-input-field');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            currentCampaignPage = 1; // Reset pagination while searching
+            renderCampaignCards();
+        });
+    }
+
+    // --- NEW: Drop-down category element filter listener ---
+    const categorySelect = document.getElementById('select-category-filter');
+    if (categorySelect) {
+        categorySelect.addEventListener('change', () => {
+            currentCampaignPage = 1;
+            renderCampaignCards();
+        });
+    }
+    
+    campaignFiltersInitialized = true;
+}
+
+function setupCampaignPagination() {
+    // Pagination container is now in HTML, no need to create it dynamically
+}
+
+function updateCampaignPagination(totalItems) {
+    const paginationContainer = document.getElementById('campaign-pagination-container');
+    if (!paginationContainer) return;
+
+    const totalPages = Math.ceil(totalItems / campaignsPerPage);
+    
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    let paginationHTML = '<nav aria-label="Campaign pagination"><ul class="pagination">';
+    
+    // Previous button
+    paginationHTML += `<li class="page-item ${currentCampaignPage === 1 ? 'disabled' : ''}">
+        <button class="page-link" onclick="changeCampaignPage(${currentCampaignPage - 1})">Previous</button>
+    </li>`;
+    
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        paginationHTML += `<li class="page-item ${i === currentCampaignPage ? 'active' : ''}">
+            <button class="page-link" onclick="changeCampaignPage(${i})">${i}</button>
+        </li>`;
+    }
+    
+    // Next button
+    paginationHTML += `<li class="page-item ${currentCampaignPage === totalPages ? 'disabled' : ''}">
+        <button class="page-link" onclick="changeCampaignPage(${currentCampaignPage + 1})">Next</button>
+    </li>`;
+    
+    paginationHTML += '</ul></nav>';
+    paginationContainer.innerHTML = paginationHTML;
+}
+
+function changeCampaignPage(page) {
+    currentCampaignPage = page;
+    renderCampaignCards();
+    // Scroll to top of campaigns
+    const container = document.getElementById('fundraising-cards-container');
+    if (container) {
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 
