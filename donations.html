@@ -155,7 +155,7 @@
                                 <div class="d-flex flex-column gap-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-muted small">Average Donation</span>
-                                        <span id="insight-average-donation" class="fw-bold text-dark">$0.00</span>
+                                        <span id="insight-average-donation" class="fw-bold text-dark">₱0.00</span>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-muted small">No. of Active Records</span>
@@ -188,19 +188,35 @@
         let currentPage = 1;
         const recordsPerPage = 10;
 
+        const formatCurrency = (val) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(val);
+
         document.addEventListener("DOMContentLoaded", function() {
-            const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
             
             fetch('api/donations.php')
                 .then(response => response.json())
                 .then(data => {
-                    allDonationData = data.donations;
+                    console.log('API Response:', data); // Debug log
+                    if (data.error || data.success === false) {
+                        console.error('API Error:', data.error || data.message);
+                        document.getElementById('donations_body').innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Error: ${data.error || data.message || 'Unknown error'}</td></tr>`;
+                        return;
+                    }
+                    if (!data.donations) {
+                        console.error('Invalid data structure:', data);
+                        document.getElementById('donations_body').innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Invalid data received from server.</td></tr>`;
+                        return;
+                    }
+                    allDonationData = data.donations || [];
                     currentDisplayData = [...allDonationData];
-                    document.getElementById('insight-average-donation').innerText = formatCurrency(data.insights.avgDonation);
-                    document.getElementById('insight-solicitors-count').innerText = data.insights.totalCount.toLocaleString();
+                    document.getElementById('insight-average-donation').innerText = formatCurrency(data.insights?.avgDonation || 0);
+                    document.getElementById('insight-solicitors-count').innerText = (data.insights?.totalCount || 0).toLocaleString();
                     
                     renderPage();
-                    renderLeaderboard(data.topDonors);
+                    renderLeaderboard(data.topDonors || []);
+                })
+                .catch(err => {
+                    console.error('Fetch Error:', err);
+                    document.getElementById('donations_body').innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Failed to load donations: ${err.message}</td></tr>`;
                 });
 
             document.querySelectorAll('.dropdown-item').forEach(item => {
@@ -301,7 +317,7 @@
                     <td class="text-muted">${tx.created_at}</td>
                     <td><span class="fw-bold text-dark">${escapeHTML(tx.username)}</span></td>
                     <td><span class="text-truncate d-inline-block" style="max-width: 200px;">${escapeHTML(tx.campaign_title)}</span></td>
-                    <td class="text-end fw-bold text-dark">$${parseFloat(tx.amount).toFixed(2)}</td>
+                    <td class="text-end fw-bold text-dark">${formatCurrency(tx.amount)}</td>
                     <td class="text-center"><span class="badge rounded-pill px-2.5 py-1 ${badgeStyle}">${tx.payment_status}</span></td>
                 </tr>`;
             });
@@ -317,7 +333,7 @@
                         <span class="small fw-bold">${i === 0 ? '🏆' : '#' + (i+1)}</span>
                         <span class="fw-semibold text-dark small">${escapeHTML(donor.username)}</span>
                     </div>
-                    <span class="badge bg-primary rounded-pill px-2.5">$${parseFloat(donor.total_contributed).toFixed(2)}</span>
+                    <span class="badge bg-primary rounded-pill px-2.5">${formatCurrency(donor.total_contributed)}</span>
                 </div>`;
             });
         }

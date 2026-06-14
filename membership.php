@@ -277,7 +277,7 @@
         let pendingUpdate = null;
 
         document.addEventListener("DOMContentLoaded", function() {
-            const formatMoney = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+            const formatMoney = (val) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(val);
 
             // 1. DATA COLLECTION ROUTER ENGINE
             function fetchMemberData() {
