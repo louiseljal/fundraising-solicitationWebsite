@@ -3,11 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
-<<<<<<< HEAD
--- Generation Time: Jun 13, 2026 at 08:12 AM
-=======
--- Generation Time: Jun 13, 2026 at 01:55 AM
->>>>>>> 4208e3dba672fe1d40c0a6f0d44da2e196c4a190
+-- Generation Time: Jun 14, 2026 at 03:45 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,8 +43,7 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`announcement_id`, `user_id`, `title`, `content`, `priority`, `is_pinned`, `is_deleted`, `created_at`) VALUES
-(1, 11, 'Solicitation Approved: Donations for fire victims', 'this is to support fire victims', 'Normal', 0, 0, '2026-06-12 14:03:02'),
-(2, 11, 'Solicitation Approved: Donations for residents harmed by Bagyong Harvey', 'Helping our kababayans to recover', 'Normal', 0, 0, '2026-06-12 23:48:50');
+(1, 11, 'Solicitation Approved: Donations for fire victims', 'this is to support fire victims', 'Normal', 0, 0, '2026-06-12 14:03:02');
 
 -- --------------------------------------------------------
 
@@ -78,7 +73,6 @@ CREATE TABLE `campaigns` (
 
 INSERT INTO `campaigns` (`campaign_id`, `title`, `slug`, `description`, `goal_amount`, `current_raised_cache`, `campaign_status`, `category`, `start_date`, `end_date`, `is_deleted`, `created_at`, `updated_at`) VALUES
 (1, 'Typhoon Relief Drive 2026', 'typhoon-relief-2026', 'Providing food and shelter packs to displaced families.', 500000.00, 35000.00, 'Active', 'Disaster Relief', '2026-05-01', '2026-06-01', 0, '2026-05-25 07:13:10', '2026-06-12 04:34:33'),
-<<<<<<< HEAD
 (2, 'Juan’s Medical & Chemotherapy Fund', 'juans-medical-fund', 'Helping Juan battle stage 3 lung cancer.', 300000.00, 12500.00, 'Active', 'Medical', '2026-04-15', '2026-07-15', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (3, 'Public School Books & Laptops Project', 'school-books-laptops', 'Sponsoring tech upgrades for remote public schools.', 150000.00, 13000.00, 'Active', 'Education', '2026-05-10', '2026-08-10', 0, '2026-05-25 07:13:10', '2026-06-12 20:23:55'),
 (4, 'Salamat Paw-Pals Animal Shelter Expansion', 'animal-shelter-expansion', 'Building extra cages and securing kibble for rescued dogs.', 80000.00, 0.00, 'Active', 'Animal Welfare', '2026-05-20', '2026-06-20', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
@@ -118,18 +112,6 @@ INSERT INTO `campaigns` (`campaign_id`, `title`, `slug`, `description`, `goal_am
 (38, 'Historical Archival Project', 'archival-project', 'Preservation', 3000.00, 0.00, 'Cancelled', 'Arts & Culture', '2026-07-05', '2026-07-06', 0, '2026-06-30 02:00:00', '2026-06-13 05:37:00'),
 (39, 'Community Solar Project', 'solar-project', 'Solar power', 7500.00, 0.00, 'Active', 'Environment', '2026-07-08', '2026-07-09', 0, '2026-06-30 03:00:00', '2026-06-13 04:33:16'),
 (40, 'Holiday Food Bank', 'holiday-food-bank', 'Holiday meals', 4000.00, 0.00, 'Active', 'Community', '2026-07-10', '2026-07-11', 0, '2026-06-30 04:00:00', '2026-06-13 04:31:27');
-=======
-(2, 'Juan’s Medical & Chemotherapy Fund', 'juans-medical-fund', 'Helping Juan battle stage 3 lung cancer.', 300000.00, 612500.00, 'Active', 'Medical', '2026-04-15', '2026-07-15', 0, '2026-05-25 07:13:10', '2026-06-12 23:02:17'),
-(3, 'Public School Books & Laptops Project', 'school-books-laptops', 'Sponsoring tech upgrades for remote public schools.', 150000.00, 125500.00, 'Active', 'Education', '2026-05-10', '2026-08-10', 0, '2026-05-25 07:13:10', '2026-06-12 10:35:45'),
-(4, 'Salamat Paw-Pals Animal Shelter Expansion', 'animal-shelter-expansion', 'Building extra cages and securing kibble for rescued dogs.', 80000.00, 0.00, 'Active', 'Animal Welfare', '2026-05-20', '2026-06-20', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
-(5, 'Community Kitchen Clean Water Project', 'clean-water-project', 'Installing high-grade water filters in local districts.', 100000.00, 0.00, 'Draft', 'Community', '2026-06-01', '2026-09-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
-(6, 'Reforestation in Sierra Madre', 'reforestation-sierra-madre', 'Planting 10,000 native trees to combat landslides.', 120000.00, 0.00, 'Paused', 'Environment', '2026-03-01', '2026-09-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
-(7, 'Surgical Fund for Baby Neo', 'surgical-fund-baby-neo', 'Urgent congenital heart disease operation.', 400000.00, 6000500.00, 'Active', 'Medical', '2026-05-22', '2026-06-22', 0, '2026-05-25 07:13:10', '2026-06-12 23:20:28'),
-(8, 'Scholars Across Borders 2026', 'scholars-across-borders-2026', 'College tuition assistance for underprivileged students.', 250000.00, 0.00, 'Active', 'Education', '2026-05-01', '2026-12-31', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
-(9, 'Artists Support Group Grant', 'artists-support-grant', 'Micro-grants for local street muralists.', 50000.00, 0.00, 'Completed', 'Arts & Culture', '2026-01-01', '2026-04-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
-(10, 'Bike-for-a-Cause Metro Manila', 'bike-for-a-cause-manila', 'Purchasing commuter bikes for working-class citizens.', 90000.00, 0.00, 'Cancelled', 'Community', '2026-02-01', '2026-03-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
-(11, 'Running-for-a-Cause Cavite', 'running-for-a-cause-cavite', '', 1000.00, 0.00, 'Active', '', '0000-00-00', '0000-00-00', 0, '2026-06-12 23:35:30', '2026-06-12 23:35:30');
->>>>>>> 4208e3dba672fe1d40c0a6f0d44da2e196c4a190
 
 -- --------------------------------------------------------
 
@@ -185,7 +167,6 @@ INSERT INTO `donations` (`donation_id`, `user_id`, `campaign_id`, `amount`, `cur
 (9, 8, 1, 2000.00, 'PHP', 'Completed', 'G_Cash', 'TXN-20260525-009', 0, '2026-05-25 07:13:23', '2026-06-12 03:04:18'),
 (10, 3, 4, 1000.00, 'PHP', 'Failed', 'Credit_Card', 'TXN-20260525-010', 0, '2026-05-25 07:13:23', '2026-05-25 07:13:23'),
 (11, 11, 1, 10000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-063418-3788', 0, '2026-06-12 04:34:18', '2026-06-12 04:34:33'),
-<<<<<<< HEAD
 (12, 11, 3, 12500.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-123427-5887', 0, '2026-06-12 10:34:27', '2026-06-12 20:23:55'),
 (13, 11, 4, 5000.00, 'PHP', 'Failed', 'Manual', 'TXN-20260612-123515-8257', 0, '2026-06-12 10:35:15', '2026-06-12 20:23:55'),
 (14, 11, 7, 14000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-160215-7831', 0, '2026-06-12 14:02:15', '2026-06-12 20:23:55'),
@@ -224,13 +205,6 @@ INSERT INTO `donations` (`donation_id`, `user_id`, `campaign_id`, `amount`, `cur
 (47, 9, 13, 120.00, 'PHP', 'Pending', 'Bank_Transfer', 'TXN-113', 0, '2026-06-27 02:05:00', '2026-06-13 04:16:28'),
 (48, 10, 14, 90.00, 'PHP', 'Pending', 'PayPal', 'TXN-114', 0, '2026-06-28 01:50:00', '2026-06-13 04:16:28'),
 (49, 11, 15, 60.00, 'PHP', 'Completed', 'Manual', 'TXN-115', 0, '2026-06-29 06:25:00', '2026-06-13 05:46:24');
-=======
-(12, 11, 3, 125000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-123427-5887', 0, '2026-06-12 10:34:27', '2026-06-12 10:35:45'),
-(13, 11, 4, 500000.00, 'PHP', 'Failed', 'Manual', 'TXN-20260612-123515-8257', 0, '2026-06-12 10:35:15', '2026-06-12 10:35:55'),
-(14, 11, 7, 6000000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260612-160215-7831', 0, '2026-06-12 14:02:15', '2026-06-12 14:03:06'),
-(15, 11, 2, 600000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260613-010205-9980', 0, '2026-06-12 23:02:05', '2026-06-12 23:02:17'),
-(16, 11, 7, 500.00, 'PHP', 'Completed', 'Manual', 'TXN-20260613-011955-9406', 0, '2026-06-12 23:19:55', '2026-06-12 23:20:28');
->>>>>>> 4208e3dba672fe1d40c0a6f0d44da2e196c4a190
 
 -- --------------------------------------------------------
 
@@ -262,8 +236,9 @@ CREATE TABLE `solicitations` (
 --
 
 INSERT INTO `solicitations` (`solicitation_id`, `user_id`, `post_title`, `solicitation_category`, `target_amount`, `campaign_deadline`, `post_description`, `urgency_level`, `poc_name`, `poc_phone`, `beneficiary_count`, `allocation_items_json`, `attachments_json`, `status`, `is_deleted`, `created_at`) VALUES
-(1, 11, 'Solicitation for the improvement of computer laboratories', 'Educational Aid', 150000.00, '2026-08-06', 'Helping the students learn through materials with better quality and a much better environment', 'Low', 'Marian Liwayway', '091256783412', 0, '[\"Mouse\",\"Keyboard\",\"Monitor\"]', '[\"1781303914_Untitled-design-8.webp\"]', 'Approved', 0, '2026-06-12 22:38:34'),
-(2, 12, 'Donations for residents harmed by Bagyong Harvey', 'Disaster Relief', 400000.00, '2026-07-08', 'Helping our kababayans to recover', 'Medium', 'Michael Ross', '09876543210', 20, '[\"Water\",\"Clothes\",\"First-Aid Kit\"]', '[\"1781308077_storm.jpg\"]', 'Approved', 0, '2026-06-12 23:47:57');
+(1, 11, 'Donations for fire victims', 'Disaster Relief', 100000.00, '2026-07-16', 'this is to support fire victims', 'High', 'Lewis', '09871234567', 1000, '[\"Clothes\",\"water\"]', '[]', 'Approved', 0, '2026-06-12 04:30:57'),
+(2, 11, 'Donations for residents affected by earthquakes', 'Disaster Relief', 2141948588.00, '2026-07-06', 'Helping fellow Filipino', 'High', 'Test User', '09488853947', 0, '[]', '[]', 'Approved', 0, '2026-06-13 07:41:41'),
+(3, 14, 'CSG Acquaintance Party', 'Other', 15000.00, '2026-08-06', 'The funds will be used for decoration, events, foods, prices, and more.', 'Medium', 'Michael Ross', '09876543210', 20, '[]', '[\"1781337225_ruben.jpg\"]', 'Pending', 0, '2026-06-13 07:53:45');
 
 -- --------------------------------------------------------
 
@@ -300,12 +275,9 @@ INSERT INTO `users` (`user_id`, `username`, `email`, `password_hash`, `user_role
 (9, 'grace_pua', 'grace.p@outlook.com', '$2y$10$z7X8cCv...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51'),
 (10, 'rachel_uy', 'rachel.uy@gmail.com', '$2y$10$u3I4oPp...', 'Donor', 'Active', 0, 1, '2026-05-25 07:12:51', '2026-05-25 07:12:51'),
 (11, 'louiseledesma', 'louise@gmail.com', '$2y$10$OMm1oMLSQRYRmB/E/YGIBO4HujA7VMK1MGNKKq2yhtDwYwIDWiwAa', 'Admin', 'Active', 0, 1, '2026-06-12 03:33:57', '2026-06-12 03:33:57'),
-<<<<<<< HEAD
 (12, 'dennis_103', 'dennis103@gmail.com', '$2y$10$HJUbg8FuHt71Nhj2LduifuoLaLafNS6L8Nz88W53T0iNV8SeuN6Re', 'Admin', 'Active', 0, 1, '2026-06-13 00:02:34', '2026-06-13 00:03:20'),
-(13, 'dennisuser', 'dennisuser@gmail.com', '$2y$10$GiUEaSWKp7K5HwRzgejErOkArduOrQKcfp/E.mD24Q6hb28M7Sds.', 'Donor', 'Active', 0, 1, '2026-06-13 01:07:48', '2026-06-13 01:07:48');
-=======
-(12, 'mikeross', 'suits@gmail.com', '$2y$10$IWpYBeN7FZA97wDHmaSIfumrBwIxN3XDKd92fWXcfz7BuY8uLP.I2', 'Donor', 'Active', 0, 1, '2026-06-12 23:42:49', '2026-06-12 23:42:49');
->>>>>>> 4208e3dba672fe1d40c0a6f0d44da2e196c4a190
+(13, 'dennisuser', 'dennisuser@gmail.com', '$2y$10$GiUEaSWKp7K5HwRzgejErOkArduOrQKcfp/E.mD24Q6hb28M7Sds.', 'Donor', 'Active', 0, 1, '2026-06-13 01:07:48', '2026-06-13 01:07:48'),
+(14, 'mikeross', 'suits@gmail.com', '$2y$10$PG5iEmu2rU4hPl4Z2ltAQ.KuWulphEmWOc.9teQqH9WJUSJYOFUQG', 'Donor', 'Active', 0, 1, '2026-06-13 07:47:49', '2026-06-13 07:47:49');
 
 -- --------------------------------------------------------
 
@@ -340,14 +312,10 @@ INSERT INTO `user_profiles` (`profile_id`, `user_id`, `first_name`, `last_name`,
 (8, 8, 'David', 'Lim', '09248887776', 'avatar8.png', 'PH', 'Calabarzon', 0.00),
 (9, 9, 'Grace', 'Pua', '09256664442', 'avatar9.png', 'PH', 'Western Visayas', 4500.00),
 (10, 10, 'Rachel', 'Uy', '09263331119', 'avatar10.png', 'PH', 'NCR', 8500.00),
-<<<<<<< HEAD
 (11, 11, 'louise', 'ledesma', NULL, NULL, NULL, NULL, 26500.00),
 (12, 12, 'dennis', 'dennis', NULL, NULL, NULL, NULL, 0.00),
-(13, 13, 'dennisuser', 'userrr', NULL, NULL, NULL, NULL, 0.00);
-=======
-(11, 11, 'louise', 'ledesma', NULL, NULL, NULL, NULL, 0.00),
-(12, 12, 'Mike', 'Ross', NULL, NULL, NULL, NULL, 0.00);
->>>>>>> 4208e3dba672fe1d40c0a6f0d44da2e196c4a190
+(13, 13, 'dennisuser', 'userrr', NULL, NULL, NULL, NULL, 0.00),
+(14, 14, 'Mike', 'Ross', NULL, NULL, NULL, NULL, 0.00);
 
 --
 -- Indexes for dumped tables
@@ -421,17 +389,13 @@ ALTER TABLE `user_profiles`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `campaigns`
 --
 ALTER TABLE `campaigns`
-<<<<<<< HEAD
   MODIFY `campaign_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
-=======
-  MODIFY `campaign_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
->>>>>>> 4208e3dba672fe1d40c0a6f0d44da2e196c4a190
 
 --
 -- AUTO_INCREMENT for table `collections`
@@ -443,37 +407,25 @@ ALTER TABLE `collections`
 -- AUTO_INCREMENT for table `donations`
 --
 ALTER TABLE `donations`
-<<<<<<< HEAD
   MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
-=======
-  MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
->>>>>>> 4208e3dba672fe1d40c0a6f0d44da2e196c4a190
 
 --
 -- AUTO_INCREMENT for table `solicitations`
 --
 ALTER TABLE `solicitations`
-  MODIFY `solicitation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `solicitation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-<<<<<<< HEAD
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
-=======
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
->>>>>>> 4208e3dba672fe1d40c0a6f0d44da2e196c4a190
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `user_profiles`
 --
 ALTER TABLE `user_profiles`
-<<<<<<< HEAD
-  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
-=======
-  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
->>>>>>> 4208e3dba672fe1d40c0a6f0d44da2e196c4a190
+  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
