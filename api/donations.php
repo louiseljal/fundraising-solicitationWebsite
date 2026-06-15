@@ -57,12 +57,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'export_csv') {
     try {
         // Fetch rows specifically for the spreadsheet layout
         $stmtExport = $pdo->query("
-            SELECT d.donation_id AS `Transaction ID`, 
-                   DATE_FORMAT(d.created_at, '%Y-%m-%d %H:%i') AS `Date & Time`, 
-                   u.username AS `Donor Name`, 
-                   c.title AS `Campaign Assignment`, 
-                   d.amount AS `Amount ($)`, 
-                   d.payment_method AS `Payment Method`, 
+            SELECT d.donation_id AS `Transaction ID`,
+                   DATE_FORMAT(d.created_at, '%Y-%m-%d %H:%i') AS `Date & Time`,
+                   u.username AS `Donor Name`,
+                   c.title AS `Campaign Assignment`,
+                   d.amount AS `Amount (₱)`,
+                   d.payment_method AS `Payment Method`,
                    d.payment_status AS `Status`
             FROM donations d
             JOIN users u ON d.user_id = u.user_id

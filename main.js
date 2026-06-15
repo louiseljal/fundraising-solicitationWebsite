@@ -404,11 +404,17 @@ function renderCampaignCards() {
     const searchInput = document.getElementById('search-input-field');
     const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
     
-    // Adjust 'select-category-filter' if your select drop-down element has a different ID
-    const categorySelect = document.getElementById('select-category-filter'); 
-    const selectedCategory = categorySelect ? categorySelect.value.toLowerCase() : 'all';
+    const categorySelect = document.getElementById('filter-dropdown-category');
+    const selectedCategory = categorySelect ? categorySelect.value.toLowerCase() : '';
+    const categoryFilter = selectedCategory === '' ? 'all' : selectedCategory;
 
-    // 2. Filter campaigns based on status tab, search keyword, and category
+    const monthSelect = document.getElementById('filter-dropdown-month');
+    const selectedMonth = monthSelect ? monthSelect.value : '';
+
+    const sortSelect = document.getElementById('filter-dropdown-sorting');
+    const selectedSort = sortSelect ? sortSelect.value : 'newest';
+
+    // 2. Filter campaigns based on status tab, search keyword, category, and month
     let filteredCampaigns = allCampaigns.filter(item => {
         // Status matching (All, Active, Completed)
         let matchesStatus = true;
@@ -425,12 +431,43 @@ function renderCampaignCards() {
 
         // Category dropdown matching
         const itemCategory = String(item.category || 'General').toLowerCase();
-        const matchesCategory = (selectedCategory === 'all' || itemCategory === selectedCategory);
+        const matchesCategory = (categoryFilter === 'all' || itemCategory === categoryFilter);
 
-        return matchesStatus && matchesSearch && matchesCategory;
+        // Month filter matching
+        let matchesMonth = true;
+        if (selectedMonth) {
+            const campaignDate = item.start_date ? new Date(item.start_date) : null;
+            if (campaignDate && !isNaN(campaignDate)) {
+                const campaignMonth = String(campaignDate.getMonth() + 1).padStart(2, '0');
+                matchesMonth = campaignMonth === selectedMonth;
+            } else {
+                matchesMonth = false;
+            }
+        }
+
+        return matchesStatus && matchesSearch && matchesCategory && matchesMonth;
     });
 
-    // 3. Reset page if current page is beyond the filtered results bounds
+    // 3. Sort campaigns based on selected sort option
+    if (selectedSort === 'highest') {
+        filteredCampaigns.sort((a, b) => Number(b.total_raised || 0) - Number(a.total_raised || 0));
+    } else if (selectedSort === 'lowest') {
+        filteredCampaigns.sort((a, b) => Number(a.total_raised || 0) - Number(b.total_raised || 0));
+    } else if (selectedSort === 'newest') {
+        filteredCampaigns.sort((a, b) => {
+            const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+            const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+            return dateB - dateA;
+        });
+    } else if (selectedSort === 'deadline') {
+        filteredCampaigns.sort((a, b) => {
+            const dateA = a.end_date ? new Date(a.end_date) : new Date(0);
+            const dateB = b.end_date ? new Date(b.end_date) : new Date(0);
+            return dateA - dateB;
+        });
+    }
+
+    // 4. Reset page if current page is beyond the filtered results bounds
     const totalPages = Math.ceil(filteredCampaigns.length / campaignsPerPage);
     if (currentCampaignPage > totalPages && totalPages > 0) {
         currentCampaignPage = 1;
@@ -491,34 +528,69 @@ function renderCampaignCards() {
     donateButtons.forEach((button) => {
         button.addEventListener('click', () => {
             document.getElementById('input-donate-campaign-id').value = button.dataset.campaignId;
+
+            // If this is a View button, populate the modal with campaign data
+            if (button.dataset.bsTarget === '#modal-campaign-detail-viewer') {
+                const campaignId = parseInt(button.dataset.campaignId);
+                const campaign = allCampaigns.find(c => c.campaign_id === campaignId);
+                if (campaign) {
+                    populateCampaignDetailModal(campaign);
+                }
+            }
         });
     });
 
     updateCampaignPagination(filteredCampaigns.length);
 }
 
+function populateCampaignDetailModal(campaign) {
+    const raised = Number(campaign.total_raised || 0);
+    const goal = Number(campaign.goal_amount || 0);
+    const progress = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
+
+    document.getElementById('view-campaign-title').textContent = campaign.title || '---';
+    document.getElementById('view-campaign-description').textContent = campaign.description || '---';
+    document.getElementById('view-campaign-raised-amount').textContent = 'Raised: ' + peso(raised, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('view-campaign-goal-amount').textContent = 'Goal: ' + peso(goal, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('view-campaign-progress-bar').style.width = progress.toFixed(1) + '%';
+    document.getElementById('view-campaign-category').textContent = campaign.category || '---';
+    document.getElementById('view-campaign-start-date').textContent = campaign.start_date || '---';
+    document.getElementById('view-campaign-deadline').textContent = campaign.end_date || '---';
+
+    // Populate badges
+    const badgesContainer = document.getElementById('view-campaign-badges-container');
+    badgesContainer.innerHTML = `
+        <span class="badge bg-dark bg-opacity-75 rounded-pill px-2 py-1 fs-xs"><i class="bi bi-tag-fill me-1"></i>${campaign.category || 'General'}</span>
+        <span class="badge bg-warning text-dark rounded-pill px-2 py-1 fs-xs">${campaign.campaign_status || 'Active'}</span>
+    `;
+}
+
 function setupCampaignFilters() {
     // Only initialize filters once to prevent duplicate event listeners
     if (campaignFiltersInitialized) return;
+
     
-    // Status tabs filters
+    // Status tabs filters - Handle All/Active/Completed campaign status buttons
     const filterButtons = document.querySelectorAll('#campaign-status-filter-buttons button');
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
+            // Remove active state from all buttons
             filterButtons.forEach(btn => {
                 btn.classList.remove('active', 'btn-success');
                 btn.classList.add('btn-outline-secondary', 'dynamic-outline-btn');
             });
+            // Add active state to clicked button
             button.classList.remove('btn-outline-secondary', 'dynamic-outline-btn');
             button.classList.add('active', 'btn-success');
 
+            // Update filter state and re-render
             currentCampaignFilter = button.dataset.filter;
             currentCampaignPage = 1;
             renderCampaignCards();
         });
     });
 
-    // --- NEW: Search bar real-time listener ---
+    // Search bar real-time listener - Filter campaigns as user types
     const searchInput = document.getElementById('search-input-field');
     if (searchInput) {
         searchInput.addEventListener('input', () => {
@@ -527,15 +599,33 @@ function setupCampaignFilters() {
         });
     }
 
-    // --- NEW: Drop-down category element filter listener ---
-    const categorySelect = document.getElementById('select-category-filter');
+    // Category dropdown filter listener - Filter by campaign category
+    const categorySelect = document.getElementById('filter-dropdown-category');
     if (categorySelect) {
         categorySelect.addEventListener('change', () => {
             currentCampaignPage = 1;
             renderCampaignCards();
         });
     }
-    
+
+    // Month filter listener - Filter campaigns by start date month
+    const monthSelect = document.getElementById('filter-dropdown-month');
+    if (monthSelect) {
+        monthSelect.addEventListener('change', () => {
+            currentCampaignPage = 1;
+            renderCampaignCards();
+        });
+    }
+
+    // Sort by listener - Sort campaigns by selected criteria (highest, lowest, newest, deadline)
+    const sortSelect = document.getElementById('filter-dropdown-sorting');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            currentCampaignPage = 1;
+            renderCampaignCards();
+        });
+    }
+
     campaignFiltersInitialized = true;
 }
 

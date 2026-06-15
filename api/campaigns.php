@@ -1,7 +1,9 @@
 <?php
 // ==================================================================
 // api/campaigns.php
-// Operations API Layer: Handles Campaign Fetching (GET) and Secured CRUD (POST).
+// ADMIN PANEL CAMPAIGN API - Used by manage_campaigns.php
+// Handles Campaign Fetching (GET) and Secured CRUD (POST) with strict admin password verification.
+// This file is specifically for admin panel operations requiring elevated security.
 // ==================================================================
 
 require_once dirname(__DIR__) . '/includes/db.php';

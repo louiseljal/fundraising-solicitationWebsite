@@ -58,13 +58,37 @@
                                     <label for="form_title_modal" class="form-label small fw-bold text-secondary">Campaign Title</label>
                                     <input type="text" class="form-control rounded-3" id="form_title_modal" required placeholder="e.g., Medical Assistance Contingency">
                                 </div>
-                                <div class="mb-3">
-                                    <label for="form_goal_modal" class="form-label small fw-bold text-secondary">Financial Goal Amount ($)</label>
-                                    <input type="number" step="0.01" class="form-control rounded-3" id="form_goal_modal" required placeholder="0.00">
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold text-secondary">Category</label>
+                                        <select id="form_category_modal" class="form-select rounded-3" required>
+                                            <option value="Disaster Relief">Disaster Relief</option>
+                                            <option value="Medical">Medical</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Animal Welfare">Animal Welfare</option>
+                                            <option value="Community">Community</option>
+                                            <option value="Environment">Environment</option>
+                                            <option value="Arts & Culture">Arts & Culture</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold text-secondary">Financial Target (₱)</label>
+                                        <input type="number" step="0.01" class="form-control rounded-3" id="form_goal_modal" required placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold text-secondary">Start Date</label>
+                                        <input type="date" class="form-control rounded-3" id="form_start_date_modal" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold text-secondary">End Date</label>
+                                        <input type="date" class="form-control rounded-3" id="form_end_date_modal" required>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="form_description_modal" class="form-label small fw-bold text-secondary">Description (optional)</label>
-                                    <textarea id="form_description_modal" class="form-control rounded-3" rows="3"></textarea>
+                                    <label for="form_description_modal" class="form-label small fw-bold text-secondary">Description</label>
+                                    <textarea id="form_description_modal" class="form-control rounded-3" rows="3" required></textarea>
                                 </div>
                             </div>
                             <div class="modal-footer border-0 pt-0 p-4">
@@ -100,13 +124,23 @@
                     form.addEventListener('submit', function (e) {
                         e.preventDefault();
                         const title = document.getElementById('form_title_modal').value.trim();
+                        const category = document.getElementById('form_category_modal').value;
                         const goal = document.getElementById('form_goal_modal').value;
+                        const startDate = document.getElementById('form_start_date_modal').value;
+                        const endDate = document.getElementById('form_end_date_modal').value;
                         const description = document.getElementById('form_description_modal').value.trim();
 
                         fetch('api/admin_backend.php?action=save_campaign', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ title: title, goal_amount: goal, description: description })
+                            body: JSON.stringify({
+                                title: title,
+                                category: category,
+                                goal_amount: goal,
+                                start_date: startDate,
+                                end_date: endDate,
+                                description: description
+                            })
                         })
                         .then(res => res.json())
                         .then(data => {
@@ -236,12 +270,13 @@
                                     <label for="filter-dropdown-category" class="form-label small text-muted text-uppercase fw-semibold mb-1">Category</label>
                                     <select class="form-select form-select-sm dynamic-input-bg" id="filter-dropdown-category">
                                         <option value="" selected>All Categories</option>
-                                        <option value="Medical">Medical Assistance</option>
                                         <option value="Disaster Relief">Disaster Relief</option>
-                                        <option value="Education">Educational Aid</option>
-                                        <option value="Livelihood">Livelihood</option>
-                                        <option value="Infrastructure">Infrastructure</option>
-                                        <option value="Other">Other</option>
+                                        <option value="Medical">Medical</option>
+                                        <option value="Education">Education</option>
+                                        <option value="Animal Welfare">Animal Welfare</option>
+                                        <option value="Community">Community</option>
+                                        <option value="Environment">Environment</option>
+                                        <option value="Arts & Culture">Arts & Culture</option>
                                     </select>
                                 </li>
                                 <li>
@@ -302,20 +337,10 @@
 
                             <div class="row g-2 small font-monospace text-muted">
                                 <div class="col-6">Category: <span class="fw-semibold dynamic-text-main" id="view-campaign-category">---</span></div>
-                                <div class="col-6">Urgency: <span class="fw-semibold dynamic-text-main" id="view-campaign-urgency">---</span></div>
-                                <div class="col-6">Deadline: <span class="fw-semibold dynamic-text-main" id="view-campaign-deadline">---</span></div>
-                                <div class="col-6">Beneficiaries: <span class="fw-semibold dynamic-text-main" id="view-campaign-beneficiaries">---</span></div>
-                                <div class="col-12"><hr class="my-1 border-secondary border-opacity-25"></div>
-                                <div class="col-12">Point of Contact: <span class="fw-semibold dynamic-text-main" id="view-campaign-poc-name">---</span></div>
-                                <div class="col-6"><i class="bi bi-telephone me-1"></i> <span id="view-campaign-poc-phone">---</span></div>
-                                <div class="col-6"><i class="bi bi-envelope me-1"></i> <span id="view-campaign-poc-email">---</span></div>
+                                <div class="col-6">Start Date: <span class="fw-semibold dynamic-text-main" id="view-campaign-start-date">---</span></div>
+                                <div class="col-6">End Date: <span class="fw-semibold dynamic-text-main" id="view-campaign-deadline">---</span></div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
-                        <h6 class="fw-bold dynamic-text-main mb-2"><i class="bi bi-list-check me-2 text-success"></i>Requested Specific Items</h6>
-                        <ul class="list-group list-group-flush small font-monospace rounded-3" id="view-campaign-requested-items-list"></ul>
                     </div>
                 </div>
             </div>

@@ -96,7 +96,7 @@
                 </div>
             </div>
 
-            <div class="stat-card border-0 rounded-4 p-4 shadow-sm bg-white">
+            <div class="stat-card border-0 rounded-4 p-4 shadow-sm bg-white mb-4">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
                     <h6 class="fw-bold text-dark mb-0"><i class="bi bi-megaphone-fill text-primary me-2"></i> Pending Draft Campaigns Queue</h6>
                     <div class="input-group w-auto">
@@ -127,6 +127,38 @@
                     <ul class="pagination pagination-sm mb-0 rounded-pill" id="campaignsPaginationControls"></ul>
                 </div>
             </div>
+
+            <div class="stat-card border-0 rounded-4 p-4 shadow-sm bg-white">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+                    <h6 class="fw-bold text-dark mb-0"><i class="bi bi-file-earmark-text text-warning me-2"></i> Pending Solicitations Queue</h6>
+                    <div class="input-group w-auto">
+                        <span class="input-group-text bg-light border-end-0 text-muted py-1"><i class="bi bi-search small"></i></span>
+                        <input type="text" id="searchSolicitations" class="form-control form-control-sm bg-light border-start-0 py-1" placeholder="Search title..." oninput="filterSolicitations()">
+                    </div>
+                </div>
+
+                <div class="table-responsive border rounded-3">
+                    <table class="table align-middle text-dark small mb-0">
+                        <thead class="table-light">
+                            <tr class="text-muted text-uppercase" style="font-size: 0.75rem;">
+                                <th>Solicitation Title & Detail</th>
+                                <th>Category</th>
+                                <th>Urgency</th>
+                                <th class="text-end">Target Amount</th>
+                                <th class="text-center">Review Triggers</th>
+                            </tr>
+                        </thead>
+                        <tbody id="solicitationFeedRows">
+                            <tr><td colspan="5" class="text-center text-muted py-4">Connecting...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-light">
+                    <div id="solicitationsPageInfo" class="small text-muted fw-medium"></div>
+                    <ul class="pagination pagination-sm mb-0 rounded-pill" id="solicitationsPaginationControls"></ul>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -138,6 +170,7 @@
         const recordsPerPage = 10;
         let allDonations = [], filteredDonations = [], donationPage = 1;
         let allCampaigns = [], filteredCampaigns = [], campaignPage = 1;
+        let allSolicitations = [], filteredSolicitations = [], solicitationPage = 1;
 
         function loadVerificationQueues() {
             fetch('api/queues_backend.php')
@@ -145,8 +178,10 @@
                 .then(data => {
                     allDonations = data.pendingTransactions || [];
                     allCampaigns = data.pendingCampaigns || [];
+                    allSolicitations = data.pendingSolicitations || [];
                     filterDonations();
                     filterCampaigns();
+                    filterSolicitations();
                 })
                 .catch(err => console.error(err));
         }
@@ -277,6 +312,73 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ campaign_id: id, status_action: action })
+            })
+            .then(res => res.json())
+            .then(data => { if(data.success) loadVerificationQueues(); });
+        }
+
+        function filterSolicitations() {
+            const query = document.getElementById('searchSolicitations').value.toLowerCase().trim();
+            filteredSolicitations = allSolicitations.filter(s =>
+                (s.post_title && s.post_title.toLowerCase().includes(query)) ||
+                (s.solicitation_category && s.solicitation_category.toLowerCase().includes(query)) ||
+                (s.username && s.username.toLowerCase().includes(query))
+            );
+            solicitationPage = 1;
+            renderSolicitations();
+        }
+
+        function renderSolicitations() {
+            const totalRecords = filteredSolicitations.length;
+            const totalPages = Math.ceil(totalRecords / recordsPerPage) || 1;
+            if (solicitationPage > totalPages) solicitationPage = totalPages;
+            if (solicitationPage < 1) solicitationPage = 1;
+
+            const startIdx = (solicitationPage - 1) * recordsPerPage;
+            const endIdx = Math.min(startIdx + recordsPerPage, totalRecords);
+            const slice = filteredSolicitations.slice(startIdx, endIdx);
+
+            const tbody = document.getElementById('solicitationFeedRows');
+            tbody.innerHTML = '';
+
+            if (slice.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No pending solicitations.</td></tr>`;
+                document.getElementById('solicitationsPageInfo').innerText = 'Showing 0 to 0 of 0 records';
+                document.getElementById('solicitationsPaginationControls').innerHTML = '';
+                return;
+            }
+
+            slice.forEach(s => {
+                const urgencyBadge = s.urgency_level === 'High' ? 'bg-danger' : (s.urgency_level === 'Medium' ? 'bg-warning text-dark' : 'bg-info text-dark');
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${escapeHTML(s.post_title)}</strong><br><small class="text-muted">by ${escapeHTML(s.username)}</small><br><small class="text-muted">${escapeHTML(s.post_description.substring(0, 50))}...</small></td>
+                        <td><span class="badge bg-light text-dark border">${escapeHTML(s.solicitation_category)}</span></td>
+                        <td><span class="badge ${urgencyBadge}">${escapeHTML(s.urgency_level)}</span></td>
+                        <td class="text-end fw-bold">${formatCurrency(s.target_amount)}</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-success rounded-pill px-3 py-1 me-1" onclick="processSolicitation(${s.solicitation_id}, 'Approve')">Approve</button>
+                            <button class="btn btn-sm btn-outline-danger rounded-pill px-2 py-1" onclick="processSolicitation(${s.solicitation_id}, 'Reject')">X</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('solicitationsPageInfo').innerText = `Showing ${startIdx + 1} to ${endIdx} of ${totalRecords} records`;
+            buildPagination('solicitationsPaginationControls', totalPages, solicitationPage, 'changeSolicitationPage');
+        }
+
+        function changeSolicitationPage(page, event) {
+            if(event) event.preventDefault();
+            solicitationPage = page;
+            renderSolicitations();
+        }
+
+        function processSolicitation(id, action) {
+            fetch('api/queues_backend.php?action=process_solicitation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ solicitation_id: id, status_action: action })
             })
             .then(res => res.json())
             .then(data => { if(data.success) loadVerificationQueues(); });

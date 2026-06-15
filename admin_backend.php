@@ -1,12 +1,4 @@
 <?php
-// ==================================================================
-// api/admin_backend.php
-// USER-FACING CAMPAIGN API - Used by fundraising.html and other user-facing pages
-// Handles campaign creation/update with basic login authentication (no password verification required).
-// This file is specifically for user-facing operations where users can create campaigns.
-// Separated from api/campaigns.php which requires admin password verification for admin panel operations.
-// ==================================================================
-
 header('Content-Type: application/json');
 
 require_once dirname(__DIR__) . '/includes/db.php';

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 15, 2026 at 04:54 AM
+-- Generation Time: Jun 14, 2026 at 03:45 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -75,7 +75,7 @@ INSERT INTO `campaigns` (`campaign_id`, `title`, `slug`, `description`, `goal_am
 (1, 'Typhoon Relief Drive 2026', 'typhoon-relief-2026', 'Providing food and shelter packs to displaced families.', 500000.00, 35000.00, 'Active', 'Disaster Relief', '2026-05-01', '2026-06-01', 0, '2026-05-25 07:13:10', '2026-06-12 04:34:33'),
 (2, 'Juan’s Medical & Chemotherapy Fund', 'juans-medical-fund', 'Helping Juan battle stage 3 lung cancer.', 300000.00, 12500.00, 'Active', 'Medical', '2026-04-15', '2026-07-15', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (3, 'Public School Books & Laptops Project', 'school-books-laptops', 'Sponsoring tech upgrades for remote public schools.', 150000.00, 13000.00, 'Active', 'Education', '2026-05-10', '2026-08-10', 0, '2026-05-25 07:13:10', '2026-06-12 20:23:55'),
-(4, 'Salamat Paw-Pals Animal Shelter Expansion', 'animal-shelter-expansion', 'Building extra cages and securing kibble for rescued dogs.', 80000.00, 1300.00, 'Active', 'Animal Welfare', '2026-05-20', '2026-06-20', 0, '2026-05-25 07:13:10', '2026-06-14 20:17:21'),
+(4, 'Salamat Paw-Pals Animal Shelter Expansion', 'animal-shelter-expansion', 'Building extra cages and securing kibble for rescued dogs.', 80000.00, 0.00, 'Active', 'Animal Welfare', '2026-05-20', '2026-06-20', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (5, 'Community Kitchen Clean Water Project', 'clean-water-project', 'Installing high-grade water filters in local districts.', 100000.00, 0.00, 'Draft', 'Community', '2026-06-01', '2026-09-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (6, 'Reforestation in Sierra Madre', 'reforestation-sierra-madre', 'Planting 10,000 native trees to combat landslides.', 120000.00, 0.00, 'Paused', 'Environment', '2026-03-01', '2026-09-01', 0, '2026-05-25 07:13:10', '2026-05-25 07:13:10'),
 (7, 'Surgical Fund for Baby Neo', 'surgical-fund-baby-neo', 'Urgent congenital heart disease operation.', 400000.00, 16000.00, 'Active', 'Medical', '2026-05-22', '2026-06-22', 0, '2026-05-25 07:13:10', '2026-06-12 21:11:14'),
@@ -102,7 +102,7 @@ INSERT INTO `campaigns` (`campaign_id`, `title`, `slug`, `description`, `goal_am
 (28, 'Disaster Relief Fund', 'disaster-relief-fund', 'Emergency aid', 15000.00, 0.00, 'Active', 'Disaster Relief', '2026-06-22', '2026-12-22', 0, '2026-06-22 04:00:00', '2026-06-13 04:16:28'),
 (29, 'Medical Aid for Elders', 'medical-aid-elders', 'Health support', 6000.00, 0.00, 'Active', 'Medical', '2026-06-23', '2026-12-23', 0, '2026-06-23 03:20:00', '2026-06-13 04:16:28'),
 (30, 'Community Park Cleanup', 'park-cleanup', 'Waste mgmt', 1000.00, 0.00, 'Active', 'Environment', '2026-06-24', '2026-12-24', 0, '2026-06-24 01:00:00', '2026-06-13 04:16:28'),
-(31, 'Coding Bootcamp', 'coding-bootcamp', 'Skill building for programming', 3500.00, 0.00, 'Active', 'Education', '2026-06-25', '2026-12-25', 0, '2026-06-25 05:00:00', '2026-06-15 02:46:17'),
+(31, 'Coding Bootcamp', 'coding-bootcamp', 'Skill building', 3500.00, 0.00, 'Active', 'Education', '2026-06-25', '2026-12-25', 0, '2026-06-25 05:00:00', '2026-06-13 04:16:28'),
 (32, 'Youth Sports League', 'youth-sports', 'Gear drive', 2500.00, 0.00, 'Active', 'Community', '2026-06-26', '2026-12-26', 0, '2026-06-26 07:30:00', '2026-06-13 04:16:28'),
 (33, 'Animal Rescue Shelter', 'animal-rescue', 'Rescue funds', 4000.00, 0.00, 'Active', 'Animal Welfare', '2026-06-27', '2026-12-27', 0, '2026-06-27 02:00:00', '2026-06-13 04:16:28'),
 (34, 'Senior Nutrition Program', 'senior-nutrition', 'Meal plans', 5500.00, 0.00, 'Active', 'Community', '2026-06-28', '2026-12-28', 0, '2026-06-28 01:45:00', '2026-06-13 04:16:28'),
@@ -111,9 +111,7 @@ INSERT INTO `campaigns` (`campaign_id`, `title`, `slug`, `description`, `goal_am
 (37, 'New Science Lab Build', 'science-lab-build', 'Lab equipment', 9000.00, 0.00, 'Active', 'Education', '2026-07-03', '2026-07-04', 0, '2026-06-30 01:00:00', '2026-06-13 05:38:09'),
 (38, 'Historical Archival Project', 'archival-project', 'Preservation', 3000.00, 0.00, 'Cancelled', 'Arts & Culture', '2026-07-05', '2026-07-06', 0, '2026-06-30 02:00:00', '2026-06-13 05:37:00'),
 (39, 'Community Solar Project', 'solar-project', 'Solar power', 7500.00, 0.00, 'Active', 'Environment', '2026-07-08', '2026-07-09', 0, '2026-06-30 03:00:00', '2026-06-13 04:33:16'),
-(40, 'Holiday Food Bank', 'holiday-food-bank', 'Holiday meals', 4000.00, 0.00, 'Active', 'Community', '2026-07-10', '2026-07-11', 0, '2026-06-30 04:00:00', '2026-06-13 04:31:27'),
-(41, 'Fundraising for Community Medical Center', 'fundraising-for-community-medical-center', 'A fundraising to help the community\'s health and well-being', 1000000.00, 0.00, 'Active', '', '0000-00-00', '0000-00-00', 1, '2026-06-14 23:30:57', '2026-06-14 23:45:23'),
-(42, 'Fundraising for Community Town Plaza', 'fundraising-for-community-town-plaza', 'This is a help for improvement of our community town plaza', 200000.00, 10000.00, 'Active', 'Community', '2026-09-08', '2026-12-10', 1, '2026-06-14 23:42:49', '2026-06-14 23:47:44');
+(40, 'Holiday Food Bank', 'holiday-food-bank', 'Holiday meals', 4000.00, 0.00, 'Active', 'Community', '2026-07-10', '2026-07-11', 0, '2026-06-30 04:00:00', '2026-06-13 04:31:27');
 
 -- --------------------------------------------------------
 
@@ -206,13 +204,7 @@ INSERT INTO `donations` (`donation_id`, `user_id`, `campaign_id`, `amount`, `cur
 (46, 8, 12, 80.00, 'PHP', 'Pending', 'Credit_Card', 'TXN-112', 0, '2026-06-26 07:35:00', '2026-06-13 04:16:28'),
 (47, 9, 13, 120.00, 'PHP', 'Pending', 'Bank_Transfer', 'TXN-113', 0, '2026-06-27 02:05:00', '2026-06-13 04:16:28'),
 (48, 10, 14, 90.00, 'PHP', 'Pending', 'PayPal', 'TXN-114', 0, '2026-06-28 01:50:00', '2026-06-13 04:16:28'),
-(49, 11, 15, 60.00, 'PHP', 'Completed', 'Manual', 'TXN-115', 0, '2026-06-29 06:25:00', '2026-06-13 05:46:24'),
-(50, 11, 4, 100.00, 'PHP', 'Completed', 'Manual', 'TXN-20260614-220952-4843', 0, '2026-06-14 20:09:52', '2026-06-14 20:11:16'),
-(51, 11, 4, 100.00, 'PHP', 'Completed', 'Manual', 'TXN-20260614-221008-8548', 0, '2026-06-14 20:10:08', '2026-06-14 20:11:16'),
-(52, 11, 4, 100.00, 'PHP', 'Completed', 'Manual', 'TXN-20260614-221018-6051', 0, '2026-06-14 20:10:18', '2026-06-14 20:11:15'),
-(53, 11, 4, 500.00, 'PHP', 'Completed', 'Manual', 'TXN-20260614-221522-8807', 0, '2026-06-14 20:15:22', '2026-06-14 20:15:48'),
-(54, 11, 4, 500.00, 'PHP', 'Completed', 'Manual', 'TXN-20260614-221708-7284', 0, '2026-06-14 20:17:08', '2026-06-14 20:17:21'),
-(55, 11, 42, 10000.00, 'PHP', 'Completed', 'Manual', 'TXN-20260615-014650-8405', 0, '2026-06-14 23:46:50', '2026-06-14 23:47:17');
+(49, 11, 15, 60.00, 'PHP', 'Completed', 'Manual', 'TXN-115', 0, '2026-06-29 06:25:00', '2026-06-13 05:46:24');
 
 -- --------------------------------------------------------
 
@@ -246,7 +238,7 @@ CREATE TABLE `solicitations` (
 INSERT INTO `solicitations` (`solicitation_id`, `user_id`, `post_title`, `solicitation_category`, `target_amount`, `campaign_deadline`, `post_description`, `urgency_level`, `poc_name`, `poc_phone`, `beneficiary_count`, `allocation_items_json`, `attachments_json`, `status`, `is_deleted`, `created_at`) VALUES
 (1, 11, 'Donations for fire victims', 'Disaster Relief', 100000.00, '2026-07-16', 'this is to support fire victims', 'High', 'Lewis', '09871234567', 1000, '[\"Clothes\",\"water\"]', '[]', 'Approved', 0, '2026-06-12 04:30:57'),
 (2, 11, 'Donations for residents affected by earthquakes', 'Disaster Relief', 2141948588.00, '2026-07-06', 'Helping fellow Filipino', 'High', 'Test User', '09488853947', 0, '[]', '[]', 'Approved', 0, '2026-06-13 07:41:41'),
-(3, 14, 'CSG Acquaintance Party', 'Other', 15000.00, '2026-08-06', 'The funds will be used for decoration, events, foods, prices, and more.', 'Medium', 'Michael Ross', '09876543210', 20, '[]', '[\"1781337225_ruben.jpg\"]', 'Approved', 0, '2026-06-13 07:53:45');
+(3, 14, 'CSG Acquaintance Party', 'Other', 15000.00, '2026-08-06', 'The funds will be used for decoration, events, foods, prices, and more.', 'Medium', 'Michael Ross', '09876543210', 20, '[]', '[\"1781337225_ruben.jpg\"]', 'Pending', 0, '2026-06-13 07:53:45');
 
 -- --------------------------------------------------------
 
@@ -403,7 +395,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `campaigns`
 --
 ALTER TABLE `campaigns`
-  MODIFY `campaign_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `campaign_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `collections`
@@ -415,7 +407,7 @@ ALTER TABLE `collections`
 -- AUTO_INCREMENT for table `donations`
 --
 ALTER TABLE `donations`
-  MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `solicitations`

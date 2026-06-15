@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($action === 'process_campaign') {
             $campaign_id = intval($rawInput['campaign_id'] ?? 0);
             $status_action = trim($rawInput['status_action'] ?? ''); // 'Approve' or 'Reject'
-            
+
             // If Approved, it goes Active. If Rejected, it goes to Cancelled.
             $final_status = ($status_action === 'Approve') ? 'Active' : 'Cancelled';
 
@@ -73,6 +73,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $pdo->commit();
             echo json_encode(['success' => true, 'message' => "Campaign #$campaign_id updated to $final_status."]);
+            exit;
+        }
+
+        // 3. Solicitation Approval Routing
+        if ($action === 'process_solicitation') {
+            $solicitation_id = intval($rawInput['solicitation_id'] ?? 0);
+            $status_action = trim($rawInput['status_action'] ?? ''); // 'Approve' or 'Reject'
+
+            // If Approved, it goes Approved. If Rejected, it goes to Rejected.
+            $final_status = ($status_action === 'Approve') ? 'Approved' : 'Rejected';
+
+            // Verify the solicitation exists and is currently Pending
+            $stmtSol = $pdo->prepare("SELECT * FROM solicitations WHERE solicitation_id = ? AND status = 'Pending' AND is_deleted = 0");
+            $stmtSol->execute([$solicitation_id]);
+            $solicitation = $stmtSol->fetch(PDO::FETCH_ASSOC);
+
+            if (!$solicitation) {
+                echo json_encode(['success' => false, 'error' => 'Solicitation not found or is no longer in Pending status.']);
+                exit;
+            }
+
+            $pdo->beginTransaction();
+
+            // Update the solicitation status
+            $stmtUpdateSol = $pdo->prepare("UPDATE solicitations SET status = ? WHERE solicitation_id = ?");
+            $stmtUpdateSol->execute([$final_status, $solicitation_id]);
+
+            $pdo->commit();
+            echo json_encode(['success' => true, 'message' => "Solicitation #$solicitation_id updated to $final_status."]);
             exit;
         }
 
@@ -102,16 +131,27 @@ try {
 
     // 2. Fetch pending (Draft) Campaigns
     $campaignsStmt = $pdo->query("
-        SELECT campaign_id, title, category, goal_amount, description, start_date 
-        FROM campaigns 
-        WHERE campaign_status = 'Draft' AND is_deleted = 0 
+        SELECT campaign_id, title, category, goal_amount, description, start_date
+        FROM campaigns
+        WHERE campaign_status = 'Draft' AND is_deleted = 0
         ORDER BY created_at DESC
     ");
     $pendingCampaigns = $campaignsStmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // 3. Fetch pending Solicitations
+    $solicitationsStmt = $pdo->query("
+        SELECT s.solicitation_id, s.post_title, s.solicitation_category, s.target_amount, s.urgency_level, s.post_description, u.username
+        FROM solicitations s
+        JOIN users u ON s.user_id = u.user_id
+        WHERE s.status = 'Pending' AND s.is_deleted = 0
+        ORDER BY s.created_at DESC
+    ");
+    $pendingSolicitations = $solicitationsStmt->fetchAll(PDO::FETCH_ASSOC);
+
     echo json_encode([
         'pendingTransactions' => $pendingTransactions,
-        'pendingCampaigns' => $pendingCampaigns
+        'pendingCampaigns' => $pendingCampaigns,
+        'pendingSolicitations' => $pendingSolicitations
     ]);
 } catch (\Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
